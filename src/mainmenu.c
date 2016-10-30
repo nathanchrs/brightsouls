@@ -23,7 +23,7 @@ void MainMenu_show(bool isGameRunning) {
    - new game: baca input nama pemain, GameState_new(gameState, playerName), resume game
    - load game: input nama saveFile, GameState_load(gameState, saveFile), cek validitas saveFile, resume game
    - save game: pilih nama savefile, GameState_save(gameState, saveFile), *isGameRunning = false, *exitGame = false
-   - exit: *exitGame = true, *isGameRunning = false
+   - exit: *exitGame = true, *isGameRunning = false */
 
 // void MainMenu_processInput(GameState *gameState, bool *isGameRunning, bool *exitGame) {
 
