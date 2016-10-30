@@ -4,11 +4,11 @@
 
 void MainMenu_showSplashScreen() {
 	clearScreen();
-	printf("\n\n\n     <Team name> presents\n");
+	printf("\n\n\n\n\n\n\n\n\n\n\n\n\n                                               <Team name> presents\n");
 	delay(1.5);
 	clearScreen();
-	printf("\n\n\n     BRIGHTSOULS\n");
-	delay(2.5);
+	printf("\n\n\n\n\n\n\n\n\n\n\n\n\n                                                   BRIGHTSOULS\n");
+	delay(2.0);
 }
 
 void MainMenu_show(bool isGameRunning) {
