@@ -3,10 +3,10 @@
 #include "mainmenu.h"
 // #include "renderer.h"
 // #include "core.h"
+#include <stdio.h>
 
 // GameState gameState;
 bool isGameRunning, exitGame;
-
 
 int main () {
 
