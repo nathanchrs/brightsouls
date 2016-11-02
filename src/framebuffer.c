@@ -4,6 +4,7 @@
 #include <string.h>
 #include <stdio.h>
 
+// Make sure the output buffer is large enough for the screen output + maximum length of control characters
 #define OUTPUT_BUFFER_RATIO 20
 
 FrameBuffer FrameBuffer_allocate(size_t height,size_t width) {
@@ -11,6 +12,7 @@ FrameBuffer FrameBuffer_allocate(size_t height,size_t width) {
 	fb.contents = malloc(width * height * sizeof(char));
 	fb.fgColors = malloc(width * height * sizeof(Color));
 	fb.bgColors = malloc(width * height * sizeof(Color));
+	fb.inputPrompt = malloc(width * sizeof(char));
 	fb.outputBuffer = malloc(width * height * sizeof(char) * OUTPUT_BUFFER_RATIO);
 	if (fb.contents && fb.fgColors && fb.bgColors && fb.outputBuffer) {
 		fb.width = width;
@@ -26,6 +28,7 @@ void FrameBuffer_deallocate(FrameBuffer *fb) {
 	free(fb->contents);
 	free(fb->fgColors);
 	free(fb->bgColors);
+	free(fb->inputPrompt);
 	free(fb->outputBuffer);
 	fb->width = fb->height = 0;
 }
@@ -34,6 +37,7 @@ void FrameBuffer_resize(FrameBuffer *fb, size_t newHeight, size_t newWidth) {
 	fb->contents = realloc(fb->contents, newWidth * newHeight * sizeof(char));
 	fb->fgColors = realloc(fb->fgColors, newWidth * newHeight * sizeof(Color));
 	fb->bgColors = realloc(fb->bgColors, newWidth * newHeight * sizeof(Color));
+	fb->inputPrompt = realloc(fb->inputPrompt, newWidth * sizeof(char));
 	fb->outputBuffer = realloc(fb->outputBuffer, newWidth * newHeight * sizeof(char) * OUTPUT_BUFFER_RATIO);
 	if (fb->contents && fb->fgColors && fb->bgColors && fb->outputBuffer) {
 		fb->width = newWidth;
@@ -48,6 +52,7 @@ void FrameBuffer_clear(FrameBuffer *fb) {
 	memset(fb->contents, BLANK, fb->width * fb->height * sizeof(char));
 	memset(fb->fgColors, TRANSPARENT, fb->width * fb->height * sizeof(Color));
 	memset(fb->bgColors, TRANSPARENT, fb->width * fb->height * sizeof(Color));
+	memset(fb->inputPrompt, 0, fb->width * sizeof(char));
 }
 
 void FrameBuffer_drawPoint(FrameBuffer *fb, Point p, char content, Color fgColor, Color bgColor) {
@@ -58,7 +63,7 @@ void FrameBuffer_drawPoint(FrameBuffer *fb, Point p, char content, Color fgColor
 	}
 }
 
-void FrameBuffer_drawTextBox(FrameBuffer *fb, Point topLeft, Point bottomRight, char *str, Color fgColor, Color bgColor) {
+void FrameBuffer_drawTextBox(FrameBuffer *fb, Point topLeft, Point bottomRight, const char *str, Color fgColor, Color bgColor) {
 	int r, c;
 	size_t slen = strlen(str);
 	size_t it = 0;
@@ -76,7 +81,7 @@ void FrameBuffer_drawTextBox(FrameBuffer *fb, Point topLeft, Point bottomRight, 
 	}
 }
 
-void FrameBuffer_drawRectangle(FrameBuffer *fb, Point topLeft, Point bottomRight, char borderCharacter, Color textColor, Color bgColor, Color borderColor) {
+void FrameBuffer_drawRectangle(FrameBuffer *fb, Point topLeft, Point bottomRight, const char borderCharacter, Color textColor, Color bgColor, Color borderColor) {
 	int r, c;
 	for (r = topLeft.r; r <= bottomRight.r; r++) {
 		for (c = topLeft.c; c <= bottomRight.c; c++) {
@@ -96,36 +101,60 @@ void FrameBuffer_drawRectangle(FrameBuffer *fb, Point topLeft, Point bottomRight
 	}
 }
 
+void FrameBuffer_setInputPrompt(FrameBuffer *fb, const char *str) {
+	if (fb->width >= 2) {
+		strncpy(fb->inputPrompt, str, fb->width - 2);
+		fb->inputPrompt[fb->width-1] = 0;
+	}
+}
+
+void appendBuffer(char *buf, size_t *pos, const char *str) {
+	sprintf(buf + *pos, "%s", str);
+	*pos += strlen(str);
+}
+
+void appendBufferChar(char *buf, size_t *pos, const char c) {
+	sprintf(buf + *pos, "%c", c);
+	(*pos)++;
+}
+
 void FrameBuffer_output(FrameBuffer *fb, bool useColor) {
 	clearScreen();
 	int r, c;
 	size_t it = 0;
 	for (r = 0; r < fb->height; r++) {
 		for (c = 0; c < fb->width; c++) {
+
+			// Output color-specifying control characters
 			if (useColor) {
-				sprintf(fb->outputBuffer + it, "%s%s;", CS_INITIATOR, RESET);
-				it += strlen(CS_INITIATOR) + strlen(RESET);
+				appendBuffer(fb->outputBuffer, &it, CS_INITIATOR);
+				appendBuffer(fb->outputBuffer, &it, RESET);
 				if (fb->fgColors[r*fb->width + c] != TRANSPARENT) {
-					sprintf(fb->outputBuffer + it, "%s;", fgColorConstants[fb->fgColors[r*fb->width + c]]);
-					it += strlen(fgColorConstants[fb->fgColors[r*fb->width + c]]) + 1;
+					appendBuffer(fb->outputBuffer, &it, fgColorConstants[fb->fgColors[r*fb->width + c]]);
+					appendBuffer(fb->outputBuffer, &it, ";");
 				}
 				if (fb->bgColors[r*fb->width + c] != TRANSPARENT) {
-					sprintf(fb->outputBuffer + it, "%s", bgColorConstants[fb->bgColors[r*fb->width + c]]);
-					it += strlen(bgColorConstants[fb->bgColors[r*fb->width + c]]);
+					appendBuffer(fb->outputBuffer, &it, bgColorConstants[fb->bgColors[r*fb->width + c]]);
 				}
-				sprintf(fb->outputBuffer + it, "%s", CS_TERMINATOR);
-				it += strlen(CS_TERMINATOR);
+				appendBuffer(fb->outputBuffer, &it, CS_TERMINATOR);
 			}
-			sprintf(fb->outputBuffer + it, "%c", fb->contents[r*fb->width + c]);
-			it++;
+
+			// Output actual character to be printed
+			appendBufferChar(fb->outputBuffer, &it, fb->contents[r*fb->width + c]);
+
+			// Output reset control characters
 			if (useColor) {
-				sprintf(fb->outputBuffer + it, "%s%s;%s", CS_INITIATOR, RESET, CS_TERMINATOR);
-				it += strlen(CS_INITIATOR) + 1 + strlen(RESET) + strlen(CS_TERMINATOR);
+				appendBuffer(fb->outputBuffer, &it, CS_INITIATOR);
+				appendBuffer(fb->outputBuffer, &it, RESET);
+				appendBuffer(fb->outputBuffer, &it, ";");
+				appendBuffer(fb->outputBuffer, &it, CS_TERMINATOR);
 			}
 		}
-		sprintf(fb->outputBuffer + it, "\n");
-		it++;
+
+		// Output newline
+		appendBufferChar(fb->outputBuffer, &it, '\n');
 	}
-	fb->outputBuffer[it] = 0;
-	printf("%s", fb->outputBuffer);
+
+	fb->outputBuffer[it] = 0; // Add trailing null byte to output buffer
+	printf("%s%s", fb->outputBuffer, fb->inputPrompt); // Actually print the output buffer's contents and input prompt
 }
