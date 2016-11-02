@@ -14,6 +14,8 @@ char* StringUtils_scan(FILE *fin, const char delim);
    The resulting string is dynamically allocated. Returns null on allocation failure. */
 char* StringUtils_clone(const char *str);
 
+void StringUtils_deallocate(char *str);
+
 /* Creates a new string containing the concatenation of str1 and str2. Returns null on allocation failure. */
 char* StringUtils_concat(const char *str1, const char *str2);
 

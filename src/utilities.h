@@ -7,6 +7,6 @@
 
 	/* I.S. -
 	   F.S. Menunggu selama waktu yang ditetapkan (duration dalam detik, resolusi tergantung sistem) */
-	void delay(double duration);
+	void delay(const double duration);
 
 #endif

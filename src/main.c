@@ -2,18 +2,22 @@
 #include "gamestate.h"
 #include "mainmenu.h"
 #include "stringutils.h"
+#include "config.h"
 // #include "renderer.h"
 // #include "core.h"
-#include <stdio.h>
-#include <stdlib.h>
 
 GameState gameState;
 bool isGameRunning, exitGame;
 
 int main () {
 
+	Config config;
+	config.frameBufferHeight = 28;
+	config.frameBufferWidth = 100;
+	config.useColor = true;
+
 	// Show splash screen
-	MainMenu_showSplashScreen();
+	MainMenu_showSplashScreen(&config);
 
 	char *input;
 	isGameRunning = false;
@@ -21,21 +25,21 @@ int main () {
 	do {
 
 		// Show main menu
-		MainMenu_show(isGameRunning);
-		MainMenu_processInput(&gameState, &isGameRunning, &exitGame);
+		MainMenu_show(isGameRunning, &config);
+		input = StringUtils_scan(stdin, '\n');
+		MainMenu_processInput(&gameState, &isGameRunning, &exitGame, input);
 
 		// Game loop
-		bool requestInput = true;
 		while (isGameRunning) {
 
 			// Render
-			// Renderer_render(&gameState);
+			// Renderer_render(&gameState, &config);
 			
 			// Input
-			if (requestInput) {
+			if (gameState.requestInput) {
 				input = StringUtils_scan(stdin, '\n');
 			} else {
-				requestInput = true; // Prevent infinite loops, have to explicitly state to bypass input
+				gameState.requestInput = true; // Prevent infinite loops, have to explicitly state to bypass input
 			}
 			
 			// Process
@@ -46,7 +50,7 @@ int main () {
 
 	// Prepare to exit - clean up memory
 	// GameState_deallocate(&gameState);
-	free(input);
+	StringUtils_deallocate(input);
 	
 	return 0;	
 }

@@ -3,11 +3,10 @@
 #include "boolean.h"
 #include "utilities.h"
 #include "stringutils.h"
-#include <stdio.h>
 
-void MainMenu_showSplashScreen() {
+void MainMenu_showSplashScreen(const Config *config) {
 
-	FrameBuffer fb = FrameBuffer_allocate(28, 100);
+	FrameBuffer fb = FrameBuffer_allocate(config->frameBufferHeight, config->frameBufferWidth);
 	FrameBuffer_clear(&fb);
 
 	FrameBuffer_drawRectangle(&fb, Point_make(0, 0), Point_make(27, 99), 'x', GRAY, WHITE, WHITE);
@@ -18,16 +17,15 @@ void MainMenu_showSplashScreen() {
 
 	FrameBuffer_output(&fb, false);
 	delay(2.0);
-	FrameBuffer_output(&fb, true);
-
+	FrameBuffer_output(&fb, config->useColor);
 	delay(2.0);
 
 	FrameBuffer_deallocate(&fb);
 }
 
 /* Tampilkan main menu di layar: resume game (jika isGameRunning false), new game, load game, save game, exit */
-void MainMenu_show(bool isGameRunning) {
-	FrameBuffer fb = FrameBuffer_allocate(28, 100);
+void MainMenu_show(const bool isGameRunning, const Config *config) {
+	FrameBuffer fb = FrameBuffer_allocate(config->frameBufferHeight, config->frameBufferWidth);
 	FrameBuffer_clear(&fb);
 
 	FrameBuffer_drawRectangle(&fb, Point_make(0, 0), Point_make(27, 99), 'x', GRAY, WHITE, WHITE);
@@ -35,7 +33,7 @@ void MainMenu_show(bool isGameRunning) {
 	FrameBuffer_drawTextBox(&fb, Point_make(10, 10), Point_make(20, 20), "Enter [exit] or [quit] to exit.", BLACK, TRANSPARENT);
 	FrameBuffer_setInputPrompt(&fb, "Select menu option >> ");
 
-	FrameBuffer_output(&fb, true);
+	FrameBuffer_output(&fb, config->useColor);
 	FrameBuffer_deallocate(&fb);
 }
 
@@ -46,10 +44,7 @@ void MainMenu_show(bool isGameRunning) {
    - save game: pilih nama savefile, GameState_save(gameState, saveFile), *isGameRunning = false, *exitGame = false
    - exit: *exitGame = true, *isGameRunning = false */
 
-void MainMenu_processInput(GameState *gameState, bool *isGameRunning, bool *exitGame) {
-	char *input;
-	input = StringUtils_scan(stdin, '\n');
-
+void MainMenu_processInput(GameState *gameState, bool *isGameRunning, bool *exitGame, const char *input) {
 	if (StringUtils_strcmpi(input, "EXIT") == 0 || StringUtils_strcmpi(input, "QUIT") == 0) {
 		*isGameRunning = false;
 		*exitGame = true;
@@ -57,6 +52,4 @@ void MainMenu_processInput(GameState *gameState, bool *isGameRunning, bool *exit
 	} else {
 
 	}
-
-	free(input);
 }

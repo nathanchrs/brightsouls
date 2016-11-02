@@ -14,26 +14,26 @@ typedef struct {
 	Color *bgColors;
 	char *outputBuffer;
 	char *inputPrompt;
-	size_t width;
 	size_t height;
+	size_t width;
 } FrameBuffer;
 
-FrameBuffer FrameBuffer_allocate(size_t height, size_t width);
+FrameBuffer FrameBuffer_allocate(const size_t height, const size_t width);
 
 void FrameBuffer_deallocate(FrameBuffer *fb);
 
-void FrameBuffer_resize(FrameBuffer *fb, size_t newHeight, size_t newWidth);
+void FrameBuffer_resize(FrameBuffer *fb, const size_t newHeight, const size_t newWidth);
 
 void FrameBuffer_clear(FrameBuffer *fb);
 
-void FrameBuffer_drawPoint(FrameBuffer *fb, Point p, char content, Color fgColor, Color bgColor);
+void FrameBuffer_drawPoint(FrameBuffer *fb, const Point p, const char content, const Color fgColor, const Color bgColor);
 
-void FrameBuffer_drawTextBox(FrameBuffer *fb, Point topLeft, Point bottomRight, const char *str, Color fgColor, Color bgColor);
+void FrameBuffer_drawTextBox(FrameBuffer *fb, const Point topLeft, const Point bottomRight, const char *str, const Color fgColor, const Color bgColor);
 
-void FrameBuffer_drawRectangle(FrameBuffer *fb, Point topLeft, Point bottomRight, const char borderCharacter, Color textColor, Color bgColor, Color borderColor);
+void FrameBuffer_drawRectangle(FrameBuffer *fb, const Point topLeft, const Point bottomRight, const char borderCharacter, const Color textColor, const Color bgColor, const Color borderColor);
 
 void FrameBuffer_setInputPrompt(FrameBuffer *fb, const char *str);
 
-void FrameBuffer_output(FrameBuffer *fb, bool useColor);
+void FrameBuffer_output(FrameBuffer *fb, const bool useColor);
 
 #endif

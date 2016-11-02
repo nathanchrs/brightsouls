@@ -9,7 +9,7 @@
 		system("cls");
 	}
 
-	void delay(double duration){
+	void delay(const double duration){
 		Sleep(duration * 1000);
 	}
 	
@@ -22,7 +22,7 @@
 		system("clear");
 	}
 	
-	void delay(double duration){
+	void delay(const double duration){
 		usleep(duration * 1000000);
 	}
 

@@ -3,11 +3,12 @@
 
 #include "boolean.h"
 #include "gamestate.h"
+#include "config.h"
 
-void MainMenu_showSplashScreen();
+void MainMenu_showSplashScreen(const Config *config);
 
-void MainMenu_show(bool isGameRunning);
+void MainMenu_show(const bool isGameRunning, const Config *config);
 
-void MainMenu_processInput(GameState *gameState, bool *isGameRunning, bool *exitGame);
+void MainMenu_processInput(GameState *gameState, bool *isGameRunning, bool *exitGame, const char *input);
 
 #endif

@@ -53,6 +53,10 @@ char* StringUtils_concat(const char *str1, const char *str2) {
 	return res;
 }
 
+void StringUtils_deallocate(char *str) {
+	free(str);
+}
+
 /* Case-insensitive string comparison,
    returns <0 if first character that does not match in str1 < str2, 0 if both strings are equal, or >0 otherwise */
 int StringUtils_strcmpi(const char *str1, const char *str2) {

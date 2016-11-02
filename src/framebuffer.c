@@ -7,7 +7,7 @@
 // Make sure the output buffer is large enough for the screen output + maximum length of control characters
 #define OUTPUT_BUFFER_RATIO 20
 
-FrameBuffer FrameBuffer_allocate(size_t height,size_t width) {
+FrameBuffer FrameBuffer_allocate(const size_t height, const size_t width) {
 	FrameBuffer fb;
 	fb.contents = malloc(width * height * sizeof(char));
 	fb.fgColors = malloc(width * height * sizeof(Color));
@@ -33,7 +33,7 @@ void FrameBuffer_deallocate(FrameBuffer *fb) {
 	fb->width = fb->height = 0;
 }
 
-void FrameBuffer_resize(FrameBuffer *fb, size_t newHeight, size_t newWidth) {
+void FrameBuffer_resize(FrameBuffer *fb, const size_t newHeight, const size_t newWidth) {
 	fb->contents = realloc(fb->contents, newWidth * newHeight * sizeof(char));
 	fb->fgColors = realloc(fb->fgColors, newWidth * newHeight * sizeof(Color));
 	fb->bgColors = realloc(fb->bgColors, newWidth * newHeight * sizeof(Color));
@@ -55,7 +55,7 @@ void FrameBuffer_clear(FrameBuffer *fb) {
 	memset(fb->inputPrompt, 0, fb->width * sizeof(char));
 }
 
-void FrameBuffer_drawPoint(FrameBuffer *fb, Point p, char content, Color fgColor, Color bgColor) {
+void FrameBuffer_drawPoint(FrameBuffer *fb, Point p, const char content, const Color fgColor, const Color bgColor) {
 	if (p.r >= 0 && p.c >= 0 && p.r < fb->height && p.c < fb->width) {
 		fb->contents[p.r*fb->width + p.c] = content;
 		fb->fgColors[p.r*fb->width + p.c] = fgColor;
@@ -63,7 +63,7 @@ void FrameBuffer_drawPoint(FrameBuffer *fb, Point p, char content, Color fgColor
 	}
 }
 
-void FrameBuffer_drawTextBox(FrameBuffer *fb, Point topLeft, Point bottomRight, const char *str, Color fgColor, Color bgColor) {
+void FrameBuffer_drawTextBox(FrameBuffer *fb, const Point topLeft, const Point bottomRight, const char *str, const Color fgColor, const Color bgColor) {
 	int r, c;
 	size_t slen = strlen(str);
 	size_t it = 0;
@@ -118,7 +118,7 @@ void appendBufferChar(char *buf, size_t *pos, const char c) {
 	(*pos)++;
 }
 
-void FrameBuffer_output(FrameBuffer *fb, bool useColor) {
+void FrameBuffer_output(FrameBuffer *fb, const bool useColor) {
 	clearScreen();
 	int r, c;
 	size_t it = 0;
