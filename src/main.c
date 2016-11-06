@@ -12,8 +12,8 @@ bool isGameRunning, exitGame;
 int main () {
 
 	Config config;
-	config.frameBufferHeight = 28;
-	config.frameBufferWidth = 100;
+	config.frameBufferHeight = 38;
+	config.frameBufferWidth = 150;
 	config.useColor = true;
 
 	// Show splash screen
@@ -34,14 +34,14 @@ int main () {
 
 			// Render
 			// Renderer_render(&gameState, &config);
-			
+
 			// Input
 			if (gameState.requestInput) {
 				input = StringUtils_scan(stdin, '\n');
 			} else {
 				gameState.requestInput = true; // Prevent infinite loops, have to explicitly state to bypass input
 			}
-			
+
 			// Process
 			// Core_process(&gameState, input);
 		}
@@ -51,7 +51,7 @@ int main () {
 	// Prepare to exit - clean up memory
 	// GameState_deallocate(&gameState);
 	StringUtils_deallocate(input);
-	
-	return 0;	
+
+	return 0;
 }
 
