@@ -1,5 +1,6 @@
 #include "boolean.h"
 #include "gamestate.h"
+// #include "gameresources.h"
 #include "mainmenu.h"
 #include "stringutils.h"
 #include "config.h"
@@ -7,6 +8,7 @@
 // #include "core.h"
 
 GameState gameState;
+// GameResources gameResources;
 bool isGameRunning, exitGame;
 
 int main () {
@@ -18,6 +20,9 @@ int main () {
 
 	// Show splash screen
 	MainMenu_showSplashScreen(&config);
+
+	// Load resources to memory
+	// GameResources_load(&gameResources, "resources.txt");
 
 	char *input;
 	isGameRunning = false;
@@ -33,7 +38,7 @@ int main () {
 		while (isGameRunning) {
 
 			// Render
-			// Renderer_render(&gameState, &config);
+			// Renderer_render(&gameState, &gameResources, &config);
 			
 			// Input
 			if (gameState.requestInput) {
@@ -43,13 +48,14 @@ int main () {
 			}
 			
 			// Process
-			// Core_process(&gameState, input);
+			// Core_process(&gameState, &gameResources, input);
 		}
 
 	} while (!exitGame);
 
 	// Prepare to exit - clean up memory
 	// GameState_deallocate(&gameState);
+	// GameResources_deallocate(&gameResources);
 	StringUtils_deallocate(input);
 	
 	return 0;	
