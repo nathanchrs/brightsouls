@@ -15,10 +15,10 @@ typedef struct {
 	int depth;
 } Skill;
 
-void SkillTree_load(SkillTree *skillTree, FILE *fin);
+void SkillTree_load(Skill *skillTree, FILE *fin);
 
-void SkillTree_save(const SkillTree *skillTree, FILE *fout);
+void SkillTree_save(const Skill *skillTree, FILE *fout);
 
-void SkillTree_deallocate(SkillTree *skillTree);
+void SkillTree_deallocate(Skill *skillTree);
 
 #endif

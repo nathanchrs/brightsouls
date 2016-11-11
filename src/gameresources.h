@@ -1,7 +1,7 @@
 #ifndef GAMERESOURCES_H
 #define GAMERESOURCES_H
 
-#include "stdio.h"
+#include <stdio.h>
 
 typedef struct {
 	EnemyType *enemyTypes;

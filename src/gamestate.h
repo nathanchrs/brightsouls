@@ -2,7 +2,7 @@
 #define GAMESTATE_H
 
 #include "boolean.h"
-#include "stdio.h"
+#include <stdio.h>
 
 typedef enum {
 	EXPLORATION, BATTLE, CUTSCENE, SKILLTREE, GAMEOVER, CREDITS

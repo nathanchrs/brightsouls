@@ -17,7 +17,8 @@
 // Linux-specific implementation
 	
 	#include <unistd.h>
-	
+	#include <stdlib.h>
+
 	void clearScreen(){
 		system("clear");
 	}
