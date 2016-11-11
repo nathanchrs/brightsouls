@@ -21,11 +21,14 @@ typedef struct {
 
 	AreaMap areaMap;
 	Battle currentBattle;
-	SkillTree skillTree;*/
+	bool *isSkillActive;
+*/
 } GameState;
 
 void GameState_load(GameState *gameState, const char *filePath);
 
 void GameState_save(const GameState *gameState, const char *filePath);
+
+void GameState_deallocate(GameState *gameState);
 
 #endif

@@ -1,7 +1,7 @@
 #include "framebuffer.h"
 #include "utilities.h"
+#include "stringutils.h"
 #include <stdlib.h>
-#include <string.h>
 #include <stdio.h>
 
 // Make sure the output buffer is large enough for the screen output + maximum length of control characters
@@ -49,10 +49,13 @@ void FrameBuffer_resize(FrameBuffer *fb, const size_t newHeight, const size_t ne
 }
 
 void FrameBuffer_clear(FrameBuffer *fb) {
-	memset(fb->contents, BLANK, fb->width * fb->height * sizeof(char));
-	memset(fb->fgColors, TRANSPARENT, fb->width * fb->height * sizeof(Color));
-	memset(fb->bgColors, TRANSPARENT, fb->width * fb->height * sizeof(Color));
-	memset(fb->inputPrompt, 0, fb->width * sizeof(char));
+	size_t i;
+	for (i = 0; i < fb->width * fb->height; i++) {
+		fb->contents[i] = BLANK;
+		fb->fgColors[i] = TRANSPARENT;
+		fb->bgColors[i] = TRANSPARENT;
+	}
+	for (i = 0; i < fb->width; i++) fb->inputPrompt[i] = 0;
 }
 
 void FrameBuffer_drawPoint(FrameBuffer *fb, Point p, const char content, const Color fgColor, const Color bgColor) {
@@ -65,7 +68,7 @@ void FrameBuffer_drawPoint(FrameBuffer *fb, Point p, const char content, const C
 
 void FrameBuffer_drawTextBox(FrameBuffer *fb, const Point topLeft, const Point bottomRight, const char *str, const Color fgColor, const Color bgColor) {
 	int r, c;
-	size_t slen = strlen(str);
+	size_t slen = StringUtils_strlen(str);
 	size_t it = 0;
 	bool done = false;
 	for (r = topLeft.r; r <= bottomRight.r && !done; r++) {
@@ -103,14 +106,14 @@ void FrameBuffer_drawRectangle(FrameBuffer *fb, Point topLeft, Point bottomRight
 
 void FrameBuffer_setInputPrompt(FrameBuffer *fb, const char *str) {
 	if (fb->width >= 2) {
-		strncpy(fb->inputPrompt, str, fb->width - 2);
+		StringUtils_strncpy(fb->inputPrompt, str, fb->width - 2);
 		fb->inputPrompt[fb->width-1] = 0;
 	}
 }
 
 void appendBuffer(char *buf, size_t *pos, const char *str) {
 	sprintf(buf + *pos, "%s", str);
-	*pos += strlen(str);
+	*pos += StringUtils_strlen(str);
 }
 
 void appendBufferChar(char *buf, size_t *pos, const char c) {

@@ -1,7 +1,16 @@
 #include "stringutils.h"
-#include <ctype.h>
+#include "boolean.h"
 #include <stdlib.h>
-#include <string.h>
+
+int tolower(int c) {
+	if (c >= 'A' && c <= 'Z') c = c - 'A' + 'a';
+	return c;
+}
+
+int toupper(int c) {
+	if (c >= 'a' && c <= 'z') c = c - 'a' + 'A';
+	return c;
+}
 
 /* Read string from the input file from the current position until the delimiter character.
    The resulting string is dynamically allocated. Returns null on allocation failure. */
@@ -36,25 +45,55 @@ char* StringUtils_scan(FILE *fin, const char delim) {
 /* Returns a pointer to a clone of string str
    The resulting string is dynamically allocated. Returns null on allocation failure. */
 char* StringUtils_clone(const char *str) {
-	char *res = malloc(sizeof(char) * (strlen(str) + 1));
-	if (res) strcpy(res, str);
+	char *res = malloc(sizeof(char) * (StringUtils_strlen(str) + 1));
+	if (res) StringUtils_strcpy(res, str);
 	return res;
 }
 
 /* Creates a new string containing the concatenation of str1 and str2. Returns null on allocation failure. */
 char* StringUtils_concat(const char *str1, const char *str2) {
-	size_t slen1 = strlen(str1);
-	size_t slen2 = strlen(str2);
+	size_t slen1 = StringUtils_strlen(str1);
+	size_t slen2 = StringUtils_strlen(str2);
 	char *res = malloc(sizeof(char) * (slen1 + slen2 + 1));
 	if (res) {
-		strcpy(res, str2);
-		strcpy(res + slen1, str2);
+		StringUtils_strcpy(res, str2);
+		StringUtils_strcpy(res + slen1, str2);
 	}
 	return res;
 }
 
 void StringUtils_deallocate(char *str) {
 	free(str);
+}
+
+size_t StringUtils_strlen(const char *str) {
+	size_t len = 0;
+	while (str[len] != 0) len++;
+	return len;
+}
+
+char* StringUtils_strcpy(char *destination, const char *source) {
+	size_t i = 0;
+	while (source[i] != 0) {
+		destination[i] = source[i];
+		i++;
+	}
+	destination[i] = 0;
+	return destination;
+}
+
+char* StringUtils_strncpy(char *destination, const char *source, size_t num) {
+	size_t i;
+	bool sourceEnd = false;
+	for (i = 0; i < num; i++) {
+		if (source[i] == 0) sourceEnd = true;
+		if (sourceEnd) {
+			destination[i] = 0;
+		} else {
+			destination[i] = source[i];
+		}
+	}
+	return destination;
 }
 
 /* Case-insensitive string comparison,
