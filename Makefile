@@ -4,10 +4,12 @@ LDFLAGS=-g -lm
 
 SOURCES=$(wildcard ./src/*.c)
 OBJECTS=$(SOURCES:.c=.o)
+MAIN=./src/main.c
+TESTMAIN=./test/main.c
 EXECUTABLE=./bin/brightsouls
 
 TESTS=$(wildcard ./test/*.c)
-TESTOBJECTS=$($(TESTS:.c=.o):/test/=/src/) $(TESTS:.c=.o)
+TESTOBJECTS=$(filter-out $(MAIN:.c=.o), $(OBJECTS)) $(TESTS:.c=.o)
 TESTEXECUTABLE=./bin/test
 
 .PHONY: all bin test clean
