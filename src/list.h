@@ -16,6 +16,7 @@ typedef struct ListNode {
 #define ListNode_next(nodePointer) ((nodePointer)->next)
 #define ListNode_prev(nodePointer) ((nodePointer)->prev)
 #define ListNode_valuePointer(nodePointer) ((nodePointer)->valuePointer)
+#define ListNode_value(nodePointer, type) (*((type*) ListNode_valuePointer(nodePointer)))
 
 /* These can't be used internally since it uses the LIST(T) anonymous struct type */
 #define List_first(listPointer) ((listPointer)->head)
