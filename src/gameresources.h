@@ -6,8 +6,7 @@
 typedef struct {
 	EnemyType *enemyTypes;
 	PowerUpType *powerUpTypes;
-	Skill *skills;
-	Skill rootSkill;
+	SkillTree skillTree;
 	Area *areas;
 } GameResources;
 

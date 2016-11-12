@@ -31,7 +31,7 @@ int main () {
 
 		// Show main menu
 		MainMenu_show(isGameRunning, &config);
-		input = StringUtils_scan(stdin, '\n');
+		input = StringUtils_scan(stdin, "\n");
 		MainMenu_processInput(&gameState, &isGameRunning, &exitGame, input);
 
 		// Game loop
@@ -42,7 +42,7 @@ int main () {
 			
 			// Input
 			if (gameState.requestInput) {
-				input = StringUtils_scan(stdin, '\n');
+				input = StringUtils_scan(stdin, "\n");
 			} else {
 				gameState.requestInput = true; // Prevent infinite loops, have to explicitly state to bypass input
 			}

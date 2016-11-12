@@ -1,24 +1,25 @@
 #ifndef SKILLTREE_H
 #define SKILLTREE_H
 
-#include <stdio.h>
-#include "boolean.h"
+#include "array.h"
 
 typedef struct {
-	int skillId;
 	char *skillName;
 	char *skillDescription;
 	int requiredLevel;
 
-	int *childSkills;
+	int parent;
+	ARRAY(int) children;
 	size_t leafCount;
 	int depth;
 } Skill;
 
-void SkillTree_load(Skill *skillTree, FILE *fin);
+typedef ARRAY(Skill) SkillTree;
 
-void SkillTree_save(const Skill *skillTree, FILE *fout);
+void SkillTree_load(SkillTree *skillTree, FILE *fin);
 
-void SkillTree_deallocate(Skill *skillTree);
+int SkillTree_searchIndex(SkillTree *skillTree, const char *skillName);
+
+void SkillTree_deallocate(SkillTree *skillTree);
 
 #endif

@@ -4,6 +4,7 @@
 
 void testArray();
 void testList();
+void testSkillTree();
 
 int main () {
 
@@ -12,6 +13,7 @@ int main () {
 
 	testArray();
 	testList();
+	testSkillTree();
 
 	printf("Tests completed.\n\n");
 	return 0;

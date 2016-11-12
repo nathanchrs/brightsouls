@@ -12,26 +12,38 @@ int toupper(int c) {
 	return c;
 }
 
-/* Read string from the input file from the current position until the delimiter character.
+/* Read string from the input file from the current position until the delimiter character(s)
+   (each character in the delimiter parameter is treated as a separate delimiter).
    The resulting string is dynamically allocated. Returns null on allocation failure. */
-char* StringUtils_scan(FILE *fin, const char delim) {
+char* StringUtils_scan(FILE *fin, const char *delim) {
 	char inp;
+	size_t delimLen = StringUtils_strlen(delim);
 	size_t len = 0;
 	size_t capacity = STRING_ALLOC_BLOCK_SIZE;
 	char *str = malloc(sizeof(char)*capacity);
 	if (!str) return str;
 
-	while (1) {
+	bool stop = false;
+	while (!stop) {
 		inp = fgetc(fin);
-		if (inp == EOF || inp == delim) break;
-		str[len] = inp;
-		len++;
 
-		// Resize if actual length + 1 exceeds capacity
-		if (len == capacity) {
-			str = realloc(str, sizeof(char) * (capacity + STRING_ALLOC_BLOCK_SIZE));
-			if (!str) return str;
-			capacity += STRING_ALLOC_BLOCK_SIZE;
+		if (inp == EOF) stop = true;
+		int i = 0;
+		while(i < delimLen && !stop) {
+			if (inp == delim[i]) stop = true;
+			i++;
+		}
+
+		if (!stop) {
+			str[len] = inp;
+			len++;
+
+			// Resize if actual length + 1 exceeds capacity
+			if (len == capacity) {
+				str = realloc(str, sizeof(char) * (capacity + STRING_ALLOC_BLOCK_SIZE));
+				if (!str) return str;
+				capacity += STRING_ALLOC_BLOCK_SIZE;
+			}
 		}
 	}
 
@@ -40,6 +52,32 @@ char* StringUtils_scan(FILE *fin, const char delim) {
 
 	// Resize to exact string length, then return
 	return realloc(str, sizeof(char) * (len + 1));
+}
+
+void StringUtils_discardCharacters(FILE *fin, const char *discard) {
+	char c;
+	size_t discardLen = StringUtils_strlen(discard);
+	bool stop = false;
+	while(!stop) {
+		c = fgetc(fin);
+		if (c == EOF) {
+			stop = true;
+		} else {
+			int i = 0;
+			bool found = false;
+			while(i < discardLen && !found) {
+				if (c == discard[i]) {
+					found = true;
+				} else {
+					i++;
+				}
+			}
+			if (!found) {
+				stop = true;
+				ungetc(c, fin);
+			}
+		}
+	}
 }
 
 /* Returns a pointer to a clone of string str
