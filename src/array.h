@@ -21,8 +21,8 @@ void Array_resize_impl(void **items, size_t *length, size_t *capacity, const siz
 } while (0)
 void Array_pushBack_impl(void **items, size_t *length, size_t *capacity, const size_t *itemSize, const void *buffer);
 
-#define Array_popBack(arrayPointer) Array_popBack_impl((arrayPointer)->length)
-void Array_popBack_impl(size_t *length);
+#define Array_popBack(arrayPointer, valuePointer) Array_popBack_impl((void**) &((arrayPointer)->items), &((arrayPointer)->length), &((arrayPointer)->capacity), &((arrayPointer)->itemSize), (void *) (valuePointer))
+void Array_popBack_impl(void **items, size_t *length, size_t *capacity, const size_t *itemSize, void *valuePointer);
 
 #define Array_deallocate(arrayPointer) Array_deallocate_impl((void*) (arrayPointer)->items, &((arrayPointer)->length), &((arrayPointer)->capacity))
 void Array_deallocate_impl(void *items, size_t *length, size_t *capacity);

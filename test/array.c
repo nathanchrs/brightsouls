@@ -6,7 +6,7 @@ void testArray() {
 
 	printf("  Testing Array...\n");
 
-	int i;
+	int i, elmt;
 
 	ARRAY(int) intArray;
 	Array_allocate(&intArray, 5);
@@ -19,7 +19,15 @@ void testArray() {
 	assert(intArray.length == 10);
 	assert(intArray.capacity >= intArray.length);
 	for (i = 0; i < 10; i++) assert(intArray.items[i] == i);
-	
+
+	Array_popBack(&intArray, &elmt);
+	assert(elmt == 9);
+	assert(intArray.length == 9);
+
+	Array_popBack(&intArray, &elmt);
+	assert(elmt == 8);
+	assert(intArray.length == 8);
+
 	Array_resize(&intArray, 3);
 	assert(intArray.capacity == 3);
 	assert(intArray.length == 3);
