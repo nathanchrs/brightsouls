@@ -3,6 +3,7 @@
 #include "../src/boolean.h"
 
 void testArray();
+void testList();
 
 int main () {
 
@@ -10,6 +11,7 @@ int main () {
 	printf("Starting tests...\n");
 
 	testArray();
+	testList();
 
 	printf("Tests completed.\n\n");
 	return 0;

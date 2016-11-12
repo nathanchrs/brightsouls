@@ -1,5 +1,5 @@
 CC=gcc
-CFLAGS=-c -Wall
+CFLAGS=-c -Wall -g
 LDFLAGS=-g -lm
 
 SOURCES=$(wildcard ./src/*.c)
