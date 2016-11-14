@@ -1,22 +1,16 @@
 #include "battle.h"
 #include "stdlib.h"
 #include "stringutils.h"
+
 /*
 typedef struct {
-	int enemyId;
-	char *enemyName;
-	char enemyType; //n : Normal, b : Boss
+	Enemy enemy;
+	Player player;
 
-	int enemyHp;
-	int enemyStr;
-	int enemyDef;
-	int enemyExp;
-
-	Stack moveList;
-	int moveCount; //n : 10, b : 20
-	char enemyMovelist[20][4];
+	int round;
 } Battle;
 */
+
 void Battle_load(Battle *battle, FILE *fin)
 {
 
@@ -32,38 +26,47 @@ void Battle_deallocate(Battle *battle)
 
 }
 
-void Battle_loadEnemy(Battle *battle, int eId)
+void Battle_init(Battle *battle, int eId)
 {
-	battle->enemyId = eId;
-	battle_loadEnemyStat(battle);
-	Battle_loadEnemyMove(battle);
+	// Load enemy data
+	Enemy_load(&(battle->enemy), eId);
+	Battle_randMovelist(&(battle->enemy));
+	// Load player data
+
 }
 
-void Battle_loadEnemyStat(Battle *battle)
-{
-	
-}
-
-void Battle_loadEnemyMove(Battle *battle)
+void Battle_randMovelist(Enemy *enemy)
 {
 	srand(time(NULL));
 	int i, j;
-	int moveCount = battle->moveCount;
-	char moveList[4];
-	CreateEmpty(&(battle->moveList));
+	int moveCount = enemy->moveCount;
+	Queue actions;
+	Queue_CreateEmpty(&actions);
 
-	// TODO : Randomize moveList, maybe using List -> pop
+	// TODO : Randomize which move list to pop
 	for (i=moveCount; i>0; i--)
 	{
-		//int loadMove = rand() % i;
+		//Take out a random move list
+		int loadMove = rand() % i;
+		if (loadMove == 0)
+			DelVFirst(&(enemy->moveList), &actions);
+		else
+		{
+			address P = First(enemy->moveList);
+			address Pt;
+			for (j=0; j<loadMove-1; j++)
+			{
+				P = Next(P);
+			}
+			// Delete Next(P)
+			DelAfter(&(enemy->moveList), &Pt, P);
+			actions = Info(Pt);
+		}
+		// actions = popped queue
+
+		//Randomize actions and hide 2 of them
 		int hideMove = rand() % 6;
 		int hm1, hm2;
-
-		for (j=0; j<4; j++)
-		{
-			//moveList[j] = battle->enemyMovelist[loadMove][j];
-			moveList[j] = battle->enemyMovelist[i][j];
-		}
 
 		switch(hideMove)
 		{
@@ -86,15 +89,110 @@ void Battle_loadEnemyMove(Battle *battle)
 				hm1 = 2;
 				hm2 = 3;
 		}
-		moveList[hm1] = (char) tolower((int) moveList[hm1]);
-		moveList[hm2] = (char) tolower((int) moveList[hm2]);
 
-		char *pushMove = "";
 		for (j=0; j<4; j++)
 		{
-			pushMove += moveList[j];
+			if ((j == hm1) || (j == hm2))
+			{
+				char c;
+				Queue_Del(&actions, &c);
+				c = (char) tolower((int) c);
+				Queue_Add(&actions, c);
+			}
 		}
 
-		Push(&(battle->moveList), pushMove);
+		//Push back the move list that was taken out
+		InsVLast(&(enemy->moveList), actions);
 	}
+}
+
+void Battle_calcAction(char playerAction, char enemyAction, Enemy *enemy, Player *player)
+{
+	// Calculate damage
+	/*
+		a = Attack
+		b = Block
+		f = Flank
+
+		a > f
+		f > b
+		b > a
+
+		Same action :
+			Attack/Flank :
+			PlayerDmg = EnemyStr - PlayerDef
+			EnemyDmg = PlayerStr - EnemeyDef
+			Block :
+			PlayerDmg = EnemyDmg = 0
+		Win action :
+			Attack/Flank :
+			WinnerDmg = 0
+			LoserDmg = WinnerStr
+			Block :
+			WinnerDmg = 0
+			LoserDmg = WinnerDef - LoserDef
+		
+		Minimum damage = 0
+	*/
+	int playerDmg, enemyDmg;
+
+	if ((playerAction == 'a') && (enemyAction == 'a'))
+	{
+		playerDmg = (enemy->str) - (player->def);
+		enemyDmg = (player->str) - (enemy->def);
+	}
+	else if ((playerAction == 'a') && (enemyAction == 'b'))
+	{
+		playerDmg = (enemy->def) - (player->def);
+		enemyDmg = 0;
+	}
+	else if ((playerAction == 'a') && (enemyAction == 'f'))
+	{
+		playerDmg = 0;
+		enemyDmg = (player->str);
+	}
+	else if ((playerAction == 'b') && (enemyAction == 'a'))
+	{
+		playerDmg = 0;
+		enemyDmg = (player->def) - (enemy->def);
+	}
+	else if ((playerAction == 'b') && (enemyAction == 'b'))
+	{
+		playerDmg = 0;
+		enemyDmg = 0;
+	}
+	else if ((playerAction == 'b') && (enemyAction == 'f'))
+	{
+		playerDmg = (enemy->str);
+		enemyDmg = 0;
+	}
+	else if ((playerAction == 'f') && (enemyAction == 'a'))
+	{
+		playerDmg = (enemy->str);
+		enemyDmg = 0;
+	}
+	else if ((playerAction == 'f') && (enemyAction == 'b'))
+	{
+		playerDmg = 0;
+		enemyDmg = (player->str);
+	}
+	else if ((playerAction == 'f') && (enemyAction == 'f'))
+	{
+		playerDmg = (enemy->str) - (player->def);
+		enemyDmg = (player->str) - (enemy->def);
+	}
+
+	if (playerDmg < 0)
+		playerDmg = 0;
+	if (enemyDmg < 0)
+		enemyDmg = 0;
+
+	// Reduce hp, minimum hp is 0 (Dead)
+	player->hp -= playerDmg;
+	enemy->hp -= enemyDmg;
+
+	if ((player->hp) < 0)
+		(player->hp) = 0;
+	if ((enemy->hp) < 0)
+		(enemy->hp) = 0;
 }
