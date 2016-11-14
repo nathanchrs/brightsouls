@@ -38,14 +38,18 @@ void SkillTree_load(SkillTree *skillTree, FILE *fin) {
 		fscanf(fin, "%d", &(skillTree->items[i].requiredLevel));
 		Array_allocate(&(skillTree->items[i].children), 2);
 
+		skillTree->items[i].depth = 0;
+
 		// the first node is assumed to be root and don't have parent info
 		if (i > 0) {
 			fscanf(fin, "%d", &(skillTree->items[i].parent));
-		}		
+		} else {
+			skillTree->items[i].parent = SKILLTREE_NO_PARENT;
+		}
 	}
 
 	for (i = 1; i < n; i++) {
-		if (skillTree->items[i].parent >= 0 && skillTree->items[i].parent < skillTree->length) {
+		if (skillTree->items[i].parent != SKILLTREE_NO_PARENT && skillTree->items[i].parent < skillTree->length) {
 			Array_pushBack(&(skillTree->items[skillTree->items[i].parent].children), i);
 		}
 	}

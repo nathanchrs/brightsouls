@@ -6,7 +6,7 @@
 
 void MainMenu_showSplashScreen(const Config *config) {
 
-	FrameBuffer fb = FrameBuffer_allocate(config->frameBufferHeight, config->frameBufferWidth);
+	FrameBuffer fb = FrameBuffer_allocate(config->frameBufferHeight, config->frameBufferWidth, config->useColor);
 	FrameBuffer_clear(&fb);
 
 	FrameBuffer_drawRectangle(&fb, Point_make(0, 0), Point_make(27, 99), 'x', GRAY, WHITE, WHITE);
@@ -25,7 +25,7 @@ void MainMenu_showSplashScreen(const Config *config) {
 
 /* Tampilkan main menu di layar: resume game (jika isGameRunning false), new game, load game, save game, exit */
 void MainMenu_show(const bool isGameRunning, const Config *config) {
-	FrameBuffer fb = FrameBuffer_allocate(config->frameBufferHeight, config->frameBufferWidth);
+	FrameBuffer fb = FrameBuffer_allocate(config->frameBufferHeight, config->frameBufferWidth, config->useColor);
 	FrameBuffer_clear(&fb);
 
 	FrameBuffer_drawRectangle(&fb, Point_make(0, 0), Point_make(27, 99), 'x', GRAY, WHITE, WHITE);
@@ -49,7 +49,8 @@ void MainMenu_processInput(GameState *gameState, bool *isGameRunning, bool *exit
 		*isGameRunning = false;
 		*exitGame = true;
 		
-	} else {
-
+	} else if (StringUtils_strcmpi(input, "START") == 0) {
+		*isGameRunning = true;
+		*exitGame = false;
 	}
 }

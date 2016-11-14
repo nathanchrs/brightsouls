@@ -7,7 +7,7 @@
 // Make sure the output buffer is large enough for the screen output + maximum length of control characters
 #define OUTPUT_BUFFER_RATIO 20
 
-FrameBuffer FrameBuffer_allocate(const size_t height, const size_t width) {
+FrameBuffer FrameBuffer_allocate(const size_t height, const size_t width, bool supportsColor) {
 	FrameBuffer fb;
 	fb.contents = malloc(width * height * sizeof(char));
 	fb.fgColors = malloc(width * height * sizeof(Color));
@@ -21,6 +21,7 @@ FrameBuffer FrameBuffer_allocate(const size_t height, const size_t width) {
 		FrameBuffer_deallocate(&fb);
 		fb.width = fb.height = 0;
 	}
+	fb.supportsColor = supportsColor;
 	return fb;
 }
 
@@ -64,6 +65,20 @@ void FrameBuffer_drawPoint(FrameBuffer *fb, Point p, const char content, const C
 		fb->fgColors[p.r*fb->width + p.c] = fgColor;
 		fb->bgColors[p.r*fb->width + p.c] = bgColor;
 	}
+}
+
+void FrameBuffer_drawHorizontalLine(FrameBuffer *fb, const Point p1, const Point p2, const char content, const Color fgColor, const Color bgColor) {
+	int i1 = p1.c < p2.c ? p1.c : p2.c;
+	int i2 = p1.c < p2.c ? p2.c : p1.c;
+	int i;
+	for (i = i1; i <= i2; i++) FrameBuffer_drawPoint(fb, Point_make(p1.r, i), content, fgColor, bgColor);
+}
+
+void FrameBuffer_drawVerticalLine(FrameBuffer *fb, const Point p1, const Point p2, const char content, const Color fgColor, const Color bgColor) {
+	int i1 = p1.r < p2.r ? p1.r : p2.r;
+	int i2 = p1.r < p2.r ? p2.r : p1.r;
+	int i;
+	for (i = i1; i <= i2; i++) FrameBuffer_drawPoint(fb, Point_make(i, p1.c), content, fgColor, bgColor);
 }
 
 void FrameBuffer_drawTextBox(FrameBuffer *fb, const Point topLeft, const Point bottomRight, const char *str, const Color fgColor, const Color bgColor) {
@@ -121,7 +136,8 @@ void appendBufferChar(char *buf, size_t *pos, const char c) {
 	(*pos)++;
 }
 
-void FrameBuffer_output(FrameBuffer *fb, const bool useColor) {
+void FrameBuffer_output(FrameBuffer *fb, bool useColor) {
+	useColor =  fb->supportsColor && useColor;
 	clearScreen();
 	int r, c;
 	size_t it = 0;

@@ -1,14 +1,18 @@
 #include "boolean.h"
 #include "gamestate.h"
-// #include "gameresources.h"
+#include "gameresources.h"
 #include "mainmenu.h"
 #include "stringutils.h"
 #include "config.h"
-// #include "renderer.h"
+#include "framebuffer.h"
+#include "renderer.h"
 // #include "core.h"
+// 
+#include "utilities.h"
+#include "skilltree.h"
 
 GameState gameState;
-// GameResources gameResources;
+GameResources gameResources;
 bool isGameRunning, exitGame;
 
 int main () {
@@ -23,6 +27,10 @@ int main () {
 
 	// Load resources to memory
 	// GameResources_load(&gameResources, "resources.txt");
+	
+	// DEBUG
+	FILE *fin = fopen("./test/skilltree2.in", "r");
+	SkillTree_load(&(gameResources.skillTree), fin);
 
 	char *input;
 	isGameRunning = false;
@@ -35,10 +43,11 @@ int main () {
 		MainMenu_processInput(&gameState, &isGameRunning, &exitGame, input);
 
 		// Game loop
+		FrameBuffer frameBuffer = FrameBuffer_allocate(config.frameBufferHeight, config.frameBufferWidth, config.useColor);
 		while (isGameRunning) {
 
 			// Render
-			// Renderer_render(&gameState, &gameResources, &config);
+			Renderer_render(&frameBuffer, &gameState, &gameResources);
 			
 			// Input
 			if (gameState.requestInput) {
@@ -47,9 +56,13 @@ int main () {
 				gameState.requestInput = true; // Prevent infinite loops, have to explicitly state to bypass input
 			}
 			
+			// DEBUG
+			delay(1.0);
+
 			// Process
 			// Core_process(&gameState, &gameResources, input);
 		}
+		FrameBuffer_deallocate(&frameBuffer);
 
 	} while (!exitGame);
 

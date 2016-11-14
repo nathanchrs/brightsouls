@@ -3,6 +3,8 @@
 
 #include "array.h"
 
+#define SKILLTREE_NO_PARENT -1
+
 typedef struct {
 	char *skillName;
 	char *skillDescription;

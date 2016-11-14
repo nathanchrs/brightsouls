@@ -6,10 +6,12 @@ void testArray();
 void testList();
 void testSkillTree();
 
-int main () {
+int main (int argc, char *argv[]) {
 
 	printf("\nBRIGHTSOULS - UNIT TESTS\n===========\n");
 	printf("Starting tests...\n");
+
+	printf("%s\n", argv[0]);
 
 	testArray();
 	testList();
