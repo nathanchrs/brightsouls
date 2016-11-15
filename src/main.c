@@ -14,8 +14,8 @@ bool isGameRunning, exitGame;
 int main () {
 
 	Config config;
-	config.frameBufferHeight = 38;
-	config.frameBufferWidth = 150;
+	config.frameBufferHeight = 25;
+	config.frameBufferWidth = 120;
 	config.useColor = true;
 
 	// Show splash screen
