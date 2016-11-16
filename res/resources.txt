@@ -1,0 +1,21 @@
+5
+
+Nama skill 1
+Ini deskripsi skill 1
+11
+
+Nama skill 2
+Ini deskripsi skill yang kedua
+22 0
+
+Nama skill tiga
+Ini deskripsi skill ke-3
+33 0
+
+Nama skill empat
+Ini deskripsi skill ke4
+44 1
+
+Nama skill 5
+Ini deskripsi skill ke-5
+55 1
