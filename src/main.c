@@ -6,31 +6,31 @@
 #include "config.h"
 #include "framebuffer.h"
 #include "renderer.h"
-// #include "core.h"
-// 
 #include "utilities.h"
-#include "skilltree.h"
+// #include "core.h"
 
 GameState gameState;
 GameResources gameResources;
 bool isGameRunning, exitGame;
 
-int main () {
+int main (int argc, char *argv[]) {
 
 	Config config;
-	config.frameBufferHeight = 28;
-	config.frameBufferWidth = 100;
+	config.frameBufferHeight = 30;
+	config.frameBufferWidth = 120;
 	config.useColor = true;
 
 	// Show splash screen
 	MainMenu_showSplashScreen(&config);
 
 	// Load resources to memory
-	// GameResources_load(&gameResources, "resources.txt");
-	
+	char *executableDirectory = getExecutableDirectory(argv[0]);
+	char *resourcePath = StringUtils_concat(executableDirectory, "../res/resources.txt");
+	GameResources_load(&gameResources, resourcePath);
+
 	// DEBUG
-	FILE *fin = fopen("./test/skilltree2.in", "r");
-	SkillTree_load(&(gameResources.skillTree), fin);
+	char *initialSavePath =  StringUtils_concat(executableDirectory, "../res/initialsave.txt");
+	GameState_load(&gameState, initialSavePath);
 
 	char *input;
 	isGameRunning = false;
@@ -55,9 +55,6 @@ int main () {
 			} else {
 				gameState.requestInput = true; // Prevent infinite loops, have to explicitly state to bypass input
 			}
-			
-			// DEBUG
-			delay(1.0);
 
 			// Process
 			// Core_process(&gameState, &gameResources, input);
@@ -67,9 +64,12 @@ int main () {
 	} while (!exitGame);
 
 	// Prepare to exit - clean up memory
-	// GameState_deallocate(&gameState);
-	// GameResources_deallocate(&gameResources);
+	GameState_deallocate(&gameState);
+	GameResources_deallocate(&gameResources);
 	StringUtils_deallocate(input);
+	StringUtils_deallocate(executableDirectory);
+	StringUtils_deallocate(resourcePath);
+	StringUtils_deallocate(initialSavePath);
 	
 	return 0;	
 }

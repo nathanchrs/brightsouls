@@ -17,6 +17,8 @@ int toupper(int c);
    The resulting string is dynamically allocated. Returns null on allocation failure. */
 char* StringUtils_scan(FILE *fin, const char *delim);
 
+char* StringUtils_scanFromString(const char *strin, const char *delim, int *nextIdx);
+
 /* Discard characters from input file until the next character is not in the discard string or EOF has been reached. */
 void StringUtils_discardCharacters(FILE *fin, const char *discard);
 

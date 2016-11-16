@@ -13,4 +13,6 @@
 
 	void copyRawBytes(void *dest, const void *src, size_t n);
 
+	char *getExecutableDirectory(const char *executablePath);
+
 #endif

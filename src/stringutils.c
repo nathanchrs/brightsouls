@@ -54,6 +54,62 @@ char* StringUtils_scan(FILE *fin, const char *delim) {
 	return realloc(str, sizeof(char) * (len + 1));
 }
 
+/* Read string from another string until the delimiter character(s)
+   (each character in the delimiter parameter is treated as a separate delimiter).
+   The resulting string is dynamically allocated. Returns null on allocation failure.
+   nextIdx will be filled with the index of the next non-delimiter character, if the string ends, then -1. */
+char* StringUtils_scanFromString(const char *strin, const char *delim, int *nextIdx) {
+	char inp;
+	int idx = 0;
+	size_t delimLen = StringUtils_strlen(delim);
+	size_t len = 0;
+	size_t capacity = STRING_ALLOC_BLOCK_SIZE;
+	char *str = malloc(sizeof(char)*capacity);
+	if (!str) return str;
+
+	bool stop = false;
+	while (!stop) {
+		inp = strin[idx];
+
+		if (inp == 0) stop = true;
+		int i = 0;
+		while(i < delimLen && !stop) {
+			if (inp == delim[i]) stop = true;
+			i++;
+		}
+
+		if (!stop) {
+			str[len] = inp;
+			len++;
+
+			// Resize if actual length + 1 exceeds capacity
+			if (len == capacity) {
+				str = realloc(str, sizeof(char) * (capacity + STRING_ALLOC_BLOCK_SIZE));
+				if (!str) return str;
+				capacity += STRING_ALLOC_BLOCK_SIZE;
+			}
+		} else {
+			bool found = true;
+			while (found) {
+				i = 0;
+				found = strin[idx] == 0;
+				while(i < delimLen && !found) {
+					if (strin[idx] == delim[i]) found = true;
+					i++;
+				}
+				idx++;
+			}
+			*nextIdx = strin[idx] == 0 ? -1 : idx;
+		}
+	}
+
+	// Set ending null character
+	str[len] = 0;
+
+	// Resize to exact string length, then return
+	return realloc(str, sizeof(char) * (len + 1));
+}
+
 void StringUtils_discardCharacters(FILE *fin, const char *discard) {
 	char c;
 	size_t discardLen = StringUtils_strlen(discard);
@@ -94,7 +150,7 @@ char* StringUtils_concat(const char *str1, const char *str2) {
 	size_t slen2 = StringUtils_strlen(str2);
 	char *res = malloc(sizeof(char) * (slen1 + slen2 + 1));
 	if (res) {
-		StringUtils_strcpy(res, str2);
+		StringUtils_strcpy(res, str1);
 		StringUtils_strcpy(res + slen1, str2);
 	}
 	return res;

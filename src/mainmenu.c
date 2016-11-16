@@ -16,9 +16,9 @@ void MainMenu_showSplashScreen(const Config *config) {
 	FrameBuffer_setInputPrompt(&fb, "Splash screen ");
 
 	FrameBuffer_output(&fb, false);
-	delay(2.0);
+	//delay(2.0);
 	FrameBuffer_output(&fb, config->useColor);
-	delay(2.0);
+	delay(1.0);
 
 	FrameBuffer_deallocate(&fb);
 }

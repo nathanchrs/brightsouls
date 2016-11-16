@@ -1,7 +1,5 @@
 #include "stringutils.h"
 #include "skilltree.h"
-#include "boolean.h"
-#include <stdio.h>
 
 int SkillTree_calculateTreeInfo_impl(SkillTree *skillTree, int pos, int depth) {
 	int i;
@@ -58,7 +56,7 @@ void SkillTree_load(SkillTree *skillTree, FILE *fin) {
 	SkillTree_calculateTreeInfo(skillTree);
 }
 
-int SkillTree_getSkillIndex(SkillTree *skillTree, const char *skillName) {
+int SkillTree_getSkillIndex(const SkillTree *skillTree, const char *skillName) {
 	int i = 0;
 	bool found = false;
 	while (i < skillTree->length && !found) {
@@ -68,7 +66,28 @@ int SkillTree_getSkillIndex(SkillTree *skillTree, const char *skillName) {
 			i++;
 		}
 	}
-	return i;
+	return found ? i : -1;
+}
+
+bool SkillTree_isSkillUnlocked(const SkillTree *skillTree, const GameState *gameState, const char *skillName) {
+	int idx = SkillTree_getSkillIndex(skillTree, skillName);
+	if (idx >= 0 && idx < gameState->isSkillUnlocked.length) {
+		return gameState->isSkillUnlocked.items[idx];	
+	} else {
+		return false;
+	}
+}
+
+bool SkillTree_unlockSkill(const SkillTree *skillTree, const GameState *gameState, const char *skillName) {
+	int idx = SkillTree_getSkillIndex(skillTree, skillName);
+	if (idx >= 0 && idx < gameState->isSkillUnlocked.length) {
+		int parent = skillTree->items[idx].parent;
+		if (parent >= 0 && parent < gameState->isSkillUnlocked.length && gameState->isSkillUnlocked.items[parent]) {
+			gameState->isSkillUnlocked.items[idx] = true;
+			return true;
+		}
+	}
+	return false;
 }
 
 void SkillTree_deallocate(SkillTree *skillTree) {

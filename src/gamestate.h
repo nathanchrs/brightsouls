@@ -2,7 +2,7 @@
 #define GAMESTATE_H
 
 #include "boolean.h"
-#include <stdio.h>
+#include "array.h"
 
 typedef enum {
 	EXPLORATION, BATTLE, CUTSCENE, SKILLTREE, GAMEOVER, CREDITS
@@ -21,8 +21,9 @@ typedef struct {
 
 	AreaMap areaMap;
 	Battle currentBattle;
-	bool *isSkillActive;
 */
+	ARRAY(bool) isSkillUnlocked;
+	
 } GameState;
 
 void GameState_load(GameState *gameState, const char *filePath);
