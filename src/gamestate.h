@@ -13,6 +13,8 @@ typedef struct {
 
 	bool requestInput;
 	GamePhase currentPhase;
+	char *message;
+	
 /*
 	Player player;
 
@@ -26,7 +28,7 @@ typedef struct {
 	
 } GameState;
 
-void GameState_load(GameState *gameState, const char *filePath);
+bool GameState_load(GameState *gameState, const char *filePath);
 
 void GameState_save(const GameState *gameState, const char *filePath);
 

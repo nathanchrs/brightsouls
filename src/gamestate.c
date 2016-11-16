@@ -2,8 +2,9 @@
 #include "stringutils.h"
 #include <stdio.h>
 
-void GameState_load(GameState *gameState, const char *filePath) {
+bool GameState_load(GameState *gameState, const char *filePath) {
 	FILE *fin = fopen(filePath, "r");
+	if (!fin) return false;
 	int i;
 
 	// Load isSkillUnlocked from string of 0's and 1's
@@ -18,8 +19,10 @@ void GameState_load(GameState *gameState, const char *filePath) {
 
 	StringUtils_deallocate(isSkillUnlockedInput);
 	fclose(fin);
+	return true;
 }
 
 void GameState_deallocate(GameState *gameState) {
+	StringUtils_deallocate(gameState->message);
 	Array_deallocate(&(gameState->isSkillUnlocked));
 }

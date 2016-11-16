@@ -83,6 +83,9 @@ bool SkillTree_unlockSkill(const SkillTree *skillTree, const GameState *gameStat
 	if (idx >= 0 && idx < gameState->isSkillUnlocked.length) {
 		int parent = skillTree->items[idx].parent;
 		if (parent >= 0 && parent < gameState->isSkillUnlocked.length && gameState->isSkillUnlocked.items[parent]) {
+
+			// TODO: check and deduct skill points
+
 			gameState->isSkillUnlocked.items[idx] = true;
 			return true;
 		}

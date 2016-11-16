@@ -7,11 +7,13 @@
 #include "framebuffer.h"
 #include "renderer.h"
 #include "utilities.h"
-// #include "core.h"
+#include "core.h"
+#include <stdio.h>
 
 GameState gameState;
 GameResources gameResources;
 bool isGameRunning, exitGame;
+bool fileRead;
 
 int main (int argc, char *argv[]) {
 
@@ -20,17 +22,26 @@ int main (int argc, char *argv[]) {
 	config.frameBufferWidth = 120;
 	config.useColor = true;
 
-	// Show splash screen
-	MainMenu_showSplashScreen(&config);
-
 	// Load resources to memory
 	char *executableDirectory = getExecutableDirectory(argv[0]);
 	char *resourcePath = StringUtils_concat(executableDirectory, "../res/resources.txt");
-	GameResources_load(&gameResources, resourcePath);
+	fileRead = GameResources_load(&gameResources, resourcePath);
+	if (!fileRead) {
+		fprintf(stderr, "Failed to load resources from %s\n", resourcePath);
+		return 1;
+	}
+
 
 	// DEBUG
-	char *initialSavePath =  StringUtils_concat(executableDirectory, "../res/initialsave.txt");
-	GameState_load(&gameState, initialSavePath);
+	char *initialSavePath = StringUtils_concat(executableDirectory, "../res/initialsave.txt");
+	fileRead = GameState_load(&gameState, initialSavePath);
+	if (!fileRead) {
+		fprintf(stderr, "Failed to load game state from %s %s\n", executableDirectory, initialSavePath);
+		return 1;
+	}
+
+	// Show splash screen
+	MainMenu_showSplashScreen(&config);
 
 	char *input;
 	isGameRunning = false;
@@ -53,11 +64,12 @@ int main (int argc, char *argv[]) {
 			if (gameState.requestInput) {
 				input = StringUtils_scan(stdin, "\n");
 			} else {
+				// If requestInput is false, then the program will not wait for input. Useful for animations, etc.
 				gameState.requestInput = true; // Prevent infinite loops, have to explicitly state to bypass input
 			}
 
 			// Process
-			// Core_process(&gameState, &gameResources, input);
+			Core_process(&gameState, &gameResources, input);
 		}
 		FrameBuffer_deallocate(&frameBuffer);
 
@@ -67,10 +79,11 @@ int main (int argc, char *argv[]) {
 	GameState_deallocate(&gameState);
 	GameResources_deallocate(&gameResources);
 	StringUtils_deallocate(input);
+
 	StringUtils_deallocate(executableDirectory);
 	StringUtils_deallocate(resourcePath);
 	StringUtils_deallocate(initialSavePath);
-	
+
 	return 0;	
 }
 

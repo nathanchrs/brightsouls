@@ -2,6 +2,7 @@
 #define GAMERESOURCES_H
 
 #include "skilltree.h"
+#include "boolean.h"
 
 typedef struct {
 	//EnemyType *enemyTypes;
@@ -10,7 +11,7 @@ typedef struct {
 	//Area *areas;
 } GameResources;
 
-void GameResources_load(GameResources *gameResources, const char *filePath);
+bool GameResources_load(GameResources *gameResources, const char *filePath);
 
 void GameResources_deallocate(GameResources *gameResources);
 

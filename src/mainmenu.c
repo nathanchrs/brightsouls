@@ -18,7 +18,7 @@ void MainMenu_showSplashScreen(const Config *config) {
 	FrameBuffer_output(&fb, false);
 	//delay(2.0);
 	FrameBuffer_output(&fb, config->useColor);
-	delay(1.0);
+	delay(0.5);
 
 	FrameBuffer_deallocate(&fb);
 }
