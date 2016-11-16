@@ -8,14 +8,10 @@
 
 void MainMenu_showSplashScreen(const Config *config) {
 
-	FrameBuffer fb = FrameBuffer_allocate(config->frameBufferHeight, config->frameBufferWidth);
+	FrameBuffer fb = FrameBuffer_allocate(config->frameBufferHeight, config->frameBufferWidth, config->useColor);
 	FrameBuffer_clear(&fb);
 	Color bgcolor_top = WHITE, fgcolor_top = BLACK, bgcolor_bot = WHITE, fgcolor_bot = BLACK;
 	float x = 0.0;
-	//FrameBuffer_drawRectangle(&fb, Point_make(1, 1), Point_make(37, 149), 'x', WHITE, WHITE, WHITE);
-
-	//FrameBuffer_drawRectangle(&fb, Point_make(15, 15), Point_make(20, 20), '*', WHITE, RED, YELLOW);
-	//FrameBuffer_drawRectangle(&fb, Point_make(18, 18), Point_make(26, 25), '=', BLACK, TRANSPARENT, PURPLE);
 	while(x<=6.0) {
 		if(x == 2.0) {
 			fgcolor_top = WHITE;
@@ -44,7 +40,7 @@ void MainMenu_showSplashScreen(const Config *config) {
 
 /* Tampilkan main menu di layar: resume game (jika isGameRunning false), new game, load game, save game, exit */
 void MainMenu_show(const bool isGameRunning, const Config *config) {
-	FrameBuffer fb = FrameBuffer_allocate(config->frameBufferHeight, config->frameBufferWidth);
+	FrameBuffer fb = FrameBuffer_allocate(config->frameBufferHeight, config->frameBufferWidth, config->useColor);
 	Color bgcolor_top = TRANSPARENT, fgcolor_top = WHITE, bgcolor_bot = TRANSPARENT, fgcolor_bot = WHITE;
 	int r_temp = 14;
 	FrameBuffer_clear(&fb);
@@ -90,10 +86,8 @@ void MainMenu_processInput(GameState *gameState, bool *isGameRunning, bool *exit
 	if (StringUtils_strcmpi(input, "EXIT") == 0 || StringUtils_strcmpi(input, "QUIT") == 0) {
 		*isGameRunning = false;
 		*exitGame = true;
-
-	} else if(StringUtils_strcmpi(input, "PAUSE") == 0) {
-		*isGameRunning = true; // just for testing reason, not the real purpose, still not yet implemented
-	} else {
-
+	} else if (StringUtils_strcmpi(input, "START") == 0) {
+		*isGameRunning = true;
+		*exitGame = false;
 	}
 }
