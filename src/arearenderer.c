@@ -33,6 +33,34 @@ void AreaRenderer_drawTree(FrameBuffer *fb, Point topLeft) {
 	FrameBuffer_drawPoint(fb, Point_translate(topLeft, 2, 2), '[', BROWN, TRANSPARENT);
 }
 
+void AreaRenderer_drawPlayer(FrameBuffer *fb, Point topLeft) {
+	FrameBuffer_drawPoint(fb, Point_translate(topLeft, 0, 1), 'O', CYAN, TRANSPARENT);
+	FrameBuffer_drawPoint(fb, Point_translate(topLeft, 1, 0), '/', CYAN, TRANSPARENT);
+	FrameBuffer_drawPoint(fb, Point_translate(topLeft, 1, 1), '|', CYAN, TEAL);
+	FrameBuffer_drawPoint(fb, Point_translate(topLeft, 1, 2), '\\', CYAN, TRANSPARENT);
+	FrameBuffer_drawPoint(fb, Point_translate(topLeft, 2, 0), '/', CYAN, TRANSPARENT);
+	FrameBuffer_drawPoint(fb, Point_translate(topLeft, 2, 2), '\\', CYAN, TRANSPARENT);
+}
+
+void AreaRenderer_drawEnemy1(FrameBuffer *fb, Point topLeft) {
+	FrameBuffer_drawPoint(fb, Point_translate(topLeft, 0, 0), '<', RED, TRANSPARENT);
+	FrameBuffer_drawPoint(fb, Point_translate(topLeft, 0, 1), 'O', RED, TRANSPARENT);
+	FrameBuffer_drawPoint(fb, Point_translate(topLeft, 0, 2), '>', RED, TRANSPARENT);
+	FrameBuffer_drawPoint(fb, Point_translate(topLeft, 1, 0), '/', RED, TRANSPARENT);
+	FrameBuffer_drawPoint(fb, Point_translate(topLeft, 1, 1), '|', RED, MAROON);
+	FrameBuffer_drawPoint(fb, Point_translate(topLeft, 1, 2), '\\', RED, TRANSPARENT);
+	FrameBuffer_drawPoint(fb, Point_translate(topLeft, 2, 0), '/', RED, TRANSPARENT);
+	FrameBuffer_drawPoint(fb, Point_translate(topLeft, 2, 2), '\\', RED, TRANSPARENT);
+}
+
+void AreaRenderer_drawPowerUp(FrameBuffer *fb, Point topLeft) {
+	FrameBuffer_drawPoint(fb, Point_translate(topLeft, 0, 1), '_', WHITE, TRANSPARENT);
+	FrameBuffer_drawPoint(fb, Point_translate(topLeft, 1, 0), '[', WHITE, TRANSPARENT);
+	FrameBuffer_drawPoint(fb, Point_translate(topLeft, 1, 1), '+', RED, WHITE);
+	FrameBuffer_drawPoint(fb, Point_translate(topLeft, 1, 2), ']', WHITE, TRANSPARENT);
+}
+
+
 void AreaRenderer_render(FrameBuffer *fb, const GameState *gameState, const GameResources *gameResources) {
 
 	// DEBUG
@@ -56,8 +84,26 @@ void AreaRenderer_render(FrameBuffer *fb, const GameState *gameState, const Game
 	// Draw blank cells
 	for (r = currentArea->height-1; r >= 0; r--) {
 		for (c = 0; c < currentArea->width; c++) {
-			if (Area_getCell(currentArea, Point_make(r, c)) == '.' || Area_getCell(currentArea, Point_make(r, c)) == 't') {
+			if (Area_getCell(currentArea, Point_make(r, c)) == '.'
+				|| Area_getCell(currentArea, Point_make(r, c)) == 't'
+				|| Area_getCell(currentArea, Point_make(r, c)) == 'p'
+				|| Area_getCell(currentArea, Point_make(r, c)) == 'e') {
 				AreaRenderer_drawBlankCell(fb, Point_make(r*3 + AREA_RENDER_BORDER, r*3 + c*5 + AREA_RENDER_BORDER));
+			}
+		}
+	}
+
+	// Draw player, enemies and powerups
+	for (r = 0; r < currentArea->height; r++) {
+		for (c = 0; c < currentArea->width; c++) {
+			if (Area_getCell(currentArea, Point_make(r, c)) == 'u') {
+				AreaRenderer_drawPowerUp(fb, Point_make(r*3 + AREA_RENDER_BORDER + 1, r*3 + c*5 + AREA_RENDER_BORDER + 2));
+			}
+			if (Area_getCell(currentArea, Point_make(r, c)) == 'e') {
+				AreaRenderer_drawEnemy1(fb, Point_make(r*3 + AREA_RENDER_BORDER, r*3 + c*5 + AREA_RENDER_BORDER + 2));
+			}
+			if (Area_getCell(currentArea, Point_make(r, c)) == 'p') {
+				AreaRenderer_drawPlayer(fb, Point_make(r*3 + AREA_RENDER_BORDER, r*3 + c*5 + AREA_RENDER_BORDER + 2));
 			}
 		}
 	}
