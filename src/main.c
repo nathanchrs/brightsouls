@@ -40,6 +40,9 @@ int main (int argc, char *argv[]) {
 		return 1;
 	}
 
+	// DEBUG
+	gameState.currentPhase = EXPLORATION;
+
 	// Show splash screen
 	MainMenu_showSplashScreen(&config);
 

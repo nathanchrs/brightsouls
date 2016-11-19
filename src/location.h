@@ -5,6 +5,7 @@
 #include "point.h"
 #include "array.h"
 #include "boolean.h"
+#include <stdio.h>
 
 typedef struct {
 	Point point;
@@ -16,7 +17,6 @@ typedef struct {
 	Location to;
 } LocationEdge;
 
-typedef ARRAY(Area) AreaArray;
 typedef ARRAY(LocationEdge) LocationEdgeArray;
 
 Location Location_make(Point point, int areaId);
@@ -32,5 +32,7 @@ Location Location_moveDown(Location currentLocation, const AreaArray *areas, con
 Location Location_moveLeft(Location currentLocation, const AreaArray *areas, const LocationEdgeArray *locationEdges);
 
 Location Location_moveRight(Location currentLocation, const AreaArray *areas, const LocationEdgeArray *locationEdges);
+
+void Location_loadEdgeArray(LocationEdgeArray *locs, FILE *fin);
 
 #endif

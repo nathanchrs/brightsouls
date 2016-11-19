@@ -26,16 +26,20 @@ void Area_load(Area *area, FILE *fin){
 				area->grid[r*(area->width) + c] = inp[c];
 			}
 
-			/* Fill in missing cells with invalid cell character */
-			while (c < area->width) {
-				area->grid[r*(area->width) + c] = AREA_INVALID_CELL;
-				c++;
-			}
-
 			StringUtils_deallocate(inp);
 		}
 	} else {
 		Area_deallocate(area); /* Clean up on allocation failure */
+	}
+}
+
+void Area_loadArray(AreaArray *areas, FILE *fin) {
+	int n, i;
+	fscanf(fin, "%d", &n);
+	Array_allocate(areas, n);
+	areas->length = n;
+	for (i = 0; i < n; i++) {
+		Area_load(&(areas->items[i]), fin);
 	}
 }
 

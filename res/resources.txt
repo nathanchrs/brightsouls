@@ -19,3 +19,28 @@ Ini deskripsi skill ke4
 Nama skill 5
 Ini deskripsi skill ke-5
 55 1
+
+
+3
+
+First area
+5 4
+ww.w
+w..t
+tt..
+...w
+tw.w
+
+2nd area
+5 5
+twt.t
+.t..t
+...tt
+ww.tt
+
+Area #3
+4 5
+wwwww
+w....
+....t
+ttttt

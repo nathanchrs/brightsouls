@@ -7,7 +7,7 @@ bool GameState_load(GameState *gameState, const char *filePath) {
 	if (!fin) return false;
 	int i;
 
-	// Load isSkillUnlocked from string of 0's and 1's
+	/* Load isSkillUnlocked from string of 0's and 1's */
 	StringUtils_discardCharacters(fin, STRINGUTILS_WHITESPACE);
 	char *isSkillUnlockedInput = StringUtils_scan(fin, STRINGUTILS_NEWLINE);
 	size_t isSkillUnlockedInputLen = StringUtils_strlen(isSkillUnlockedInput);
@@ -17,6 +17,9 @@ bool GameState_load(GameState *gameState, const char *filePath) {
 		gameState->isSkillUnlocked.items[i] = isSkillUnlockedInput[i] == '1';
 	}
 
+	/* Load location edges */
+	Location_loadEdgeArray(&(gameState->locationEdges), fin);
+
 	StringUtils_deallocate(isSkillUnlockedInput);
 	fclose(fin);
 	return true;
@@ -25,4 +28,5 @@ bool GameState_load(GameState *gameState, const char *filePath) {
 void GameState_deallocate(GameState *gameState) {
 	StringUtils_deallocate(gameState->message);
 	Array_deallocate(&(gameState->isSkillUnlocked));
+	Array_deallocate(&(gameState->locationEdges));
 }

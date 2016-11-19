@@ -91,3 +91,20 @@ Location Location_moveRight(Location currentLocation, const AreaArray *areas, co
 	if (!Location_isValid(loc, areas)) return currentLocation;
 	else return loc;
 }
+
+void Location_loadEdgeArray(LocationEdgeArray *locs, FILE *fin) {
+	int n, i;
+	fscanf(fin, "%d", &n);
+	Array_allocate(locs, n);
+	locs->length = n;
+	int r1, c1, aid1, r2, c2, aid2;
+	for (i = 0; i < n; i++) {
+		fscanf(fin, "%d%d%d%d%d%d", &r1, &c1, &aid1, &r2, &c2, &aid2);
+		locs->items[i].from.point.r = r1;
+		locs->items[i].from.point.c = c1;
+		locs->items[i].from.areaId = aid1;
+		locs->items[i].to.point.r = r1;
+		locs->items[i].to.point.c = c1;
+		locs->items[i].to.areaId = aid1;
+	}
+}

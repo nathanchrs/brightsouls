@@ -62,8 +62,8 @@ void FrameBuffer_clear(FrameBuffer *fb) {
 void FrameBuffer_drawPoint(FrameBuffer *fb, Point p, const char content, const Color fgColor, const Color bgColor) {
 	if (p.r >= 0 && p.c >= 0 && p.r < fb->height && p.c < fb->width) {
 		fb->contents[p.r*fb->width + p.c] = content;
-		fb->fgColors[p.r*fb->width + p.c] = fgColor;
-		fb->bgColors[p.r*fb->width + p.c] = bgColor;
+		if (fgColor != TRANSPARENT) fb->fgColors[p.r*fb->width + p.c] = fgColor;
+		if (bgColor != TRANSPARENT) fb->bgColors[p.r*fb->width + p.c] = bgColor;
 	}
 }
 

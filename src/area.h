@@ -2,6 +2,7 @@
 #define AREA_H
 
 #include "point.h"
+#include "array.h"
 #include <stdio.h>
 
 #define AREA_EMPTY_CELL '.'
@@ -14,7 +15,11 @@ typedef struct {
 	size_t width;
 } Area;
 
+typedef ARRAY(Area) AreaArray;
+
 void Area_load(Area *area, FILE *fin);
+
+void Area_loadArray(AreaArray *areas, FILE *fin);
 
 char Area_getCell(const Area *area, Point point);
 
