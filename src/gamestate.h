@@ -3,6 +3,7 @@
 
 #include "boolean.h"
 #include "array.h"
+#include "location.h"
 
 typedef enum {
 	EXPLORATION, BATTLE, CUTSCENE, SKILLTREE, GAMEOVER, CREDITS
@@ -14,6 +15,8 @@ typedef struct {
 	bool requestInput;
 	GamePhase currentPhase;
 	char *message;
+
+	ARRAY(LocationEdge) locationEdges;
 	
 /*
 	Player player;
