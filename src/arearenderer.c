@@ -4,6 +4,7 @@
 #include "location.h"
 
 #define AREA_RENDER_BORDER 2
+#define AREA_TOP_PADDING 5
 
 void AreaRenderer_drawBlankCell(FrameBuffer *fb, Point topLeft) {
 	int i;
@@ -76,7 +77,7 @@ void AreaRenderer_render(FrameBuffer *fb, const GameState *gameState, const Game
 	for (r = currentArea->height-1; r >= 0; r--) {
 		for (c = 0; c < currentArea->width; c++) {
 			if (Area_getCell(currentArea, Point_make(r, c)) == 'w') {
-				AreaRenderer_drawWaterCell(fb, Point_make(r*3 + AREA_RENDER_BORDER, r*3 + c*5 + AREA_RENDER_BORDER));
+				AreaRenderer_drawWaterCell(fb, Point_make(r*3 + AREA_RENDER_BORDER + AREA_TOP_PADDING, r*3 + c*5 + AREA_RENDER_BORDER));
 			}
 		}
 	}
@@ -88,7 +89,7 @@ void AreaRenderer_render(FrameBuffer *fb, const GameState *gameState, const Game
 				|| Area_getCell(currentArea, Point_make(r, c)) == 't'
 				|| Area_getCell(currentArea, Point_make(r, c)) == 'p'
 				|| Area_getCell(currentArea, Point_make(r, c)) == 'e') {
-				AreaRenderer_drawBlankCell(fb, Point_make(r*3 + AREA_RENDER_BORDER, r*3 + c*5 + AREA_RENDER_BORDER));
+				AreaRenderer_drawBlankCell(fb, Point_make(r*3 + AREA_RENDER_BORDER + AREA_TOP_PADDING, r*3 + c*5 + AREA_RENDER_BORDER));
 			}
 		}
 	}
@@ -97,13 +98,13 @@ void AreaRenderer_render(FrameBuffer *fb, const GameState *gameState, const Game
 	for (r = 0; r < currentArea->height; r++) {
 		for (c = 0; c < currentArea->width; c++) {
 			if (Area_getCell(currentArea, Point_make(r, c)) == 'u') {
-				AreaRenderer_drawPowerUp(fb, Point_make(r*3 + AREA_RENDER_BORDER + 1, r*3 + c*5 + AREA_RENDER_BORDER + 2));
+				AreaRenderer_drawPowerUp(fb, Point_make(r*3 + AREA_RENDER_BORDER + AREA_TOP_PADDING + 1, r*3 + c*5 + AREA_RENDER_BORDER + 2));
 			}
 			if (Area_getCell(currentArea, Point_make(r, c)) == 'e') {
-				AreaRenderer_drawEnemy1(fb, Point_make(r*3 + AREA_RENDER_BORDER, r*3 + c*5 + AREA_RENDER_BORDER + 2));
+				AreaRenderer_drawEnemy1(fb, Point_make(r*3 + AREA_RENDER_BORDER + AREA_TOP_PADDING, r*3 + c*5 + AREA_RENDER_BORDER + 2));
 			}
 			if (Area_getCell(currentArea, Point_make(r, c)) == 'p') {
-				AreaRenderer_drawPlayer(fb, Point_make(r*3 + AREA_RENDER_BORDER, r*3 + c*5 + AREA_RENDER_BORDER + 2));
+				AreaRenderer_drawPlayer(fb, Point_make(r*3 + AREA_RENDER_BORDER + AREA_TOP_PADDING, r*3 + c*5 + AREA_RENDER_BORDER + 2));
 			}
 		}
 	}
@@ -112,10 +113,12 @@ void AreaRenderer_render(FrameBuffer *fb, const GameState *gameState, const Game
 	for (r = 0; r < currentArea->height; r++) {
 		for (c = 0; c < currentArea->width; c++) {
 			if (Area_getCell(currentArea, Point_make(r, c)) == 't') {
-				AreaRenderer_drawTree(fb, Point_make(r*3 + AREA_RENDER_BORDER, r*3 + c*5 + AREA_RENDER_BORDER + 2));
+				AreaRenderer_drawTree(fb, Point_make(r*3 + AREA_RENDER_BORDER + AREA_TOP_PADDING, r*3 + c*5 + AREA_RENDER_BORDER + 2));
 			}
 		}
 	}
+
+	FrameBuffer_drawTextBox(fb, Point_make(AREA_RENDER_BORDER, AREA_RENDER_BORDER), Point_make(AREA_RENDER_BORDER, 30), currentArea->areaName, WHITE, TRANSPARENT);
 
 	FrameBuffer_drawTextBox(fb, Point_make(fb->height-1,0), Point_make(fb->height-1, fb->width-1), gameState->message, WHITE, TRANSPARENT);
 	FrameBuffer_setInputPrompt(fb, "Command [u/d/l/r/skilltree] >> ");
