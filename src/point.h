@@ -8,4 +8,6 @@ typedef struct {
 
 Point Point_make(int r, int c);
 
+Point Point_translate(Point point, int dr, int dc);
+
 #endif

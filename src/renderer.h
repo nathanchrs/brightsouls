@@ -2,8 +2,10 @@
 #define RENDERER_H
 
 #include "gamestate.h"
-#include "config.h"
+#include "gameresources.h"
+#include "boolean.h"
+#include "framebuffer.h"
 
-Renderer_render(GameState *gameState, const Config *config);
+void Renderer_render(FrameBuffer *fb, const GameState *gameState, const GameResources *gameResources);
 
 #endif
