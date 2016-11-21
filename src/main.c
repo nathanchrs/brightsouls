@@ -61,8 +61,9 @@ int main (int argc, char *argv[]) {
 		while (isGameRunning) {
 
 			// Render
+
 			Renderer_render(&frameBuffer, &gameState, &gameResources);
-			
+
 			// Input
 			if (gameState.requestInput) {
 				input = StringUtils_scan(stdin, "\n");
@@ -87,6 +88,7 @@ int main (int argc, char *argv[]) {
 	StringUtils_deallocate(resourcePath);
 	StringUtils_deallocate(initialSavePath);
 
-	return 0;	
+	return 0;
+
 }
 
