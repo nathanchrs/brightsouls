@@ -60,10 +60,10 @@ void Queue_Add (Queue * Q, queue_infotype X)
 {
 	queue_address P;
 
-	Alokasi(&P, X);
+	Queue_Alokasi(&P, X);
 	if (P != Nil)
 	{
-		if (IsEmpty(*Q))
+		if (Queue_IsEmpty(*Q))
 			Head(*Q) = P;
 		else
 			queue_Next(Tail(*Q)) = P;
@@ -84,5 +84,5 @@ void Queue_Del(Queue * Q, queue_infotype * X)
 	Head(*Q) = queue_Next(Head(*Q));
 	if (Head(*Q) == Nil)
 		Tail(*Q) = Nil;
-	Dealokasi(P);
+	Queue_Dealokasi(P);
 }

@@ -7,7 +7,7 @@
 #include "player.h"
 
 typedef struct {
-	Enemy enemy;
+	EnemyType enemy;
 	Player player;
 
 	int round;
@@ -19,10 +19,10 @@ void Battle_save(const Battle *battle, FILE *fout);
 
 void Battle_deallocate(Battle *battle);
 
-void Battle_init(Battle *battle, int eId);
+void Battle_init(Battle *battle, const Enemy *enemy, int eId, Player *player);
 
-void Battle_randMovelist(Enemy *enemy);
+void Battle_playerInput(Player *player);
 
-void Battle_calcAction(char playerAction, char enemyAction, Enemy *enemy, Player *player);
+void Battle_calcAction(char playerAction, char enemyAction, EnemyType *enemy, Player *player);
 
 #endif
