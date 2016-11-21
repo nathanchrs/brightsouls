@@ -7,8 +7,8 @@
 void testArray();
 void testList();
 void testSkillTree();
-void testEnemy(Enemy *enemy);
-void testBattle(Enemy *enemy, Player *player);
+void testEnemy();
+void testBattle();
 
 int main (int argc, char *argv[]) {
 
@@ -20,15 +20,8 @@ int main (int argc, char *argv[]) {
 	testArray();
 	testList();
 	testSkillTree();
-
-	Enemy enemy;
-	Player player;
-	player.name = "Player 1";
-	player.str = 10;
-	player.def = 3;
-	player.exp = 0;
-	testEnemy(&enemy);
-	//testBattle(&enemy, &player);
+	testEnemy();
+	testBattle();
 
 	printf("Tests completed.\n\n");
 	int x;

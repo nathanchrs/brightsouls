@@ -1,4 +1,5 @@
 #include "battle.h"
+#include "stringutils.h"
 
 void Battle_load(Battle *battle, FILE *fin)
 {
@@ -18,33 +19,68 @@ void Battle_deallocate(Battle *battle)
 void Battle_init(Battle *battle, const Enemy *enemy, int eId, Player *player)
 {
 	// Load enemy data
-	printf("Loading enemy\n");
 	battle->enemy = enemy->items[eId];
-	//printf("Randoming enemy movelist\n");
-	//Enemy_randMovelist(&(battle->enemy));
+	CreateEmpty(&(battle->enemy.moveList));
+	CopyList(enemy->items[eId].moveList, &(battle->enemy.moveList));
+	Enemy_randMovelist(&(battle->enemy));
 
 	// Load player data
-	printf("Loading player data\n");
 	battle->player = *player;
-	printf("Emptying player movelist\n");
 	CreateEmpty(&(battle->player.moveList));
-	printf("Emptying player actionlist\n");
 	Queue_CreateEmpty(&(battle->player.actionList));
-	printf("Battle initialization done\n");
+
+	//Others
+	battle->round = 1;
 }
 
 void Battle_playerInput(Player *player)
 {
-	char inp;
+	char inp, dummy;
 	scanf("%c", &inp);
-
+	scanf("%c", &dummy);
 	if ((inp == 'E') && (!Queue_IsEmpty(player->actionList)))
 		Queue_Del(&(player->actionList), &inp);
 	else if ((inp == 'A') || (inp == 'B') || (inp == 'F'))
 		Queue_Add(&(player->actionList), inp);
 }
 
-void Battle_calcAction(char playerAction, char enemyAction, EnemyType *enemy, Player *player)
+void Battle_showEnemyMove(Queue enemyActionlist)
+{
+	char c, ct;
+	printf("Current enemy move : ");
+	while (!Queue_IsEmpty(enemyActionlist))
+	{
+		Queue_Del(&enemyActionlist, &c);
+		ct = (char) tolower((int) c);
+		if (c == ct)
+			printf("# ");
+		else
+			printf("%c ", c);
+	}
+	printf("\n");
+}
+
+void Battle_calcMove(EnemyType *enemy, Player *player)
+{
+	Queue enemyActionlist;
+	Queue_CreateEmpty(&enemyActionlist);
+	DelVFirst(&(enemy->moveList), &enemyActionlist);
+
+	while ((!Queue_IsEmpty(enemyActionlist)) && (player->hp > 0) && (enemy->hp > 0))
+	{
+		char enemyAction, playerAction;
+
+		Queue_Del(&(enemyActionlist), &enemyAction);
+		Queue_Del(&(player->actionList), &playerAction);
+		printf("Calculating action enemy(%c) & player(%c)\n", enemyAction, playerAction);
+		Battle_calcAction(enemyAction, playerAction, enemy, player);
+	}
+	// Round end || player->hp <= 0 (dead)
+
+	Queue_CreateEmpty(&(player->actionList));
+}
+
+void Battle_calcAction(char enemyAction, char playerAction, EnemyType *enemy, Player *player)
 {
 	// Calculate damage
 	/*
@@ -74,51 +110,57 @@ void Battle_calcAction(char playerAction, char enemyAction, EnemyType *enemy, Pl
 	*/
 	int playerDmg, enemyDmg;
 
-	if ((playerAction == 'a') && (enemyAction == 'a'))
+	enemyAction = (char) toupper((int) enemyAction);
+	playerAction = (char) toupper((int) playerAction);
+
+	if ((playerAction == 'A') && (enemyAction == 'A'))
 	{
 		playerDmg = (enemy->str) - (player->def);
 		enemyDmg = (player->str) - (enemy->def);
 	}
-	else if ((playerAction == 'a') && (enemyAction == 'b'))
+	else if ((playerAction == 'A') && (enemyAction == 'B'))
 	{
 		playerDmg = (enemy->def) - (player->def);
 		enemyDmg = 0;
 	}
-	else if ((playerAction == 'a') && (enemyAction == 'f'))
+	else if ((playerAction == 'A') && (enemyAction == 'F'))
 	{
 		playerDmg = 0;
 		enemyDmg = (player->str);
 	}
-	else if ((playerAction == 'b') && (enemyAction == 'a'))
+	else if ((playerAction == 'B') && (enemyAction == 'A'))
 	{
 		playerDmg = 0;
 		enemyDmg = (player->def) - (enemy->def);
 	}
-	else if ((playerAction == 'b') && (enemyAction == 'b'))
+	else if ((playerAction == 'B') && (enemyAction == 'B'))
 	{
 		playerDmg = 0;
 		enemyDmg = 0;
 	}
-	else if ((playerAction == 'b') && (enemyAction == 'f'))
+	else if ((playerAction == 'B') && (enemyAction == 'F'))
 	{
 		playerDmg = (enemy->str);
 		enemyDmg = 0;
 	}
-	else if ((playerAction == 'f') && (enemyAction == 'a'))
+	else if ((playerAction == 'F') && (enemyAction == 'A'))
 	{
 		playerDmg = (enemy->str);
 		enemyDmg = 0;
 	}
-	else if ((playerAction == 'f') && (enemyAction == 'b'))
+	else if ((playerAction == 'F') && (enemyAction == 'B'))
 	{
 		playerDmg = 0;
 		enemyDmg = (player->str);
 	}
-	else if ((playerAction == 'f') && (enemyAction == 'f'))
+	else if ((playerAction == 'F') && (enemyAction == 'f'))
 	{
 		playerDmg = (enemy->str) - (player->def);
 		enemyDmg = (player->str) - (enemy->def);
 	}
+
+	printf("Player Damaged : %d\n", playerDmg);
+	printf("Enemy Damaged : %d\n", enemyDmg);
 
 	if (playerDmg < 0)
 		playerDmg = 0;
