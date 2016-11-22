@@ -11,6 +11,9 @@ typedef struct {
 	int str;
 	int def;
 	int exp;
+
+	List moveList;
+	Queue actionList;
 } Player;
 
 #endif

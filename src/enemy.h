@@ -5,11 +5,12 @@
 #include "boolean.h"
 #include "listlinier.h"
 #include "queuelist.h"
+#include "array.h"
 
 typedef struct {
 	int id;
 	char *name;
-	char type; //n : Normal, b : Boss
+	char *type; //n : Normal, b : Boss
 
 	int hp;
 	int str;
@@ -18,8 +19,12 @@ typedef struct {
 
 	List moveList;
 	int moveCount; //n : 10, b : 20
-} Enemy;
+} EnemyType;
 
-void Enemy_load(Enemy *enemy, int eId/*, FILE *fin*/);
+typedef ARRAY(EnemyType) Enemy;
+
+void Enemy_load(Enemy *enemy, FILE *fin);
+
+void Enemy_randMovelist(EnemyType *enemy);
 
 #endif
