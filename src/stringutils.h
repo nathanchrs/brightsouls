@@ -6,9 +6,6 @@
 /* Operations that dynamically expands the size of a string will allocate blocks of this size */
 #define STRING_ALLOC_BLOCK_SIZE 16
 
-#define STRINGUTILS_WHITESPACE " \n\t\v\f\r"
-#define STRINGUTILS_NEWLINE "\n\r"
-
 int tolower(int c);
 
 int toupper(int c);

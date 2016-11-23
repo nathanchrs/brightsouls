@@ -11,22 +11,29 @@
 typedef struct {
 	int id;
 	char *name;
-	char *type; //n : Normal, b : Boss
 
 	int hp;
+	int maxHp;
 	int str;
 	int def;
 	int exp;
 
-    Location loc;
 	List moveList;
 	int moveCount; //n : 10, b : 20
 } EnemyType;
 
-typedef ARRAY(EnemyType) Enemy;
+typedef struct {
+	EnemyType type;
+	Location location;
+} Enemy;
 
-void Enemy_load(Enemy *enemy, FILE *fin);
+typedef ARRAY(Enemy) EnemyArray;
+typedef ARRAY(EnemyType) EnemyTypeArray;
 
-void Enemy_randMovelist(EnemyType *enemy);
+void EnemyType_loadArray(EnemyTypeArray *enemyTypes, FILE *fin);
+
+void Enemy_loadArray(EnemyArray *enemies, FILE *fin);
+
+void Enemy_randMovelist(EnemyType *enemyType);
 
 #endif

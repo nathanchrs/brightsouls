@@ -1,37 +1,37 @@
-#include "enemy.h"
+#include "enemies.h"
 #include "stringutils.h"
 #include "time.h"
 #include "stdlib.h"
 
-void Enemy_load(Enemy *enemy, FILE *fin)
+void Enemy_load(Enemy *enemies, FILE *fin)
 {
 	int n, i, j, k;
 	char inp;
 	Queue move;
 	fscanf(fin, "%d", &n);
-	Array_allocate(enemy, n);
-	enemy->length = n;
+	Array_allocate(enemies, n);
+	enemies->length = n;
 	for (i = 0; i < n; i++) {
 		StringUtils_discardCharacters(fin, STRINGUTILS_WHITESPACE);
-		enemy->items[i].name = StringUtils_scan(fin, STRINGUTILS_NEWLINE);
+		enemies->items[i].name = StringUtils_scan(fin, STRINGUTILS_NEWLINE);
 		StringUtils_discardCharacters(fin, STRINGUTILS_WHITESPACE);
-		enemy->items[i].type = StringUtils_scan(fin, STRINGUTILS_NEWLINE);
-		if (StringUtils_strcmpi(enemy->items[i].type, "normal") == 0)
-			enemy->items[i].moveCount = 10;
-		else if (StringUtils_strcmpi(enemy->items[i].type, "boss") == 0)
-			enemy->items[i].moveCount = 20;
+		enemies->items[i].type = StringUtils_scan(fin, STRINGUTILS_NEWLINE);
+		if (StringUtils_strcmpi(enemies->items[i].type, "normal") == 0)
+			enemies->items[i].moveCount = 10;
+		else if (StringUtils_strcmpi(enemies->items[i].type, "boss") == 0)
+			enemies->items[i].moveCount = 20;
 		else
-			enemy->items[i].moveCount = 0;
+			enemies->items[i].moveCount = 0;
 		StringUtils_discardCharacters(fin, STRINGUTILS_WHITESPACE);
-		fscanf(fin, "%d", &(enemy->items[i].hp));
+		fscanf(fin, "%d", &(enemies->items[i].hp));
 		StringUtils_discardCharacters(fin, STRINGUTILS_WHITESPACE);
-		fscanf(fin, "%d", &(enemy->items[i].str));
+		fscanf(fin, "%d", &(enemies->items[i].str));
 		StringUtils_discardCharacters(fin, STRINGUTILS_WHITESPACE);
-		fscanf(fin, "%d", &(enemy->items[i].def));
+		fscanf(fin, "%d", &(enemies->items[i].def));
 		StringUtils_discardCharacters(fin, STRINGUTILS_WHITESPACE);
-		fscanf(fin, "%d", &(enemy->items[i].exp));
-		CreateEmpty(&(enemy->items[i].moveList));
-		for (j = 0; j < enemy->items[i].moveCount; j++)
+		fscanf(fin, "%d", &(enemies->items[i].exp));
+		CreateEmpty(&(enemies->items[i].moveList));
+		for (j = 0; j < enemies->items[i].moveCount; j++)
 		{
 			Queue_CreateEmpty(&move);
 			StringUtils_discardCharacters(fin, STRINGUTILS_WHITESPACE);
@@ -40,16 +40,16 @@ void Enemy_load(Enemy *enemy, FILE *fin)
 				inp = fgetc(fin);
 				Queue_Add(&move, inp);
 			}
-			InsVLast(&(enemy->items[i].moveList), move);
+			InsVLast(&(enemies->items[i].moveList), move);
 		}
 	}
 }
 
-void Enemy_randMovelist(EnemyType *enemy)
+void Enemy_randMovelist(EnemyType *enemyType)
 {
 	srand(time(NULL));
 	int i, j;
-	int moveCount = enemy->moveCount;
+	int moveCount = enemyType->moveCount;
 	Queue actions;
 	Queue_CreateEmpty(&actions);
 
@@ -58,17 +58,17 @@ void Enemy_randMovelist(EnemyType *enemy)
 		//Take out a random move list
 		int loadMove = rand() % i;
 		if (loadMove == 0)
-			DelVFirst(&(enemy->moveList), &actions);
+			DelVFirst(&(enemyType->moveList), &actions);
 		else
 		{
-			address P = First(enemy->moveList);
+			address P = First(enemyType->moveList);
 			address Pt;
 			for (j=0; j<loadMove-1; j++)
 			{
 				P = Next(P);
 			}
 			// Delete Next(P)
-			DelAfter(&(enemy->moveList), &Pt, P);
+			DelAfter(&(enemyType->moveList), &Pt, P);
 			actions = Info(Pt);
 		}
 		// actions = popped queue
@@ -111,6 +111,6 @@ void Enemy_randMovelist(EnemyType *enemy)
 		}
 
 		//Push back the move list that was taken out
-		InsVLast(&(enemy->moveList), actions);
+		InsVLast(&(enemyType->moveList), actions);
 	}
 }

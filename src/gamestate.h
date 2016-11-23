@@ -4,7 +4,6 @@
 #include "boolean.h"
 #include "array.h"
 #include "location.h"
-#include "powerup.h"
 #include "enemy.h"
 #include "powerup.h"
 
@@ -22,14 +21,9 @@ typedef struct {
 	LocationEdgeArray locationEdges;
 
 	Player *player;
-	//Location loc;
 
-	Enemy *enemies;
-	Powerup *powerUps;
-/*
-	AreaMap areaMap;
-	Battle currentBattle;
-*/
+	ARRAY(bool) isEnemyDefeated;
+	ARRAY(bool) isPowerUpUsed;
 	ARRAY(bool) isSkillUnlocked;
 
 } GameState;

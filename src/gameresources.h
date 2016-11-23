@@ -1,17 +1,24 @@
 #ifndef GAMERESOURCES_H
 #define GAMERESOURCES_H
 
-#include "skilltree.h"
-#include "boolean.h"
-#include "array.h"
 #include "area.h"
+#include "enemy.h"
+#include "powerup.h"
+#include "skilltree.h"
+#include "array.h"
 
 typedef struct {
-	//EnemyType *enemyTypes;
-	//PowerUpType *powerUpTypes;
-	SkillTree skillTree;
+
 	AreaArray areas;
-    Powerup powerup;
+
+	EnemyTypeArray enemyTypes;
+	EnemyArray enemies;
+
+	PowerUpTypeArray powerUpTypes;
+	PowerUpArray powerUps;
+
+	SkillTree skillTree;
+	
 } GameResources;
 
 bool GameResources_load(GameResources *gameResources, const char *filePath);

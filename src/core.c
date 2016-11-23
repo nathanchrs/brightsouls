@@ -8,7 +8,7 @@
 
 
 void Core_process(GameState *gameState, GameResources *gameResources, const char *input) {
-	// if (gameState->currentPhase == SKILLTREE) {
+	if (gameState->currentPhase == SKILLTREE) {
 		if (StringUtils_strcmpi(input, "exit") == 0) {
 			gameState->currentPhase = EXPLORATION;
 		} else {
@@ -19,70 +19,37 @@ void Core_process(GameState *gameState, GameResources *gameResources, const char
 				gameState->message = "Can't unlock the specified skill.";
 			}
 		}
-	// }
+	} else if (gameState->currentPhase == EXPLORATION) {
+		Core_exploration(gameState, gameResources, input);
+	}
 }
 
 void Core_exploration(GameState *gameState, GameResources *gameResources, const char *input) {
-	Location Ltemp;
+	Location ltemp;
 	Battle battle;
 	int i;
-	if(gameState->currentPhase == EXPLORATION) {
-		if(StringUtils_strcmpi(input,"GU")) {
-			i=0;
-			Ltemp = Location_moveUp(gameState->player->loc, &gameResources->areas, &gameState->locationEdges);
-			while(i<gameState->enemies->length) {
-				if(Location_isEqual(Ltemp, gameState->enemies->items[i].loc)) {
-					Battle_init(&battle,gameState->enemies,gameState->enemies->items[i].id,gameState->player);
-				}
-			}
-			i=0;
-			while(i<gameState->powerUps->length) {
-				if(Location_isEqual(Ltemp, gameState->powerUps->items[i].loc)) {
-					Powerup_add(gameState->powerUps->items[i], gameState->player);
-				}
-			}
-		} else if(StringUtils_strcmpi(input,"GD")) {
-			i=0;
-			Ltemp = Location_moveDown(gameState->player->loc, &gameResources->areas, &gameState->locationEdges);
-			while(i<gameState->enemies->length) {
-				if(Location_isEqual(Ltemp, gameState->enemies->items[i].loc)) {
-					Battle_init(&battle,gameState->enemies,gameState->enemies->items[i].id,gameState->player);
-				}
-			}
-			i=0;
-			while(i<gameState->powerUps->length) {
-				if(Location_isEqual(Ltemp, gameState->powerUps->items[i].loc)) {
-					Powerup_add(gameState->powerUps->items[i], gameState->player);
-				}
-			}
-		} else if(StringUtils_strcmpi(input,"GL")) {
-			i=0;
-			Ltemp = Location_moveLeft(gameState->player->loc, &gameResources->areas, &gameState->locationEdges);
-			while(i<gameState->enemies->length) {
-				if(Location_isEqual(Ltemp, gameState->enemies->items[i].loc)) {
-					Battle_init(&battle,gameState->enemies,gameState->enemies->items[i].id,gameState->player);
-				}
-			}
-			i=0;
-			while(i<gameState->powerUps->length) {
-				if(Location_isEqual(Ltemp, gameState->powerUps->items[i].loc)) {
-					Powerup_add(gameState->powerUps->items[i], gameState->player);
-				}
-			}
-		} else if(StringUtils_strcmpi(input,"GR")) {
-			i=0;
-			Ltemp = Location_moveRight(gameState->player->loc, &gameResources->areas, &gameState->locationEdges);
-			while(i<gameState->enemies->length) {
-				if(Location_isEqual(Ltemp, gameState->enemies->items[i].loc)) {
-					Battle_init(&battle,gameState->enemies,gameState->enemies->items[i].id,gameState->player);
-				}
-			}
-			i=0;
-			while(i<gameState->powerUps->length) {
-				if(Location_isEqual(Ltemp, gameState->powerUps->items[i].loc)) {
-					Powerup_add(gameState->powerUps->items[i], gameState->player);
-				}
-			}
+
+	if (StringUtils_strcmpi(input, "GU")) {
+		ltemp = Location_moveUp(gameState->player->loc, &gameResources->areas, &gameState->locationEdges);
+	} else if(StringUtils_strcmpi(input, "GD")) {
+		ltemp = Location_moveDown(gameState->player->loc, &gameResources->areas, &gameState->locationEdges);
+	} else if(StringUtils_strcmpi(input, "GL")) {
+		ltemp = Location_moveLeft(gameState->player->loc, &gameResources->areas, &gameState->locationEdges);
+	} else if(StringUtils_strcmpi(input, "GR")) {
+		ltemp = Location_moveRight(gameState->player->loc, &gameResources->areas, &gameState->locationEdges);
+	}
+
+	i = 0;
+	while(i<gameState->enemies->length) {
+		if(Location_isEqual(ltemp, gameState->enemies->items[i].loc)) {
+			Battle_init(&battle,gameState->enemies,gameState->enemies->items[i].id,gameState->player);
+		}
+	}
+
+	i = 0;
+	while(i<gameState->powerUps->length) {
+		if(Location_isEqual(ltemp, gameState->powerUps->items[i].loc)) {
+			Powerup_add(gameState->powerUps->items[i], gameState->player);
 		}
 	}
 }

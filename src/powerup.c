@@ -23,7 +23,7 @@ void Powerup_load(Powerup *powerup, FILE *fin) {
 }
 
 void Powerup_add(PowerType powerup, Player *player) {
-    if(StringUtils_strcmpi(powerup.type,"hp") == 0) {
+    if (StringUtils_strcmpi(powerup.type,"hp") == 0) {
         player->hp += powerup.bonus;
     } else if(StringUtils_strcmpi(powerup.type,"str") == 0) {
         player->str += powerup.bonus;

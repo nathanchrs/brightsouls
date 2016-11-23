@@ -7,24 +7,26 @@
 #include "player.h"
 
 typedef struct {
-    char *powerName;
-    Location loc;
-    char *type;
-    int bonus;
-    bool available;
-} PowerType;
+    char *powerUpName;
+    int hpUp;
+    int expUp;
+    int strUp;
+    int defUp;
+} PowerUpType;
 
-/*
-    example :
-    Powerup P;
-    P.type = "exp"; // exp, str, hp, etc
-    P.bonus = 100; // exp + 100
- */
+typedef struct {
+	PowerUpType type;
+	Location location;
+	bool available;
+} PowerUp;
 
-typedef ARRAY(PowerType) Powerup;
+typedef ARRAY(PowerUp) PowerUpArray;
+typedef ARRAY(PowerUpType) PowerUpTypeArray;
 
-void Powerup_load(Powerup *powerup, FILE *fin);
+void PowerUp_loadArray(PowerUpArray *powerUps, FILE *fin);
 
-void Powerup_add(PowerType powerup, Player *player);
+void PowerUpType_loadArray(PowerUpTypeArray *powerUpTypes, FILE *fin);
+
+void PowerUp_use(const PowerUp *powerUp, Player *player);
 
 #endif

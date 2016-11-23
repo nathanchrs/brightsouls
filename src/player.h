@@ -11,12 +11,20 @@ typedef struct {
 	char *name;
 
 	int hp;
+	int maxHp;
 	int str;
 	int def;
 	int exp;
-    Location loc;
+	int maxExp;
+	int level;
+
+    Location location;
 	List moveList;
 	Queue actionList;
 } Player;
+
+void Player_load(Player *player, FILE *fin);
+
+void Player_save(const Player *player, FILE *fout);
 
 #endif
