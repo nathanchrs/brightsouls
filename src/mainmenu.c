@@ -80,8 +80,6 @@ void MainMenu_show(const bool isGameRunning, const Config *config) {
    - exit: *exitGame = true, *isGameRunning = false */
 
 void MainMenu_processInput(GameState *gameState, bool *isGameRunning, bool *exitGame, const char *input) {
-	LIST(char*) command;
-	List_initialize(&command);
 
 	if (StringUtils_strcmpi(input, "EXIT") == 0 || StringUtils_strcmpi(input, "QUIT") == 0) {
 		*isGameRunning = false;

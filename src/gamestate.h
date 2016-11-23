@@ -4,6 +4,9 @@
 #include "boolean.h"
 #include "array.h"
 #include "location.h"
+#include "powerup.h"
+#include "enemy.h"
+#include "powerup.h"
 
 typedef enum {
 	EXPLORATION, BATTLE, CUTSCENE, SKILLTREE, GAMEOVER, CREDITS
@@ -16,19 +19,19 @@ typedef struct {
 	GamePhase currentPhase;
 	char *message;
 
-	ARRAY(LocationEdge) locationEdges;
-	
-/*
-	Player player;
+	LocationEdgeArray locationEdges;
+
+	Player *player;
+	//Location loc;
 
 	Enemy *enemies;
-	PowerUp *powerUps;
-
+	Powerup *powerUps;
+/*
 	AreaMap areaMap;
 	Battle currentBattle;
 */
 	ARRAY(bool) isSkillUnlocked;
-	
+
 } GameState;
 
 bool GameState_load(GameState *gameState, const char *filePath);

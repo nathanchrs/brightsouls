@@ -72,7 +72,7 @@ int SkillTree_getSkillIndex(const SkillTree *skillTree, const char *skillName) {
 bool SkillTree_isSkillUnlocked(const SkillTree *skillTree, const GameState *gameState, const char *skillName) {
 	int idx = SkillTree_getSkillIndex(skillTree, skillName);
 	if (idx >= 0 && idx < gameState->isSkillUnlocked.length) {
-		return gameState->isSkillUnlocked.items[idx];	
+		return gameState->isSkillUnlocked.items[idx];
 	} else {
 		return false;
 	}

@@ -10,7 +10,7 @@ void testEnemy(Enemy *enemy) {
 	FILE *fin = fopen("../test/enemy.in", "r");
 	assert(fin != NULL);
 	Enemy_load(enemy, fin);
-	
+
 	assert(enemy->length == 3);
 
 	assert(StringUtils_strcmpi(enemy->items[0].name, "Enemy 1") == 0);

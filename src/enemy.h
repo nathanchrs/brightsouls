@@ -6,6 +6,7 @@
 #include "listlinier.h"
 #include "queuelist.h"
 #include "array.h"
+#include "location.h"
 
 typedef struct {
 	int id;
@@ -17,6 +18,7 @@ typedef struct {
 	int def;
 	int exp;
 
+    Location loc;
 	List moveList;
 	int moveCount; //n : 10, b : 20
 } EnemyType;

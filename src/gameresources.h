@@ -4,12 +4,14 @@
 #include "skilltree.h"
 #include "boolean.h"
 #include "array.h"
+#include "area.h"
 
 typedef struct {
 	//EnemyType *enemyTypes;
 	//PowerUpType *powerUpTypes;
 	SkillTree skillTree;
-	ARRAY(Area) areas;
+	AreaArray areas;
+    Powerup powerup;
 } GameResources;
 
 bool GameResources_load(GameResources *gameResources, const char *filePath);
