@@ -104,13 +104,10 @@ void DelAfter (List *L, address *Pdel, address Prec);
 /*      Pdel adalah alamat elemen list yang dihapus  */
 
 /****************** PROSES SEMUA ELEMEN LIST ******************/
-void PrintInfo (List L);
-/* I.S. List mungkin kosong */
-/* F.S. Jika list tidak kosong, iai list dicetak ke kanan: [e1,e2,...,en] */
-/* Contoh : jika ada tiga elemen bernilai 1, 20, 30 akan dicetak: [1,20,30] */
-/* Jika list kosong : menulis [] */
-/* Tidak ada tambahan karakter apa pun di awal, akhir, atau di tengah */
 int NbElmt (List L);
 /* Mengirimkan banyaknya elemen list; mengirimkan 0 jika list kosong */
+
+void CopyList (List Lin, List *Lout);
+/* Mengcopy isi list Lin ke Lout */
 
 #endif

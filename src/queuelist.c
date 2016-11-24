@@ -86,3 +86,13 @@ void Queue_Del(Queue * Q, queue_infotype * X)
 		Tail(*Q) = Nil;
 	Queue_Dealokasi(P);
 }
+
+void Queue_CopyList (Queue Qin, Queue *Qout)
+{
+	while (!Queue_IsEmpty(Qin))
+	{
+		char q;
+		Queue_Del(&Qin, &q);
+		Queue_Add(Qout, q);
+	}
+}
