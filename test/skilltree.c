@@ -7,7 +7,7 @@ void testSkillTree() {
 	printf("  Testing SkillTree...\n");
 
 	SkillTree skillTree;
-	FILE *fin = fopen("./test/skilltree.in", "r");
+	FILE *fin = fopen("../test/skilltree.in", "r");
 	assert(fin != NULL);
 	SkillTree_load(&skillTree, fin);
 

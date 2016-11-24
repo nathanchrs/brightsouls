@@ -47,10 +47,15 @@ void Battle_playerInput(Player *player)
 void Battle_showEnemyMove(Queue enemyActionlist)
 {
 	char c, ct;
+	Queue eAl;
+	Queue_CreateEmpty(&eAl);
+
+	Queue_CopyList(enemyActionlist, &eAl);
+	
 	printf("Current enemy move : ");
-	while (!Queue_IsEmpty(enemyActionlist))
+	while (!Queue_IsEmpty(eAl))
 	{
-		Queue_Del(&enemyActionlist, &c);
+		Queue_Del(&eAl, &c);
 		ct = (char) tolower((int) c);
 		if (c == ct)
 			printf("# ");
@@ -65,11 +70,10 @@ void Battle_calcMove(EnemyType *enemy, Player *player)
 	Queue enemyActionlist;
 	Queue_CreateEmpty(&enemyActionlist);
 	DelVFirst(&(enemy->moveList), &enemyActionlist);
-
+	
 	while ((!Queue_IsEmpty(enemyActionlist)) && (player->hp > 0) && (enemy->hp > 0))
 	{
 		char enemyAction, playerAction;
-
 		Queue_Del(&(enemyActionlist), &enemyAction);
 		Queue_Del(&(player->actionList), &playerAction);
 		printf("Calculating action enemy(%c) & player(%c)\n", enemyAction, playerAction);
@@ -153,7 +157,7 @@ void Battle_calcAction(char enemyAction, char playerAction, EnemyType *enemy, Pl
 		playerDmg = 0;
 		enemyDmg = (player->str);
 	}
-	else if ((playerAction == 'F') && (enemyAction == 'f'))
+	else if ((playerAction == 'F') && (enemyAction == 'F'))
 	{
 		playerDmg = (enemy->str) - (player->def);
 		enemyDmg = (player->str) - (enemy->def);

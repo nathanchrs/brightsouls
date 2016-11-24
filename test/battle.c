@@ -44,7 +44,7 @@ void testBattle() {
 	printf(" %s def : %d\n", battle.player.name, battle.player.def);
 	while ((battle.round <= battle.enemy.moveCount) && (battle.player.hp > 0) && (battle.enemy.hp > 0))
 	{
-		Battle_showEnemyMove(Info(First(battle.enemy.moveList)));
+		//Battle_showEnemyMove(Info(First(battle.enemy.moveList)));
 
 		Queue_CreateEmpty(&battle.player.actionList);
 		while (Queue_NbElmt(battle.player.actionList) < 4)
