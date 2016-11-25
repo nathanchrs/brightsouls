@@ -1,22 +1,12 @@
 #include "player.h"
 #include "io.h"
 
-typedef struct {
-	char *name;
-
-	int hp;
-	int maxHp;
-	int str;
-	int def;
-	int exp;
-	int maxExp;
-	int level;
-
-	MoveQueue moveQueue;
-} Player;
-
 void Player_load(Player *player, FILE *fin) {
 	player->name = IO_readString(fin);
+
+	player->location.point.r = IO_readInteger(fin);
+	player->location.point.c = IO_readInteger(fin);
+	player->location.areaId = IO_readInteger(fin);
 
 	player->hp = IO_readInteger(fin);
 	player->maxHp = IO_readInteger(fin);

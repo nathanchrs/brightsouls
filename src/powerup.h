@@ -27,7 +27,7 @@ void PowerUpTypeArray_load(PowerUpTypeArray *powerUpTypes, FILE *fin);
 
 void PowerUpArray_load(PowerUpArray *powerUps, FILE *fin);
 
-void PowerUp_use(const PowerUpTypeArray *powerUpTypes, const PowerUp *powerUp, Player *player)
+void PowerUp_use(const PowerUpTypeArray *powerUpTypes, const PowerUp *powerUp, Player *player);
 
 void PowerUpTypeArray_deallocate(PowerUpTypeArray *powerUpTypes);
 

@@ -1,12 +1,8 @@
 #include "enemy.h"
 #include "stringutils.h"
-#include "io.h"
 
 void EnemyTypeArray_load(EnemyTypeArray *enemyTypes, FILE *fin) {
 	int n, i;
-	char inp;
-	Queue move;
-
 	n = IO_readInteger(fin);
 	Array_allocate(enemyTypes, n);
 	enemyTypes->length = n;
@@ -31,8 +27,8 @@ void EnemyArray_load(EnemyArray *enemies, FILE *fin) {
 
 	for (i = 0; i < n; i++) {
 		enemies->items[i].typeId = IO_readInteger(fin);
-		enemies->items[i].location.r = IO_readInteger(fin);
-		enemies->items[i].location.c = IO_readInteger(fin);
+		enemies->items[i].location.point.r = IO_readInteger(fin);
+		enemies->items[i].location.point.c = IO_readInteger(fin);
 		enemies->items[i].location.areaId = IO_readInteger(fin);
 	}
 }

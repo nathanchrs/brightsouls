@@ -7,6 +7,7 @@
 #include "player.h"
 #include "skilltree.h"
 #include "io.h"
+#include "move.h"
 
 typedef struct {
 

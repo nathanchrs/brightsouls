@@ -3,13 +3,13 @@
 
 FILE* IO_openFile(const char *directory, const char *fileName) {
 	char *filePath = StringUtils_concat(directory, fileName);
-	FILE *fin = fopen(testFilePath, "r");
+	FILE *fin = fopen(filePath, "r");
 	StringUtils_deallocate(filePath);
 	return fin;
 }
 
 void IO_closeFile(FILE *file) {
-	close(file);
+	fclose(file);
 }
 
 void IO_discardCharacters(FILE *fin, const char *discard) {
@@ -77,23 +77,25 @@ void IO_writeInteger(FILE *fout, int integer) {
 }
 
 /* Load a boolean array from string of 0's and 1's in file */
-void IO_readBoolArray(BoolArray *array, FILE *fin) {
-	StringUtils_discardCharacters(fin, STRINGUTILS_WHITESPACE);
-	char *input = StringUtils_scan(fin, STRINGUTILS_NEWLINE);
+BoolArray IO_readBoolArray(FILE *fin) {
+	BoolArray array;
+	IO_discardCharacters(fin, IO_WHITESPACE);
+	char *input = StringUtils_scan(fin, IO_NEWLINE);
 	size_t inputLen = StringUtils_strlen(input);
-	Array_allocate(array, inputLen);
+	Array_allocate(&array, inputLen);
 	int i;
 	for (i = 0; i < inputLen; i++) {
-		if (input[i] == '0') Array_pushBack(array, false);
-		else if (input[i] == '1') Array_pushBack(array, true);
+		if (input[i] == '0') Array_pushBack(&array, false);
+		else if (input[i] == '1') Array_pushBack(&array, true);
 	}
 	StringUtils_deallocate(input);
+	return array;
 }
 
 void IO_writeBoolArray(FILE *fout, BoolArray boolArray) {
 	int i;
 	for (i = 0; i < boolArray.length; i++) {
-		if (boolArray.items[i]) fprintf(fout, "1")
+		if (boolArray.items[i]) fprintf(fout, "1");
 		else fprintf(fout, "0");
 	}
 	fprintf(fout, " ");

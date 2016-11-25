@@ -16,6 +16,7 @@ bool isGameRunning, exitGame;
 bool fileRead;
 
 int main (int argc, char *argv[]) {
+	char *executableDirectory = getExecutableDirectory(argv[0]);
 
 	Config config;
 	config.frameBufferHeight = 30;
@@ -23,7 +24,6 @@ int main (int argc, char *argv[]) {
 	config.useColor = true;
 
 	// Load resources to memory
-	char *executableDirectory = getExecutableDirectory(argv[0]);
 	FILE *resourceFile = IO_openFile(executableDirectory, "../res/resources.txt");
 	if (!resourceFile) {
 		fprintf(stderr, "Failed to load resource file from %s../res/resources.txt.", executableDirectory);
@@ -34,7 +34,6 @@ int main (int argc, char *argv[]) {
 	IO_closeFile(resourceFile);
 
 	// DEBUG: Load initial save file to memory
-	char *executableDirectory = getExecutableDirectory(argv[0]);
 	FILE *saveFile = IO_openFile(executableDirectory, "../res/initialsave.txt");
 	if (!saveFile) {
 		fprintf(stderr, "Failed to load save file from %s../res/initialsave.txt.", executableDirectory);

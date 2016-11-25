@@ -17,6 +17,10 @@ void MoveQueue_save(const MoveQueue *moveQueue, FILE *fout);
 
 void MoveQueueStack_save(const MoveQueueStack *moves, FILE *fout);
 
+MoveQueue MoveQueue_clone(MoveQueue *moveQueue);
+
+MoveQueueStack MoveQueueStack_clone(MoveQueueStack *moves);
+
 void MoveQueueStack_permute(MoveQueueStack *moves);
 
 void MoveQueue_deallocate(MoveQueue *moveQueue);

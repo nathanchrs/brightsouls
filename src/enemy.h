@@ -1,11 +1,12 @@
 #ifndef ENEMY_H
 #define ENEMY_H
 
-#include <stdio.h>
+#include "io.h"
 #include "boolean.h"
 #include "list.h"
 #include "array.h"
 #include "location.h"
+#include "move.h"
 
 typedef struct {
 	char *name;

@@ -32,10 +32,10 @@ void PowerUpTypeArray_load(PowerUpTypeArray *powerUpTypes, FILE *fin) {
 }
 
 void PowerUp_use(const PowerUpTypeArray *powerUpTypes, const PowerUp *powerUp, Player *player) {
-    player->hp += powerUpTypes.items[powerUp->typeId].hpUp
-    player->exp += powerUpTypes.items[powerUp->typeId].expUp
-    player->str += powerUpTypes.items[powerUp->typeId].strUp
-    player->def += powerUpTypes.items[powerUp->typeId].defUp;
+    player->hp += powerUpTypes->items[powerUp->typeId].hpUp;
+    player->exp += powerUpTypes->items[powerUp->typeId].expUp;
+    player->str += powerUpTypes->items[powerUp->typeId].strUp;
+    player->def += powerUpTypes->items[powerUp->typeId].defUp;
 }
 
 void PowerUpTypeArray_deallocate(PowerUpTypeArray *powerUpTypes) {

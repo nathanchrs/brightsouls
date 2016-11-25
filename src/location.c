@@ -92,7 +92,7 @@ Location Location_moveRight(Location currentLocation, const AreaArray *areas, co
 	else return loc;
 }
 
-void Location_loadEdgeArray(LocationEdgeArray *locs, FILE *fin) {
+void LocationEdgeArray_load(LocationEdgeArray *locs, FILE *fin) {
 	int n, i;
 	fscanf(fin, "%d", &n);
 	Array_allocate(locs, n);

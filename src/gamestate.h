@@ -22,7 +22,7 @@ typedef struct {
 
 	LocationEdgeArray locationEdges;
 
-	Player *player;
+	Player player;
 
 	BoolArray isEnemyDefeated;
 	BoolArray isPowerUpUsed;

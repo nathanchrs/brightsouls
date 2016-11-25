@@ -18,9 +18,35 @@ void MoveQueueStack_load(MoveQueueStack *moves, FILE *fin) {
 	n = IO_readInteger(fin);
 	for (i = 0; i < n; i++) {
 		MoveQueue moveQueue;
-		Move_loadQueue(moveQueue, fin);
+		MoveQueue_load(&moveQueue, fin);
 		List_pushLast(moves, moveQueue);
 	}
+}
+
+MoveQueue MoveQueue_clone(MoveQueue *moveQueue) {
+	MoveQueue newMoveQueue;
+	List_initialize(&newMoveQueue);
+	int i;
+	for (i = 0; i < moveQueue->length; i++) {
+		char tmp;
+		List_popFirst(moveQueue, &tmp);
+		List_pushLast(&newMoveQueue, tmp);
+		List_rotate(moveQueue, 1);
+	}
+	return newMoveQueue;
+}
+
+MoveQueueStack MoveQueueStack_clone(MoveQueueStack *moves) {
+	MoveQueueStack newMoves;
+	List_initialize(&newMoves);
+	int i;
+	for (i = 0; i < moves->length; i++) {
+		MoveQueue tmp;
+		List_popFirst(moves, &tmp);
+		List_pushLast(&newMoves, MoveQueue_clone(&tmp));
+		List_rotate(moves, 1);
+	}
+	return newMoves;
 }
 
 void MoveQueueStack_permute(MoveQueueStack *moves) {

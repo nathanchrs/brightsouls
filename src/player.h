@@ -4,6 +4,7 @@
 #include "boolean.h"
 #include "location.h"
 #include "io.h"
+#include "move.h"
 
 typedef struct {
 	char *name;
@@ -17,6 +18,7 @@ typedef struct {
 	int level;
 
     Location location;
+    MoveQueue moveQueue;
 } Player;
 
 void Player_load(Player *player, FILE *fin);
