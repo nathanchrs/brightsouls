@@ -15,7 +15,7 @@ typedef struct {
 } PowerUpType;
 
 typedef struct {
-	PowerUpType type;
+	int typeId;
 	Location location;
 	bool available;
 } PowerUp;
@@ -23,10 +23,14 @@ typedef struct {
 typedef ARRAY(PowerUp) PowerUpArray;
 typedef ARRAY(PowerUpType) PowerUpTypeArray;
 
-void PowerUp_loadArray(PowerUpArray *powerUps, FILE *fin);
+void PowerUpTypeArray_load(PowerUpTypeArray *powerUpTypes, FILE *fin);
 
-void PowerUpType_loadArray(PowerUpTypeArray *powerUpTypes, FILE *fin);
+void PowerUpArray_load(PowerUpArray *powerUps, FILE *fin);
 
-void PowerUp_use(const PowerUp *powerUp, Player *player);
+void PowerUp_use(const PowerUpTypeArray *powerUpTypes, const PowerUp *powerUp, Player *player)
+
+void PowerUpTypeArray_deallocate(PowerUpTypeArray *powerUpTypes);
+
+void PowerUpArray_deallocate(PowerUpArray *powerUps);
 
 #endif

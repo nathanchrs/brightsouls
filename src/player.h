@@ -27,4 +27,6 @@ void Player_load(Player *player, FILE *fin);
 
 void Player_save(const Player *player, FILE *fout);
 
+void Player_deallocate(Player *player);
+
 #endif

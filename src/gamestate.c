@@ -10,7 +10,9 @@ void GameState_load(GameState *gameState, FILE *fin) {
 
 	gameState->message = IO_readString(fin);
 
-	Location_loadEdgeArray(&(gameState->locationEdges), fin);
+	LocationEdgeArray_load(&(gameState->locationEdges), fin);
+
+	// Player_load(&(gameState->player), fin);
 
 	gameState->isEnemyDefeated = IO_readBoolArray(fin);
 	gameState->isPowerUpUsed = IO_readBoolArray(fin);
@@ -19,6 +21,9 @@ void GameState_load(GameState *gameState, FILE *fin) {
 
 void GameState_deallocate(GameState *gameState) {
 	StringUtils_deallocate(gameState->message);
+	LocationEdgeArray_deallocate(&(gameState->locationEdges));
+	// Player_deallocate(&(gameState->player))
+	Array_deallocate(&(gameState->isEnemyDefeated));
+	Array_deallocate(&(gameState->isPowerUpUsed));
 	Array_deallocate(&(gameState->isSkillUnlocked));
-	Array_deallocate(&(gameState->locationEdges));
 }

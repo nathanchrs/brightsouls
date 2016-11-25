@@ -108,3 +108,7 @@ void Location_loadEdgeArray(LocationEdgeArray *locs, FILE *fin) {
 		locs->items[i].to.areaId = aid1;
 	}
 }
+
+void LocationEdgeArray_deallocate(LocationEdgeArray *locs) {
+	Array_deallocate(locs);
+}

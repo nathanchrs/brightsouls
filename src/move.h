@@ -9,12 +9,18 @@
 typedef LIST(char) MoveQueue;
 typedef LIST(MoveQueue) MoveQueueStack;
 
-void Move_loadQueue(MoveQueue *moveQueue, FILE *fin);
+void MoveQueue_load(MoveQueue *moveQueue, FILE *fin);
 
-void MoveQueue_loadStack(MoveQueueStack *moves, FILE *fin);
+void MoveQueueStack_load(MoveQueueStack *moves, FILE *fin);
 
-void Move_saveQueue(const MoveQueue *moveQueue, FILE *fout);
+void MoveQueue_save(const MoveQueue *moveQueue, FILE *fout);
 
-void MoveQueue_saveStack(const MoveQueueStack *moves, FILE *fout);
+void MoveQueueStack_save(const MoveQueueStack *moves, FILE *fout);
+
+void MoveQueueStack_permute(MoveQueueStack *moves);
+
+void MoveQueue_deallocate(MoveQueue *moveQueue);
+
+void MoveQueueStack_deallocate(MoveQueueStack *moves);
 
 #endif

@@ -4,8 +4,9 @@
 #include "area.h"
 #include "enemy.h"
 #include "powerup.h"
+#include "player.h"
 #include "skilltree.h"
-#include "array.h"
+#include "io.h"
 
 typedef struct {
 

@@ -33,6 +33,10 @@ Location Location_moveLeft(Location currentLocation, const AreaArray *areas, con
 
 Location Location_moveRight(Location currentLocation, const AreaArray *areas, const LocationEdgeArray *locationEdges);
 
-void Location_loadEdgeArray(LocationEdgeArray *locs, FILE *fin);
+void LocationEdgeArray_load(LocationEdgeArray *locs, FILE *fin);
+
+void LocationEdgeArray_save(LocationEdgeArray *locs, FILE *fout);
+
+void LocationEdgeArray_deallocate(LocationEdgeArray *locs);
 
 #endif

@@ -40,16 +40,16 @@ void Core_exploration(GameState *gameState, GameResources *gameResources, const 
 	}
 
 	i = 0;
-	while (i<gameState->enemies->length) {
+	while (i < gameState->enemies->length) {
 		if (Location_isEqual(ltemp, gameState->enemies->items[i].location)) {
-			Battle_init(&battle, &gameState->enemies->items[i], &gameState->player);
+			Battle_init(&battle, &(gameState->enemies->items[i]), &(gameState->player));
 		}
 	}
 
 	i = 0;
-	while(i<gameState->powerUps->length) {
+	while (i < gameState->powerUps->length) {
 		if (Location_isEqual(ltemp, gameState->powerUps->items[i].location)) {
-			Powerup_use(&gameState->powerUps->items[i], &gameState->player);
+			PowerUp_use(&(gameState->powerUpTypes), &(gameState->powerUps->items[i]), &(gameState->player));
 		}
 	}
 }

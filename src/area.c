@@ -27,7 +27,7 @@ void Area_load(Area *area, FILE *fin){
 	}
 }
 
-void Area_loadArray(AreaArray *areas, FILE *fin) {
+void AreaArray_load(AreaArray *areas, FILE *fin) {
 	int n, i;
 	n = IO_readInteger(fin);
 	Array_allocate(areas, n);
@@ -48,4 +48,12 @@ char Area_getCell(const Area *area, Point point) {
 void Area_deallocate(Area *area) {
 	free(area->grid);
 	StringUtils_deallocate(area->areaName);
+}
+
+void AreaArray_deallocate(AreaArray *areas) {
+	int i;
+	for (i = 0; i < areas->length; i++) {
+		Area_deallocate(&(areas->items[i]));
+	}
+	Array_deallocate(areas);
 }

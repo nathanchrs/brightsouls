@@ -33,3 +33,17 @@ void MoveQueueStack_permute(MoveQueueStack *moves) {
 		List_pushFirst(moves, swap);
 	}
 }
+
+void MoveQueue_deallocate(MoveQueue *moveQueue) {
+	List_deallocate(moveQueue);
+}
+
+void MoveQueueStack_deallocate(MoveQueueStack *moves) {
+	int i;
+	MoveQueue tmp;
+	for (i = 0; i < moves->length; i++) {
+		List_popFirst(moves, &tmp);
+		List_deallocate(&tmp);
+	}
+	List_deallocate(moves);
+}

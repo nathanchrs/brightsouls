@@ -19,10 +19,12 @@ typedef ARRAY(Area) AreaArray;
 
 void Area_load(Area *area, FILE *fin);
 
-void Area_loadArray(AreaArray *areas, FILE *fin);
+void AreaArray_load(AreaArray *areas, FILE *fin);
 
 char Area_getCell(const Area *area, Point point);
 
 void Area_deallocate(Area *area);
+
+void AreaArray_deallocate(AreaArray *areas);
 
 #endif
