@@ -8,7 +8,6 @@
 
 void Core_exploration(GameState *gameState, GameResources *gameResources, const char *input) {
 	Location ltemp;
-	int i;
 
 	if (StringUtils_strcmpi(input, "u") == 0) {
 		ltemp = Location_moveUp(gameState->player.location, &(gameResources->areas), &(gameState->locationEdges));
@@ -34,10 +33,11 @@ void Core_exploration(GameState *gameState, GameResources *gameResources, const 
 	if (Location_isEqual(ltemp, gameState->player.location)) {
 		gameState->message = "Can't go that way...";
 	} else {
-		for (i = 0; i < gameResources->powerUps.length; i++) {
-			if (Location_isEqual(ltemp, gameResources->powerUps.items[i].location)) {
-				PowerUp_use(&(gameResources->powerUpTypes), &(gameResources->powerUps.items[i]), &(gameState->player));
-			}
+		int powerUpId = PowerUpArray_searchLocation(&(gameResources->powerUps), ltemp);
+		if (powerUpId >= 0 && !gameState->isPowerUpUsed.items[powerUpId]) {
+			PowerUp_use(&(gameResources->powerUpTypes), &(gameResources->powerUps.items[powerUpId]), &(gameState->player));
+			gameState->isPowerUpUsed.items[powerUpId] = true;
+			gameState->message = "Power up!.";
 		}
 
 		gameState->player.location = ltemp;

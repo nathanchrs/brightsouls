@@ -1,5 +1,6 @@
 #include "player.h"
 #include "io.h"
+#include "stringutils.h"
 
 void Player_load(Player *player, FILE *fin) {
 	player->name = IO_readString(fin);
