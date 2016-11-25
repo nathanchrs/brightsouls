@@ -72,30 +72,31 @@ void Battle_showEnemyMove(Queue enemyActionlist)
 	}
 	printf("\n");
 }
+*/
 
-void Battle_calcMove(EnemyType *enemy, Player *player)
+void Battle_calcMove(Battle *battle)
 {
-	Queue enemyActionlist;
-	Queue_CreateEmpty(&enemyActionlist);
-	DelVFirst(&(enemy->moveList), &enemyActionlist);
+	MoveQueue enemyActionlist;
+	List_initialization(&enemyActionlist);
+	List_popFirst(&(battle->enemyMoves), &enemyActionlist);
 	
-	while ((!Queue_IsEmpty(enemyActionlist)) && (player->hp > 0) && (enemy->hp > 0))
+	while ((!List_isEmpty(enemyActionlist)) && (battle->playerHp > 0) && (battle->enemyHp > 0))
 	{
 		char enemyAction, playerAction;
-		Queue_Del(&(enemyActionlist), &enemyAction);
-		Queue_Del(&(player->actionList), &playerAction);
+		List_popFirst(&(enemyActionlist), &enemyAction);
+		List_popFirst(&(playerMoveQueue), &playerAction);
 		printf("Calculating action enemy(%c) & player(%c)\n", enemyAction, playerAction);
-		Battle_calcAction(enemyAction, playerAction, enemy, player);
+		Battle_calcAction(enemyAction, playerAction, battle);
 	}
-	// Round end || player->hp <= 0 (dead)
+	// Round end || battle->playerHp <= 0 (dead)
 
-	Queue_CreateEmpty(&(player->actionList));
+	List_initialization(&(player->actionList));
 }
 
-void Battle_calcAction(char enemyAction, char playerAction, EnemyType *enemy, Player *player)
+void Battle_calcAction(char enemyAction, char playerAction, Battle *battle)
 {
 	// Calculate damage
-	
+	/*
 		a = Attack
 		b = Block
 		f = Flank
@@ -119,7 +120,8 @@ void Battle_calcAction(char enemyAction, char playerAction, EnemyType *enemy, Pl
 			LoserDmg = WinnerDef - LoserDef
 		
 		Minimum damage = 0
-	
+	*/
+
 	int playerDmg, enemyDmg;
 
 	enemyAction = (char) toupper((int) enemyAction);
@@ -127,23 +129,23 @@ void Battle_calcAction(char enemyAction, char playerAction, EnemyType *enemy, Pl
 
 	if ((playerAction == 'A') && (enemyAction == 'A'))
 	{
-		playerDmg = (enemy->str) - (player->def);
-		enemyDmg = (player->str) - (enemy->def);
+		playerDmg = (battle->enemyStr) - (battle->playerDef);
+		enemyDmg = (battle->playerStr) - (battle->enemyDef);
 	}
 	else if ((playerAction == 'A') && (enemyAction == 'B'))
 	{
-		playerDmg = (enemy->def) - (player->def);
+		playerDmg = (battle->enemyDef) - (battle->playerDef);
 		enemyDmg = 0;
 	}
 	else if ((playerAction == 'A') && (enemyAction == 'F'))
 	{
 		playerDmg = 0;
-		enemyDmg = (player->str);
+		enemyDmg = (battle->playerStr);
 	}
 	else if ((playerAction == 'B') && (enemyAction == 'A'))
 	{
 		playerDmg = 0;
-		enemyDmg = (player->def) - (enemy->def);
+		enemyDmg = (battle->playerDef) - (battle->enemyDef);
 	}
 	else if ((playerAction == 'B') && (enemyAction == 'B'))
 	{
@@ -152,23 +154,23 @@ void Battle_calcAction(char enemyAction, char playerAction, EnemyType *enemy, Pl
 	}
 	else if ((playerAction == 'B') && (enemyAction == 'F'))
 	{
-		playerDmg = (enemy->str);
+		playerDmg = (battle->enemyStr);
 		enemyDmg = 0;
 	}
 	else if ((playerAction == 'F') && (enemyAction == 'A'))
 	{
-		playerDmg = (enemy->str);
+		playerDmg = (battle->enemyStr);
 		enemyDmg = 0;
 	}
 	else if ((playerAction == 'F') && (enemyAction == 'B'))
 	{
 		playerDmg = 0;
-		enemyDmg = (player->str);
+		enemyDmg = (battle->playerStr);
 	}
 	else if ((playerAction == 'F') && (enemyAction == 'F'))
 	{
-		playerDmg = (enemy->str) - (player->def);
-		enemyDmg = (player->str) - (enemy->def);
+		playerDmg = (battle->enemyStr) - (battle->playerDef);
+		enemyDmg = (battle->playerStr) - (battle->enemyDef);
 	}
 
 	printf("Player Damaged : %d\n", playerDmg);
@@ -180,12 +182,11 @@ void Battle_calcAction(char enemyAction, char playerAction, EnemyType *enemy, Pl
 		enemyDmg = 0;
 
 	// Reduce hp, minimum hp is 0 (Dead)
-	player->hp -= playerDmg;
-	enemy->hp -= enemyDmg;
+	battle->playerHp -= playerDmg;
+	battle->enemyHp -= enemyDmg;
 
-	if ((player->hp) < 0)
-		(player->hp) = 0;
-	if ((enemy->hp) < 0)
-		(enemy->hp) = 0;
+	if ((battle->playerHp) < 0)
+		(battle->playerHp) = 0;
+	if ((battle->enemyHp) < 0)
+		(battle->enemyHp) = 0;
 }
-*/

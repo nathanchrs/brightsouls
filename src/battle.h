@@ -18,6 +18,10 @@ typedef struct {
 	int enemyExp;
 	MoveQueueStack enemyMoves;
 
+	int playerHp;
+	int playerStr;
+	int playerDef;
+	int playerExp;
 	MoveQueue playerMoveQueue;
 } Battle;
 
@@ -28,5 +32,9 @@ void Battle_save(const Battle *battle, FILE *fout);
 void Battle_deallocate(Battle *battle);
 
 void Battle_init(Battle *battle, const EnemyTypeArray *enemyTypes, int enemyTypeId);
+
+void Battle_calcMove(Battle *battle);
+
+void Battle_calcAction(char enemyAction, char playerAction, Battle *battle);
 
 #endif
