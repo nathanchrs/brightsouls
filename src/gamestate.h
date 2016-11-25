@@ -7,6 +7,7 @@
 #include "enemy.h"
 #include "powerup.h"
 #include "io.h"
+#include "battle.h"
 
 typedef enum {
 	EXPLORATION, BATTLE, CUTSCENE, SKILLTREE, GAMEOVER, CREDITS
@@ -26,6 +27,8 @@ typedef struct {
 	BoolArray isEnemyDefeated;
 	BoolArray isPowerUpUsed;
 	BoolArray isSkillUnlocked;
+
+	Battle battle;
 
 } GameState;
 

@@ -1,11 +1,9 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 
-#include <stdio.h>
 #include "boolean.h"
 #include "location.h"
-#include "listlinier.h"
-#include "queuelist.h"
+#include "io.h"
 
 typedef struct {
 	char *name;
@@ -19,8 +17,6 @@ typedef struct {
 	int level;
 
     Location location;
-	List moveList;
-	Queue actionList;
 } Player;
 
 void Player_load(Player *player, FILE *fin);

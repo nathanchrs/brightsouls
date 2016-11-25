@@ -26,9 +26,9 @@ typedef struct {
 typedef ARRAY(Enemy) EnemyArray;
 typedef ARRAY(EnemyType) EnemyTypeArray;
 
-void EnemyArray_load(EnemyArray *enemies, FILE *fin);
-
 void EnemyTypeArray_load(EnemyTypeArray *enemyTypes, FILE *fin);
+
+void EnemyArray_load(EnemyArray *enemies, FILE *fin);
 
 void EnemyTypeArray_deallocate(EnemyTypeArray *enemyTypes);
 
