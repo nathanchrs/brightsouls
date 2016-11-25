@@ -3,27 +3,23 @@
 
 #include <stdio.h>
 #include "boolean.h"
-#include "listlinier.h"
-#include "queuelist.h"
+#include "list.h"
 #include "array.h"
 #include "location.h"
 
 typedef struct {
-	int id;
 	char *name;
 
 	int hp;
-	int maxHp;
 	int str;
 	int def;
 	int exp;
 
-	List moveList;
-	int moveCount; //n : 10, b : 20
+	MoveQueueStack moves;
 } EnemyType;
 
 typedef struct {
-	EnemyType type;
+	int typeId;
 	Location location;
 } Enemy;
 
@@ -33,7 +29,5 @@ typedef ARRAY(EnemyType) EnemyTypeArray;
 void EnemyType_loadArray(EnemyTypeArray *enemyTypes, FILE *fin);
 
 void Enemy_loadArray(EnemyArray *enemies, FILE *fin);
-
-void Enemy_randMovelist(EnemyType *enemyType);
 
 #endif

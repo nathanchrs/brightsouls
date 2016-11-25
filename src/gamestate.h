@@ -6,6 +6,7 @@
 #include "location.h"
 #include "enemy.h"
 #include "powerup.h"
+#include "io.h"
 
 typedef enum {
 	EXPLORATION, BATTLE, CUTSCENE, SKILLTREE, GAMEOVER, CREDITS
@@ -22,15 +23,15 @@ typedef struct {
 
 	Player *player;
 
-	ARRAY(bool) isEnemyDefeated;
-	ARRAY(bool) isPowerUpUsed;
-	ARRAY(bool) isSkillUnlocked;
+	BoolArray isEnemyDefeated;
+	BoolArray isPowerUpUsed;
+	BoolArray isSkillUnlocked;
 
 } GameState;
 
-bool GameState_load(GameState *gameState, const char *filePath);
+void GameState_load(GameState *gameState, FILE *fin);
 
-void GameState_save(const GameState *gameState, const char *filePath);
+void GameState_save(const GameState *gameState, FILE *fout);
 
 void GameState_deallocate(GameState *gameState);
 

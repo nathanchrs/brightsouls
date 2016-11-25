@@ -1,18 +1,12 @@
 #include "gameresources.h"
-#include <stdio.h>
+#include "io.h"
 
-bool GameResources_load(GameResources *gameResources, const char *filePath) {
-	FILE *fin = fopen(filePath, "r");
-	if (!fin) return false;
-
+void GameResources_load(GameResources *gameResources, FILE *fin) {
 	/* Load skill tree */
 	SkillTree_load(&(gameResources->skillTree), fin);
 
 	/* Load area grids */
 	Area_loadArray(&(gameResources->areas), fin);
-
-	fclose(fin);
-	return true;
 }
 
 void GameResources_deallocate(GameResources *gameResources) {

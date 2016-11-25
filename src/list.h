@@ -44,4 +44,7 @@ void List_popFirst_impl(ListNode **head, size_t *length, const size_t *itemSize,
 #define List_popLast(listPointer, valuePointer) List_popLast_impl(&((listPointer)->head), &((listPointer)->length), &((listPointer)->itemSize), (void *) (valuePointer))
 void List_popLast_impl(ListNode **head, size_t *length, const size_t *itemSize, void *valuePointer);
 
+#define List_rotate(listPointer, rotations) List_rotate_impl(&((listPointer)->head), rotations)
+void List_rotate_impl(ListNode **head, int rotations);
+
 #endif

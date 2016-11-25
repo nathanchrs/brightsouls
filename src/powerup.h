@@ -7,7 +7,7 @@
 #include "player.h"
 
 typedef struct {
-    char *powerUpName;
+    char *name;
     int hpUp;
     int expUp;
     int strUp;

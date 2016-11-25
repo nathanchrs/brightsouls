@@ -15,4 +15,6 @@ void copyRawBytes(void *dest, const void *src, size_t n);
 
 char *getExecutableDirectory(const char *executablePath);
 
+int getRandomInt(int min, int max);
+
 #endif

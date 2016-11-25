@@ -2,14 +2,15 @@
 #include <stdio.h>
 #include "../src/skilltree.h"
 
-void testSkillTree() {
+void testSkillTree(const char *executableDirectory) {
 
 	printf("  Testing SkillTree...\n");
 
 	SkillTree skillTree;
-	FILE *fin = fopen("./test/skilltree.in", "r");
+	FILE *fin = IO_openFile(executableDirectory, "../test/skilltree.in");
 	assert(fin != NULL);
 	SkillTree_load(&skillTree, fin);
+	IO_closeFile(fin);
 
 	assert(skillTree.length == 5);
 	int i;

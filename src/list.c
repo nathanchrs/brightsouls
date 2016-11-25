@@ -69,3 +69,14 @@ void List_popLast_impl(ListNode **head, size_t *length, const size_t *itemSize, 
 		List_popFirst_impl(head, length, itemSize, valuePointer);
 	}
 }
+
+void List_rotate_impl(ListNode **head, int rotations) {
+	if (*head != NULL) {
+		if (rotations >= 0) {
+			for (i = 0; i < rotations; i++)	*head = ListNode_next(*head);
+		} else {
+			rotations = -rotations;
+			for (i = 0; i < rotations; i++)	*head = ListNode_prev(*head);
+		}
+	}
+}

@@ -21,7 +21,7 @@ typedef struct {
 	
 } GameResources;
 
-bool GameResources_load(GameResources *gameResources, const char *filePath);
+void GameResources_load(GameResources *gameResources, FILE *fin);
 
 void GameResources_deallocate(GameResources *gameResources);
 

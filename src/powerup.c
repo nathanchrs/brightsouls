@@ -2,34 +2,29 @@
 #include <stdlib.h>
 #include "stringutils.h"
 
-void Powerup_load(Powerup *powerup, FILE *fin) {
+void PowerUp_loadArray(PowerUpArray *powerUps, FILE *fin) {
     int n, i=0;
     fscanf(fin, "%d", &n);
-    Array_allocate(powerup, n);
-    powerup->length = n;
+    Array_allocate(powerUps, n);
+    powerUps->length = n;
 
     for (i = 0; i < n; i++) {
         StringUtils_discardCharacters(fin, STRINGUTILS_WHITESPACE);
-        powerup->items[i].powerName = StringUtils_scan(fin, STRINGUTILS_NEWLINE);
-        fscanf(fin,"%d", &(powerup->items[i].loc.point.r));
-        fscanf(fin,"%d", &(powerup->items[i].loc.point.c));
-        fscanf(fin,"%d", &(powerup->items[i].loc.areaId));
+        powerUps->items[i].powerName = StringUtils_scan(fin, STRINGUTILS_NEWLINE);
+        fscanf(fin,"%d", &(powerUps->items[i].location.point.r));
+        fscanf(fin,"%d", &(powerUps->items[i].location.point.c));
+        fscanf(fin,"%d", &(powerUps->items[i].location.areaId));
+        StringUtils_discardCharacters(fin, STRINGUTILS_WHITESPACE);ation
+        powerUps->items[i].type = StringUtils_scan(fin, STRINGUTILS_NEWLINE);
+        fscanf(fin,"%d", &(powerUps->items[i].bonus));
         StringUtils_discardCharacters(fin, STRINGUTILS_WHITESPACE);
-        powerup->items[i].type = StringUtils_scan(fin, STRINGUTILS_NEWLINE);
-        fscanf(fin,"%d", &(powerup->items[i].bonus));
-        StringUtils_discardCharacters(fin, STRINGUTILS_WHITESPACE);
-        fscanf(fin,"%c", &(powerup->items[i].available));
+        fscanf(fin,"%c", &(powerUps->items[i].available));
     }
 }
 
-void Powerup_add(PowerType powerup, Player *player) {
-    if (StringUtils_strcmpi(powerup.type,"hp") == 0) {
-        player->hp += powerup.bonus;
-    } else if(StringUtils_strcmpi(powerup.type,"str") == 0) {
-        player->str += powerup.bonus;
-    } else if(StringUtils_strcmpi(powerup.type,"def") == 0) {
-        player->def += powerup.bonus;
-    } else if(StringUtils_strcmpi(powerup.type,"exp") == 0) {
-        player->exp += powerup.bonus;
-    }
+void PowerUp_use(const PowerUp *powerUp, Player *player) {
+    player->hp += powerUp->type.hpUp;
+    player->exp += powerUp->type.expUp;
+    player->str += powerUp->type.strUp;
+    player->def += powerUp->type.defUp;
 }

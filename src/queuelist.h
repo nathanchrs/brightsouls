@@ -63,4 +63,6 @@ void Queue_Del(Queue * Q, queue_infotype * X);
 /* I.S. Q tidak mungkin kosong */
 /* F.S. X = nilai elemen HEAD pd I.S., HEAD "mundur" */
 
+void Queue_CopyList (Queue Qin, Queue *Qout);
+
 #endif

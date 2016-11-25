@@ -1,26 +1,20 @@
 #include "area.h"
+#include "io.h"
 #include "stringutils.h"
-#include <stdlib.h>
 
 void Area_load(Area *area, FILE *fin){
-	/* Read area name */
-	StringUtils_discardCharacters(fin, STRINGUTILS_WHITESPACE);
-	area->areaName = StringUtils_scan(fin, STRINGUTILS_NEWLINE);
-
-	/* Read area height and width */
-	int h, w;
-	fscanf(fin, "%d%d", &h, &w);
-	area->height = h;
-	area->width = w;
-	StringUtils_discardCharacters(fin, STRINGUTILS_WHITESPACE);
+	/* Read area name and size */
+	area->areaName = IO_readString(fin);
+	area->height = IO_readInteger(fin);
+	area->width = IO_readInteger(fin);
 
 	/* Read area grid contents */
 	area->grid = malloc(area->height * area->width * sizeof(char));
 	if (area->grid) {
 		int r, c;
 		for (r = 0; r < area->height; r++) {
-			StringUtils_discardCharacters(fin, STRINGUTILS_WHITESPACE);
-			char *inp = StringUtils_scan(fin, STRINGUTILS_WHITESPACE);
+			IO_discardCharacters(fin, IO_WHITESPACE);
+			char *inp = StringUtils_scan(fin, IO_WHITESPACE);
 			size_t slen = StringUtils_strlen(inp);
 			for (c = 0; c < area->width && c < slen; c++) {
 				area->grid[r*(area->width) + c] = inp[c];
@@ -35,7 +29,7 @@ void Area_load(Area *area, FILE *fin){
 
 void Area_loadArray(AreaArray *areas, FILE *fin) {
 	int n, i;
-	fscanf(fin, "%d", &n);
+	n = IO_readInteger(fin);
 	Array_allocate(areas, n);
 	areas->length = n;
 	for (i = 0; i < n; i++) {

@@ -30,26 +30,26 @@ void Core_exploration(GameState *gameState, GameResources *gameResources, const 
 	int i;
 
 	if (StringUtils_strcmpi(input, "GU")) {
-		ltemp = Location_moveUp(gameState->player->loc, &gameResources->areas, &gameState->locationEdges);
+		ltemp = Location_moveUp(gameState->player->location, &gameResources->areas, &gameState->locationEdges);
 	} else if(StringUtils_strcmpi(input, "GD")) {
-		ltemp = Location_moveDown(gameState->player->loc, &gameResources->areas, &gameState->locationEdges);
+		ltemp = Location_moveDown(gameState->player->location, &gameResources->areas, &gameState->locationEdges);
 	} else if(StringUtils_strcmpi(input, "GL")) {
-		ltemp = Location_moveLeft(gameState->player->loc, &gameResources->areas, &gameState->locationEdges);
+		ltemp = Location_moveLeft(gameState->player->location, &gameResources->areas, &gameState->locationEdges);
 	} else if(StringUtils_strcmpi(input, "GR")) {
-		ltemp = Location_moveRight(gameState->player->loc, &gameResources->areas, &gameState->locationEdges);
+		ltemp = Location_moveRight(gameState->player->location, &gameResources->areas, &gameState->locationEdges);
 	}
 
 	i = 0;
-	while(i<gameState->enemies->length) {
-		if(Location_isEqual(ltemp, gameState->enemies->items[i].loc)) {
-			Battle_init(&battle,gameState->enemies,gameState->enemies->items[i].id,gameState->player);
+	while (i<gameState->enemies->length) {
+		if (Location_isEqual(ltemp, gameState->enemies->items[i].location)) {
+			Battle_init(&battle, &gameState->enemies->items[i], &gameState->player);
 		}
 	}
 
 	i = 0;
 	while(i<gameState->powerUps->length) {
-		if(Location_isEqual(ltemp, gameState->powerUps->items[i].loc)) {
-			Powerup_add(gameState->powerUps->items[i], gameState->player);
+		if (Location_isEqual(ltemp, gameState->powerUps->items[i].location)) {
+			Powerup_use(&gameState->powerUps->items[i], &gameState->player);
 		}
 	}
 }

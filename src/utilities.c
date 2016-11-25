@@ -1,5 +1,6 @@
 #include "utilities.h"
 #include "stringutils.h"
+#include "time.h"
 
 #ifdef _WIN32
 // Windows-specific implementation
@@ -40,4 +41,9 @@ char *getExecutableDirectory(const char *executablePath) {
 	while (i >= 0 && res[i] != '/' && res[i] != '\\') i--;
 	res[i+1] = 0;
 	return res;
+}
+
+int getRandomInt(int min, int max) {
+	srand(time(NULL));
+	return min + (rand() % (max-min+1));
 }

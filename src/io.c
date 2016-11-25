@@ -1,6 +1,17 @@
 #include "io.h"
 #include "stringutils.h"
 
+FILE* IO_openFile(const char *directory, const char *fileName) {
+	char *filePath = StringUtils_concat(directory, fileName);
+	FILE *fin = fopen(testFilePath, "r");
+	StringUtils_deallocate(filePath);
+	return fin;
+}
+
+void IO_closeFile(FILE *file) {
+	close(file);
+}
+
 void IO_discardCharacters(FILE *fin, const char *discard) {
 	char c;
 	size_t discardLen = StringUtils_strlen(discard);

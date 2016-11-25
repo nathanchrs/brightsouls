@@ -4,7 +4,7 @@
 #include "array.h"
 #include "boolean.h"
 #include "gamestate.h"
-#include <stdio.h>
+#include "io.h"
 
 #define SKILLTREE_NO_PARENT -1
 

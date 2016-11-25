@@ -1,29 +1,29 @@
 5
 
-Nama skill 1
-Ini deskripsi skill 1
+`Nama skill 1`
+`Ini deskripsi skill 1`
 11
 
-Nama skill 2
-Ini deskripsi skill yang kedua
+`Nama skill 2`
+`Ini deskripsi skill yang kedua`
 22 0
 
-Nama skill tiga
-Ini deskripsi skill ke-3
+`Nama skill tiga`
+`Ini deskripsi skill ke-3`
 33 0
 
-Nama skill empat
-Ini deskripsi skill ke4
+`Nama skill empat`
+`Ini deskripsi skill ke 4`
 44 1
 
-Nama skill 5
-Ini deskripsi skill ke-5
+`Nama skill 5`
+`Ini deskripsi skill ke-5`
 55 1
 
 
 3
 
-First area
+`First area`
 5 4
 wwew
 w.ut
@@ -31,14 +31,14 @@ ttp.
 e..w
 tw.w
 
-2nd area
+`2nd area`
 5 5
 twt.t
 .t..t
 ...tt
 ww.tt
 
-Area #3
+`Area #3`
 4 5
 wwwww
 w....

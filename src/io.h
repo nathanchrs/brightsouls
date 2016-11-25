@@ -9,6 +9,12 @@
 #define IO_WHITESPACE " \n\t\v\f\r"
 #define IO_NEWLINE "\n\r"
 
+FILE* IO_openFile(const char *directory, const char *fileName);
+
+void IO_closeFile(FILE *file);
+
+void IO_discardCharacters(FILE *fin, const char *discard);
+
 void IO_writeNewLine(FILE *fout);
 
 /* Read/write quoted string from file */
