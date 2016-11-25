@@ -5,7 +5,7 @@
 #include "point.h"
 #include "array.h"
 #include "boolean.h"
-#include <stdio.h>
+#include "io.h"
 
 typedef struct {
 	Point point;

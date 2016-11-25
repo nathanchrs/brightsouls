@@ -43,7 +43,7 @@ void AreaRenderer_drawPlayer(FrameBuffer *fb, Point topLeft) {
 	FrameBuffer_drawPoint(fb, Point_translate(topLeft, 2, 2), '\\', CYAN, TRANSPARENT);
 }
 
-void AreaRenderer_drawEnemy1(FrameBuffer *fb, Point topLeft) {
+void AreaRenderer_drawEnemy(FrameBuffer *fb, Point topLeft) {
 	FrameBuffer_drawPoint(fb, Point_translate(topLeft, 0, 0), '<', RED, TRANSPARENT);
 	FrameBuffer_drawPoint(fb, Point_translate(topLeft, 0, 1), 'O', RED, TRANSPARENT);
 	FrameBuffer_drawPoint(fb, Point_translate(topLeft, 0, 2), '>', RED, TRANSPARENT);
@@ -63,10 +63,7 @@ void AreaRenderer_drawPowerUp(FrameBuffer *fb, Point topLeft) {
 
 
 void AreaRenderer_render(FrameBuffer *fb, const GameState *gameState, const GameResources *gameResources) {
-
-	// DEBUG
-	Area *currentArea = &(gameResources->areas.items[0]);
-	//Area *currentArea = &(gameResources->areas.items[gameState->player.location.areaId]);
+	Area *currentArea = &(gameResources->areas.items[gameState->player.location.areaId]);
 
 	// Draw background
 	FrameBuffer_drawRectangle(fb, Point_make(0, 0), Point_make(fb->height-1, fb->width-1), BLANK, TRANSPARENT, BLACK, BLACK);
@@ -97,13 +94,13 @@ void AreaRenderer_render(FrameBuffer *fb, const GameState *gameState, const Game
 	// Draw player, enemies and powerups
 	for (r = 0; r < currentArea->height; r++) {
 		for (c = 0; c < currentArea->width; c++) {
-			if (Area_getCell(currentArea, Point_make(r, c)) == 'u') {
+			if (Area_getCell(currentArea, Point_make(r, c)) == 'p') {
 				AreaRenderer_drawPowerUp(fb, Point_make(r*3 + AREA_RENDER_BORDER + AREA_TOP_PADDING + 1, r*3 + c*5 + AREA_RENDER_BORDER + 2));
 			}
 			if (Area_getCell(currentArea, Point_make(r, c)) == 'e') {
-				AreaRenderer_drawEnemy1(fb, Point_make(r*3 + AREA_RENDER_BORDER + AREA_TOP_PADDING, r*3 + c*5 + AREA_RENDER_BORDER + 2));
+				AreaRenderer_drawEnemy(fb, Point_make(r*3 + AREA_RENDER_BORDER + AREA_TOP_PADDING, r*3 + c*5 + AREA_RENDER_BORDER + 2));
 			}
-			if (Area_getCell(currentArea, Point_make(r, c)) == 'p') {
+			if (Location_isEqual(Location_make(Point_make(r, c), gameState->player.location.areaId), gameState->player.location)) {
 				AreaRenderer_drawPlayer(fb, Point_make(r*3 + AREA_RENDER_BORDER + AREA_TOP_PADDING, r*3 + c*5 + AREA_RENDER_BORDER + 2));
 			}
 		}

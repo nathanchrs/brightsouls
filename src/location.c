@@ -1,5 +1,7 @@
 #include "location.h"
 
+#include "utilities.h"
+
 Location Location_make(Point point, int areaId) {
 	Location loc;
 	loc.point = point;
@@ -94,18 +96,16 @@ Location Location_moveRight(Location currentLocation, const AreaArray *areas, co
 
 void LocationEdgeArray_load(LocationEdgeArray *locs, FILE *fin) {
 	int n, i;
-	fscanf(fin, "%d", &n);
+	n = IO_readInteger(fin);
 	Array_allocate(locs, n);
 	locs->length = n;
-	int r1, c1, aid1, r2, c2, aid2;
 	for (i = 0; i < n; i++) {
-		fscanf(fin, "%d%d%d%d%d%d", &r1, &c1, &aid1, &r2, &c2, &aid2);
-		locs->items[i].from.point.r = r1;
-		locs->items[i].from.point.c = c1;
-		locs->items[i].from.areaId = aid1;
-		locs->items[i].to.point.r = r1;
-		locs->items[i].to.point.c = c1;
-		locs->items[i].to.areaId = aid1;
+		locs->items[i].from.point.r = IO_readInteger(fin);
+		locs->items[i].from.point.c = IO_readInteger(fin);
+		locs->items[i].from.areaId = IO_readInteger(fin);
+		locs->items[i].to.point.r = IO_readInteger(fin);
+		locs->items[i].to.point.c = IO_readInteger(fin);
+		locs->items[i].to.areaId = IO_readInteger(fin);
 	}
 }
 
