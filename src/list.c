@@ -84,10 +84,11 @@ void List_rotate_impl(ListNode **head, int rotations) {
 
 void List_deallocate_impl(ListNode **head) {
 	ListNode *it = *head;
-	ListNode *nextIt;
+	ListNode *oldIt;
 	while (it != NULL) {
-		nextIt = it;
+		oldIt = it;
 		it = ListNode_next(it);
-		free(nextIt);
+		free(oldIt);
 	}
+	*head = NULL;
 }

@@ -29,6 +29,7 @@ void Battle_init(Battle *battle, const EnemyTypeArray *enemyTypes, int enemyType
 	Battle_deallocate(battle);
 
 	battle->round = 0;
+	battle->battleLog = "";
 	battle->enemyTypeId = enemyTypeId;
 	battle->enemyHp = enemyTypes->items[enemyTypeId].hp;
 	battle->enemyExp = enemyTypes->items[enemyTypeId].exp;

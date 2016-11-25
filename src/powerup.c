@@ -12,7 +12,6 @@ void PowerUpArray_load(PowerUpArray *powerUps, FILE *fin) {
         powerUps->items[i].location.point.r = IO_readInteger(fin);
         powerUps->items[i].location.point.c = IO_readInteger(fin);
         powerUps->items[i].location.areaId = IO_readInteger(fin);
-        powerUps->items[i].available = IO_readInteger(fin);
     }
 }
 
@@ -36,6 +35,17 @@ void PowerUp_use(const PowerUpTypeArray *powerUpTypes, const PowerUp *powerUp, P
     player->exp += powerUpTypes->items[powerUp->typeId].expUp;
     player->str += powerUpTypes->items[powerUp->typeId].strUp;
     player->def += powerUpTypes->items[powerUp->typeId].defUp;
+}
+
+/* Returns the index where a PowerUp with the specified location is found, or -1 otherwise */
+int PowerUpArray_searchLocation(const PowerUpArray *powerUps, Location loc) {
+    int i;
+    for (i = 0; i < powerUps->length; i++) {
+        if (Location_isEqual(powerUps->items[i].location, loc)) {
+            return i;
+        }
+    }
+    return -1;
 }
 
 void PowerUpTypeArray_deallocate(PowerUpTypeArray *powerUpTypes) {

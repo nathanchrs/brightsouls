@@ -94,14 +94,21 @@ void AreaRenderer_render(FrameBuffer *fb, const GameState *gameState, const Game
 	// Draw player, enemies and powerups
 	for (r = 0; r < currentArea->height; r++) {
 		for (c = 0; c < currentArea->width; c++) {
-			if (Area_getCell(currentArea, Point_make(r, c)) == 'p') {
+
+			int powerUpId = PowerUpArray_searchLocation(&(gameResources->powerUps), Location_make(Point_make(r, c), gameState->player.location.areaId));
+			if (powerUpId >= 0 && !gameState->isPowerUpUsed.items[powerUpId]) {
 				AreaRenderer_drawPowerUp(fb, Point_make(r*3 + AREA_RENDER_BORDER + AREA_TOP_PADDING + 1, r*3 + c*5 + AREA_RENDER_BORDER + 2));
-			}
-			if (Area_getCell(currentArea, Point_make(r, c)) == 'e') {
+				continue;
+			} 
+
+			int enemyId = EnemyArray_searchLocation(&(gameResources->enemies), Location_make(Point_make(r, c), gameState->player.location.areaId));
+			if (enemyId >= 0 && !gameState->isEnemyDefeated.items[enemyId]) {
 				AreaRenderer_drawEnemy(fb, Point_make(r*3 + AREA_RENDER_BORDER + AREA_TOP_PADDING, r*3 + c*5 + AREA_RENDER_BORDER + 2));
+				continue;
 			}
 			if (Location_isEqual(Location_make(Point_make(r, c), gameState->player.location.areaId), gameState->player.location)) {
 				AreaRenderer_drawPlayer(fb, Point_make(r*3 + AREA_RENDER_BORDER + AREA_TOP_PADDING, r*3 + c*5 + AREA_RENDER_BORDER + 2));
+				continue;
 			}
 		}
 	}
@@ -118,5 +125,5 @@ void AreaRenderer_render(FrameBuffer *fb, const GameState *gameState, const Game
 	FrameBuffer_drawTextBox(fb, Point_make(AREA_RENDER_BORDER, AREA_RENDER_BORDER), Point_make(AREA_RENDER_BORDER, 30), currentArea->areaName, WHITE, TRANSPARENT);
 
 	FrameBuffer_drawTextBox(fb, Point_make(fb->height-1,0), Point_make(fb->height-1, fb->width-1), gameState->message, WHITE, TRANSPARENT);
-	FrameBuffer_setInputPrompt(fb, "Command [u/d/l/r/skilltree] >> ");
+	FrameBuffer_setInputPrompt(fb, "Command [u/d/l/r/skilltree/pause] >> ");
 }

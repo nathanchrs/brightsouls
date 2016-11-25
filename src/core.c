@@ -9,48 +9,47 @@
 void Core_exploration(GameState *gameState, GameResources *gameResources, const char *input) {
 	Location ltemp;
 	int i;
-	bool validCommand = true;
 
-	if (StringUtils_strcmpi(input, "GU") == 0) {
+	if (StringUtils_strcmpi(input, "u") == 0) {
 		ltemp = Location_moveUp(gameState->player.location, &(gameResources->areas), &(gameState->locationEdges));
-	} else if(StringUtils_strcmpi(input, "GD") == 0) {
+	} else if(StringUtils_strcmpi(input, "d") == 0) {
 		ltemp = Location_moveDown(gameState->player.location, &(gameResources->areas), &(gameState->locationEdges));
-	} else if(StringUtils_strcmpi(input, "GL") == 0) {
+	} else if(StringUtils_strcmpi(input, "l") == 0) {
 		ltemp = Location_moveLeft(gameState->player.location, &(gameResources->areas), &(gameState->locationEdges));
-	} else if(StringUtils_strcmpi(input, "GR") == 0) {
+	} else if(StringUtils_strcmpi(input, "r") == 0) {
 		ltemp = Location_moveRight(gameState->player.location, &(gameResources->areas), &(gameState->locationEdges));
 	} else {
-		validCommand = false;
-
-		// TODO: show message: unknown command for exploration
+		gameState->message = "Invalid command.";
+		return;
 	}
 
-	if (validCommand) {
-		i = 0;
-		while (i < gameResources->enemies.length) {
-			if (Location_isEqual(ltemp, gameResources->enemies.items[i].location)) {
-				// TODO: Battle_init(&battle, &(gameResources->enemies.items[i]), &(gameState->player));
-			}
-		}
+	int enemyId = EnemyArray_searchLocation(&(gameResources->enemies), ltemp);
+	if (enemyId >= 0 && !gameState->isEnemyDefeated.items[enemyId]) {
+		// Enter battle
+		Battle_init(&(gameState->battle), &(gameResources->enemyTypes), gameResources->enemies.items[enemyId].typeId);
+		// gameState->currentPhase = BATTLE;
+		return; // Don't move to next location if entering battle
+	}
 
-		i = 0;
-		while (i < gameResources->powerUps.length) {
+	if (Location_isEqual(ltemp, gameState->player.location)) {
+		gameState->message = "Can't go that way...";
+	} else {
+		for (i = 0; i < gameResources->powerUps.length; i++) {
 			if (Location_isEqual(ltemp, gameResources->powerUps.items[i].location)) {
 				PowerUp_use(&(gameResources->powerUpTypes), &(gameResources->powerUps.items[i]), &(gameState->player));
 			}
 		}
 
-		if (Location_isEqual(ltemp, gameState->player.location)) {
-			// TODO: show message: can't go that way
-		} else {
-			gameState->player.location = ltemp;
-		}
+		gameState->player.location = ltemp;
 	}
 }
 
 void Core_process(GameState *gameState, GameResources *gameResources, const char *input) {
+	// Clear message
+	gameState->message = "";
+
 	if (gameState->currentPhase == SKILLTREE) {
-		if (StringUtils_strcmpi(input, "exit") == 0) {
+		if (StringUtils_strcmpi(input, "back") == 0) {
 			gameState->currentPhase = EXPLORATION;
 		} else {
 			bool skillUnlocked = SkillTree_unlockSkill(&(gameResources->skillTree), gameState, input);

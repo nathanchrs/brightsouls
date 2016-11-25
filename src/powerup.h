@@ -17,7 +17,6 @@ typedef struct {
 typedef struct {
 	int typeId;
 	Location location;
-	bool available;
 } PowerUp;
 
 typedef ARRAY(PowerUp) PowerUpArray;
@@ -28,6 +27,9 @@ void PowerUpTypeArray_load(PowerUpTypeArray *powerUpTypes, FILE *fin);
 void PowerUpArray_load(PowerUpArray *powerUps, FILE *fin);
 
 void PowerUp_use(const PowerUpTypeArray *powerUpTypes, const PowerUp *powerUp, Player *player);
+
+/* Returns the index where a PowerUp with the specified location is found, or -1 otherwise */
+int PowerUpArray_searchLocation(const PowerUpArray *powerUps, Location loc);
 
 void PowerUpTypeArray_deallocate(PowerUpTypeArray *powerUpTypes);
 

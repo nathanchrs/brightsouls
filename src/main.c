@@ -61,15 +61,14 @@ int main (int argc, char *argv[]) {
 		while (isGameRunning) {
 
 			// Render
-
 			Renderer_render(&frameBuffer, &gameState, &gameResources);
 
 			// Input
-			if (gameState.requestInput) {
-				input = StringUtils_scan(stdin, "\n");
-			} else {
-				// If requestInput is false, then the program will not wait for input. Useful for animations, etc.
-				gameState.requestInput = true; // Prevent infinite loops, have to explicitly state to bypass input
+			input = StringUtils_scan(stdin, "\n");
+			if (StringUtils_strcmpi(input, "pause") == 0 || StringUtils_strcmpi(input, "exit") == 0 || StringUtils_strcmpi(input, "quit") == 0) {
+				// Exit to main menu
+				isGameRunning = false;
+				break;
 			}
 
 			// Process

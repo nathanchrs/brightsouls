@@ -33,6 +33,17 @@ void EnemyArray_load(EnemyArray *enemies, FILE *fin) {
 	}
 }
 
+/* Returns the index where an Enemy with the specified location is found, or -1 otherwise */
+int EnemyArray_searchLocation(const EnemyArray *enemies, Location loc) {
+	int i;
+	for (i = 0; i < enemies->length; i++) {
+		if (Location_isEqual(enemies->items[i].location, loc)) {
+			return i;
+		}
+	}
+	return -1;
+}
+
 void EnemyTypeArray_deallocate(EnemyTypeArray *enemyTypes) {
 	int i;
 	for (i = 0; i < enemyTypes->length; i++) {

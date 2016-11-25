@@ -31,7 +31,7 @@ MoveQueue MoveQueue_clone(MoveQueue *moveQueue) {
 		char tmp;
 		List_popFirst(moveQueue, &tmp);
 		List_pushLast(&newMoveQueue, tmp);
-		List_rotate(moveQueue, 1);
+		List_pushLast(moveQueue, tmp);
 	}
 	return newMoveQueue;
 }
@@ -44,7 +44,7 @@ MoveQueueStack MoveQueueStack_clone(MoveQueueStack *moves) {
 		MoveQueue tmp;
 		List_popFirst(moves, &tmp);
 		List_pushLast(&newMoves, MoveQueue_clone(&tmp));
-		List_rotate(moves, 1);
+		List_pushLast(moves, tmp);
 	}
 	return newMoves;
 }

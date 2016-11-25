@@ -15,10 +15,11 @@ bool Location_isEqual(Location a, Location b) {
 
 bool Location_isValid(Location loc, const AreaArray *areas) {
 	if (loc.areaId >= 0 && loc.areaId < areas->length) {
-		return loc.point.r >= 0 && loc.point.r < areas->items[loc.areaId].height && loc.point.c >= 0 && loc.point.c < areas->items[loc.areaId].width;
-	} else {
-		return false;
+		if (loc.point.r >= 0 && loc.point.r < areas->items[loc.areaId].height && loc.point.c >= 0 && loc.point.c < areas->items[loc.areaId].width) {
+			return Area_getCell(&(areas->items[loc.areaId]), loc.point) == AREA_EMPTY_CELL;
+		}
 	}
+	return false;
 }
 
 int Location_findMatchingEdge(Location loc, const LocationEdgeArray *locationEdges) {

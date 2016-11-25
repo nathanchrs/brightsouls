@@ -95,7 +95,7 @@ void SkillTreeRenderer_render(FrameBuffer *fb, const GameState *gameState, const
 	FrameBuffer_drawTextBox(fb, Point_make(3,4), Point_make(3, 13), "SKILL TREE", WHITE, TRANSPARENT);
 
 	FrameBuffer_drawTextBox(fb, Point_make(fb->height-1,0), Point_make(fb->height-1, fb->width-1), gameState->message, WHITE, TRANSPARENT);
-	FrameBuffer_setInputPrompt(fb, "Select skill to unlock ([<skill name>] or [exit] >> ");
+	FrameBuffer_setInputPrompt(fb, "Select skill to unlock [<skill name>/back/pause] >> ");
 
 	Array_deallocate(&verticalPos);
 	Array_deallocate(&depthChildLeafCount);
