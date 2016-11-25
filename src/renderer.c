@@ -1,6 +1,7 @@
 #include "renderer.h"
 #include "skilltreerenderer.h"
 #include "arearenderer.h"
+#include "battlerenderer.h"
 
 void Renderer_render(FrameBuffer *fb, const GameState *gameState, const GameResources *gameResources) {
 	FrameBuffer_clear(fb);
@@ -9,7 +10,9 @@ void Renderer_render(FrameBuffer *fb, const GameState *gameState, const GameReso
 		AreaRenderer_render(fb, gameState, gameResources);
 	} else if (gameState->currentPhase == SKILLTREE) {
 		SkillTreeRenderer_render(fb, gameState, &(gameResources->skillTree));
-	}
-	
+	} else if (gameState->currentPhase == BATTLE) {
+        BattleRenderer_render(fb, gameState, gameResources);
+    }
+
 	FrameBuffer_output(fb, true);
 }
