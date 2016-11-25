@@ -1,38 +1,46 @@
 #include "battle.h"
 #include "stringutils.h"
 
-void Battle_load(Battle *battle, FILE *fin)
-{
+void Battle_load(Battle *battle, FILE *fin) {
+	battle->round = IO_readInteger(fin);
+	battle->battleLog = IO_readString(fin);
+
+	battle->enemyTypeId = IO_readInteger(fin);
+	battle->enemyHp = IO_readInteger(fin);
+	battle->enemyStr = IO_readInteger(fin);
+	battle->enemyDef = IO_readInteger(fin);
+	battle->enemyExp = IO_readInteger(fin);
+
+	MoveQueueStack_load(&(battle->enemyMoves), fin);
+	MoveQueue_load(&(battle->playerMoveQueue), fin);
+}
+
+void Battle_save(const Battle *battle, FILE *fout) {
 
 }
 
-void Battle_save(const Battle *battle, FILE *fout)
-{
-
+void Battle_deallocate(Battle *battle) {
+	StringUtils_deallocate(battle->battleLog);
+	MoveQueueStack_deallocate(&(battle->enemyMoves));
+	MoveQueue_deallocate(&(battle->playerMoveQueue));
 }
 
-void Battle_deallocate(Battle *battle)
-{
+void Battle_init(Battle *battle, const EnemyTypeArray *enemyTypes, int enemyTypeId) {
+	Battle_deallocate(battle);
 
+	battle->round = 0;
+	battle->battleLog = "";
+	battle->enemyTypeId = enemyTypeId;
+	battle->enemyHp = enemyTypes->items[enemyTypeId].hp;
+	battle->enemyExp = enemyTypes->items[enemyTypeId].exp;
+	battle->enemyStr = enemyTypes->items[enemyTypeId].str;
+	battle->enemyDef = enemyTypes->items[enemyTypeId].def;
+	battle->enemyMoves = MoveQueueStack_clone(&(enemyTypes->items[enemyTypeId].moves));
+
+	MoveQueueStack_permute(&(battle->enemyMoves));
 }
 
-void Battle_init(Battle *battle, const Enemy *enemy, int eId, Player *player)
-{
-	// Load enemy data
-	battle->enemy = enemy->items[eId];
-	CreateEmpty(&(battle->enemy.moveList));
-	CopyList(enemy->items[eId].moveList, &(battle->enemy.moveList));
-	Enemy_randMovelist(&(battle->enemy));
-
-	// Load player data
-	battle->player = *player;
-	CreateEmpty(&(battle->player.moveList));
-	Queue_CreateEmpty(&(battle->player.actionList));
-
-	//Others
-	battle->round = 1;
-}
-
+/*
 void Battle_playerInput(Player *player)
 {
 	char inp, dummy;
@@ -87,7 +95,7 @@ void Battle_calcMove(EnemyType *enemy, Player *player)
 void Battle_calcAction(char enemyAction, char playerAction, EnemyType *enemy, Player *player)
 {
 	// Calculate damage
-	/*
+	
 		a = Attack
 		b = Block
 		f = Flank
@@ -111,7 +119,7 @@ void Battle_calcAction(char enemyAction, char playerAction, EnemyType *enemy, Pl
 			LoserDmg = WinnerDef - LoserDef
 		
 		Minimum damage = 0
-	*/
+	
 	int playerDmg, enemyDmg;
 
 	enemyAction = (char) toupper((int) enemyAction);
@@ -180,3 +188,4 @@ void Battle_calcAction(char enemyAction, char playerAction, EnemyType *enemy, Pl
 	if ((enemy->hp) < 0)
 		(enemy->hp) = 0;
 }
+*/

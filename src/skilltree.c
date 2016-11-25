@@ -25,22 +25,19 @@ void SkillTree_calculateTreeInfo(SkillTree *skillTree) {
 
 void SkillTree_load(SkillTree *skillTree, FILE *fin) {
 	int n, i;
-	fscanf(fin, "%d", &n);
+	n = IO_readInteger(fin);
 	Array_allocate(skillTree, n);
 	skillTree->length = n;
 	for (i = 0; i < n; i++) {
-		StringUtils_discardCharacters(fin, STRINGUTILS_WHITESPACE);
-		skillTree->items[i].skillName = StringUtils_scan(fin, STRINGUTILS_NEWLINE);
-		StringUtils_discardCharacters(fin, STRINGUTILS_WHITESPACE);
-		skillTree->items[i].skillDescription = StringUtils_scan(fin, STRINGUTILS_NEWLINE);
-		fscanf(fin, "%d", &(skillTree->items[i].requiredLevel));
+		skillTree->items[i].skillName = IO_readString(fin);
+		skillTree->items[i].skillDescription = IO_readString(fin);
+		skillTree->items[i].requiredLevel = IO_readInteger(fin);
 		Array_allocate(&(skillTree->items[i].children), 2);
-
 		skillTree->items[i].depth = 0;
 
-		// the first node is assumed to be root and don't have parent info
+		// The first node is assumed to be root and don't have parent info
 		if (i > 0) {
-			fscanf(fin, "%d", &(skillTree->items[i].parent));
+			skillTree->items[i].parent = IO_readInteger(fin);
 		} else {
 			skillTree->items[i].parent = SKILLTREE_NO_PARENT;
 		}
@@ -72,7 +69,7 @@ int SkillTree_getSkillIndex(const SkillTree *skillTree, const char *skillName) {
 bool SkillTree_isSkillUnlocked(const SkillTree *skillTree, const GameState *gameState, const char *skillName) {
 	int idx = SkillTree_getSkillIndex(skillTree, skillName);
 	if (idx >= 0 && idx < gameState->isSkillUnlocked.length) {
-		return gameState->isSkillUnlocked.items[idx];	
+		return gameState->isSkillUnlocked.items[idx];
 	} else {
 		return false;
 	}

@@ -110,32 +110,6 @@ char* StringUtils_scanFromString(const char *strin, const char *delim, int *next
 	return realloc(str, sizeof(char) * (len + 1));
 }
 
-void StringUtils_discardCharacters(FILE *fin, const char *discard) {
-	char c;
-	size_t discardLen = StringUtils_strlen(discard);
-	bool stop = false;
-	while(!stop) {
-		c = fgetc(fin);
-		if (c == EOF) {
-			stop = true;
-		} else {
-			int i = 0;
-			bool found = false;
-			while(i < discardLen && !found) {
-				if (c == discard[i]) {
-					found = true;
-				} else {
-					i++;
-				}
-			}
-			if (!found) {
-				stop = true;
-				ungetc(c, fin);
-			}
-		}
-	}
-}
-
 /* Returns a pointer to a clone of string str
    The resulting string is dynamically allocated. Returns null on allocation failure. */
 char* StringUtils_clone(const char *str) {

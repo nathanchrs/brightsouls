@@ -1,30 +1,41 @@
 #ifndef ENEMY_H
 #define ENEMY_H
 
-#include <stdio.h>
+#include "io.h"
 #include "boolean.h"
-#include "listlinier.h"
-#include "queuelist.h"
+#include "list.h"
 #include "array.h"
+#include "location.h"
+#include "move.h"
 
 typedef struct {
-	int id;
 	char *name;
-	char *type; //n : Normal, b : Boss
 
 	int hp;
 	int str;
 	int def;
 	int exp;
 
-	List moveList;
-	int moveCount; //n : 10, b : 20
+	MoveQueueStack moves;
 } EnemyType;
 
-typedef ARRAY(EnemyType) Enemy;
+typedef struct {
+	int typeId;
+	Location location;
+} Enemy;
 
-void Enemy_load(Enemy *enemy, FILE *fin);
+typedef ARRAY(Enemy) EnemyArray;
+typedef ARRAY(EnemyType) EnemyTypeArray;
 
-void Enemy_randMovelist(EnemyType *enemy);
+void EnemyTypeArray_load(EnemyTypeArray *enemyTypes, FILE *fin);
+
+void EnemyArray_load(EnemyArray *enemies, FILE *fin);
+
+/* Returns the index where an Enemy with the specified location is found, or -1 otherwise */
+int EnemyArray_searchLocation(const EnemyArray *enemies, Location loc);
+
+void EnemyTypeArray_deallocate(EnemyTypeArray *enemyTypes);
+
+void EnemyArray_deallocate(EnemyArray *enemies);
 
 #endif

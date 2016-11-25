@@ -8,7 +8,7 @@
 #include "renderer.h"
 #include "utilities.h"
 #include "core.h"
-#include <stdio.h>
+#include "io.h"
 
 GameState gameState;
 GameResources gameResources;
@@ -16,6 +16,7 @@ bool isGameRunning, exitGame;
 bool fileRead;
 
 int main (int argc, char *argv[]) {
+	char *executableDirectory = getExecutableDirectory(argv[0]);
 
 	Config config;
 	config.frameBufferHeight = 30;
@@ -23,22 +24,24 @@ int main (int argc, char *argv[]) {
 	config.useColor = true;
 
 	// Load resources to memory
-	char *executableDirectory = getExecutableDirectory(argv[0]);
-	char *resourcePath = StringUtils_concat(executableDirectory, "../res/resources.txt");
-	fileRead = GameResources_load(&gameResources, resourcePath);
-	if (!fileRead) {
-		fprintf(stderr, "Failed to load resources from %s\n", resourcePath);
+	FILE *resourceFile = IO_openFile(executableDirectory, "../res/resources.txt");
+	if (!resourceFile) {
+		fprintf(stderr, "Failed to load resource file from %s../res/resources.txt.", executableDirectory);
+		IO_closeFile(resourceFile);
 		return 1;
 	}
+	GameResources_load(&gameResources, resourceFile);
+	IO_closeFile(resourceFile);
 
-
-	// DEBUG
-	char *initialSavePath = StringUtils_concat(executableDirectory, "../res/initialsave.txt");
-	fileRead = GameState_load(&gameState, initialSavePath);
-	if (!fileRead) {
-		fprintf(stderr, "Failed to load game state from %s %s\n", executableDirectory, initialSavePath);
+	// DEBUG: Load initial save file to memory
+	FILE *saveFile = IO_openFile(executableDirectory, "../res/initialsave.txt");
+	if (!saveFile) {
+		fprintf(stderr, "Failed to load save file from %s../res/initialsave.txt.", executableDirectory);
+		IO_closeFile(saveFile);
 		return 1;
 	}
+	GameState_load(&gameState, saveFile);
+	IO_closeFile(saveFile);
 
 	// Show splash screen
 	MainMenu_showSplashScreen(&config);
@@ -58,15 +61,14 @@ int main (int argc, char *argv[]) {
 		while (isGameRunning) {
 
 			// Render
-
 			Renderer_render(&frameBuffer, &gameState, &gameResources);
 
 			// Input
-			if (gameState.requestInput) {
-				input = StringUtils_scan(stdin, "\n");
-			} else {
-				// If requestInput is false, then the program will not wait for input. Useful for animations, etc.
-				gameState.requestInput = true; // Prevent infinite loops, have to explicitly state to bypass input
+			input = StringUtils_scan(stdin, "\n");
+			if (StringUtils_strcmpi(input, "pause") == 0 || StringUtils_strcmpi(input, "exit") == 0 || StringUtils_strcmpi(input, "quit") == 0) {
+				// Exit to main menu
+				isGameRunning = false;
+				break;
 			}
 
 			// Process
@@ -82,10 +84,7 @@ int main (int argc, char *argv[]) {
 	StringUtils_deallocate(input);
 
 	StringUtils_deallocate(executableDirectory);
-	StringUtils_deallocate(resourcePath);
-	StringUtils_deallocate(initialSavePath);
 
 	return 0;
-
 }
 

@@ -3,14 +3,16 @@
 #include "../src/stringutils.h"
 #include "../src/enemy.h"
 
-void testEnemy() {
+void testEnemy(const char *executableDirectory) {
 
 	printf("  Testing Enemy...\n");
 
 	Enemy enemy;
-	FILE *fin = fopen("../test/enemy.in", "r");
+
+	FILE *fin = IO_openFile(executableDirectory, '../test/enemy.in');
 	assert(fin != NULL);
 	Enemy_load(&enemy, fin);
+	IO_closeFile(fin);
 	
 	assert(enemy.length == 3);
 

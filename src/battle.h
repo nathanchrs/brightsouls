@@ -1,17 +1,24 @@
 #ifndef BATTLE_H
 #define BATTLE_H
 
-#include <stdio.h>
+#include "io.h"
 #include "boolean.h"
 #include "enemy.h"
 #include "player.h"
+#include "move.h"
 
 typedef struct {
-	EnemyType enemy;
-	Player player;
-
 	int round;
-	//ARRAY(char *) battleLog;
+	char *battleLog;
+
+	int enemyTypeId;
+	int enemyHp;
+	int enemyStr;
+	int enemyDef;
+	int enemyExp;
+	MoveQueueStack enemyMoves;
+
+	MoveQueue playerMoveQueue;
 } Battle;
 
 void Battle_load(Battle *battle, FILE *fin);
@@ -20,14 +27,6 @@ void Battle_save(const Battle *battle, FILE *fout);
 
 void Battle_deallocate(Battle *battle);
 
-void Battle_init(Battle *battle, const Enemy *enemy, int eId, Player *player);
-
-void Battle_playerInput(Player *player);
-
-void Battle_showEnemyMove(Queue enemyActionlist);
-
-void Battle_calcMove(EnemyType *enemy, Player *player);
-
-void Battle_calcAction(char enemyAction, char playerAction, EnemyType *enemy, Player *player);
+void Battle_init(Battle *battle, const EnemyTypeArray *enemyTypes, int enemyTypeId);
 
 #endif

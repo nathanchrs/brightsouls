@@ -1,28 +1,32 @@
 #include "gamestate.h"
 #include "stringutils.h"
-#include <stdio.h>
 
-bool GameState_load(GameState *gameState, const char *filePath) {
-	FILE *fin = fopen(filePath, "r");
-	if (!fin) return false;
-	int i;
+void GameState_load(GameState *gameState, FILE *fin) {
+	
+	// DateTime_load(&(gameState->lastSaveTime), fin);
+	
+	gameState->requestInput = IO_readInteger(fin);
+	gameState->currentPhase = IO_readInteger(fin);
 
-	// Load isSkillUnlocked from string of 0's and 1's
-	StringUtils_discardCharacters(fin, STRINGUTILS_WHITESPACE);
-	char *isSkillUnlockedInput = StringUtils_scan(fin, STRINGUTILS_NEWLINE);
-	size_t isSkillUnlockedInputLen = StringUtils_strlen(isSkillUnlockedInput);
-	Array_allocate(&(gameState->isSkillUnlocked), isSkillUnlockedInputLen);
-	gameState->isSkillUnlocked.length = isSkillUnlockedInputLen;
-	for (i = 0; i<isSkillUnlockedInputLen; i++) {
-		gameState->isSkillUnlocked.items[i] = isSkillUnlockedInput[i] == '1';
-	}
+	gameState->message = IO_readString(fin);
 
-	StringUtils_deallocate(isSkillUnlockedInput);
-	fclose(fin);
-	return true;
+	LocationEdgeArray_load(&(gameState->locationEdges), fin);
+
+	Player_load(&(gameState->player), fin);
+
+	gameState->isEnemyDefeated = IO_readBoolArray(fin);
+	gameState->isPowerUpUsed = IO_readBoolArray(fin);
+	gameState->isSkillUnlocked = IO_readBoolArray(fin);
+
+	Battle_load(&(gameState->battle), fin);
 }
 
 void GameState_deallocate(GameState *gameState) {
 	StringUtils_deallocate(gameState->message);
+	LocationEdgeArray_deallocate(&(gameState->locationEdges));
+	Player_deallocate(&(gameState->player));
+	Array_deallocate(&(gameState->isEnemyDefeated));
+	Array_deallocate(&(gameState->isPowerUpUsed));
 	Array_deallocate(&(gameState->isSkillUnlocked));
+	Battle_deallocate(&(gameState->battle));
 }

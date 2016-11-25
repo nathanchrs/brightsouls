@@ -16,7 +16,7 @@ typedef struct ListNode {
 #define ListNode_next(nodePointer) ((nodePointer)->next)
 #define ListNode_prev(nodePointer) ((nodePointer)->prev)
 #define ListNode_valuePointer(nodePointer) ((nodePointer)->valuePointer)
-#define ListNode_value(nodePointer, type) (*((type*) ListNode_valuePointer(nodePointer)))
+#define ListNode_value(nodePointer, type) (*((type*) ListNode_valuePointer(nodePointer))) // Read only
 
 /* These can't be used internally since it uses the LIST(T) anonymous struct type */
 #define List_first(listPointer) ((listPointer)->head)
@@ -43,5 +43,11 @@ void List_popFirst_impl(ListNode **head, size_t *length, const size_t *itemSize,
 
 #define List_popLast(listPointer, valuePointer) List_popLast_impl(&((listPointer)->head), &((listPointer)->length), &((listPointer)->itemSize), (void *) (valuePointer))
 void List_popLast_impl(ListNode **head, size_t *length, const size_t *itemSize, void *valuePointer);
+
+#define List_rotate(listPointer, rotations) List_rotate_impl(&((listPointer)->head), rotations)
+void List_rotate_impl(ListNode **head, int rotations);
+
+#define List_deallocate(listPointer) List_deallocate_impl(&((listPointer)->head))
+void List_deallocate_impl(ListNode **head);
 
 #endif

@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include "../src/list.h"
 
-void testList() {
+void testList(const char *executableDirectory) {
 
 	printf("  Testing List...\n");
 

@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include "../src/array.h"
 
-void testArray() {
+void testArray(const char *executableDirectory) {
 
 	printf("  Testing Array...\n");
 

@@ -1,11 +1,18 @@
 #include <assert.h>
-#include <stdio.h>
+#include "../src/io.h"
 #include "../src/battle.h"
 #include "../src/stringutils.h"
 
-void testBattle() {
+void testBattle(const char *executableDirectory) {
 
 	printf("  Testing Battle...\n");
+
+	EnemyArray enemies;
+
+	FILE *fin = IO_openFile(executableDirectory, '../test/enemy.in');
+	assert(fin != NULL);
+	Enemy_loadArray(&enemies, fin);
+	IO_closeFile(fin);
 
 	Battle battle;
 
@@ -15,13 +22,10 @@ void testBattle() {
 	player.str = 12;
 	player.def = 3;
 	player.exp = 0;
+	
+	
 
-	Enemy enemy;
-	FILE *fin = fopen("../test/enemy.in", "r");
-	assert(fin != NULL);
-	Enemy_load(&enemy, fin);
-
-	Battle_init(&battle, &enemy, 0, &player);
+	Battle_init(&battle, &(enemies.items[0]), 0, &player);
 	assert(StringUtils_strcmpi(battle.enemy.name, "Enemy 1") == 0);
 	assert(StringUtils_strcmpi(battle.enemy.type, "normal") == 0);
 	assert(battle.enemy.moveCount == 10);

@@ -8,7 +8,7 @@
 
 void MainMenu_showSplashScreen(const Config *config) {
 
-	FrameBuffer fb = FrameBuffer_allocate(config->frameBufferHeight, config->frameBufferWidth, config->useColor);
+	/*FrameBuffer fb = FrameBuffer_allocate(config->frameBufferHeight, config->frameBufferWidth, config->useColor);
 	FrameBuffer_clear(&fb);
 	Color bgcolor_top = WHITE, fgcolor_top = BLACK, bgcolor_bot = WHITE, fgcolor_bot = BLACK;
 	float x = 0.0;
@@ -35,7 +35,7 @@ void MainMenu_showSplashScreen(const Config *config) {
 		x += 2.0;
 	}
 	delay(2.0);
-	FrameBuffer_deallocate(&fb);
+	FrameBuffer_deallocate(&fb);*/
 }
 
 /* Tampilkan main menu di layar: resume game (jika isGameRunning false), new game, load game, save game, exit */
@@ -80,8 +80,6 @@ void MainMenu_show(const bool isGameRunning, const Config *config) {
    - exit: *exitGame = true, *isGameRunning = false */
 
 void MainMenu_processInput(GameState *gameState, bool *isGameRunning, bool *exitGame, const char *input) {
-	LIST(char*) command;
-	List_initialize(&command);
 
 	if (StringUtils_strcmpi(input, "EXIT") == 0 || StringUtils_strcmpi(input, "QUIT") == 0) {
 		*isGameRunning = false;
