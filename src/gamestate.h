@@ -27,7 +27,6 @@ typedef struct {
 	BoolArray isEnemyDefeated;
 	BoolArray isPowerUpUsed;
 	BoolArray isSkillUnlocked;
-
 	Battle battle;
 
 } GameState;

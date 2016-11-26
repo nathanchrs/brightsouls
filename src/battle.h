@@ -25,7 +25,7 @@ typedef struct {
 	MoveQueue playerMoveQueue;
 } Battle;
 
-void Battle_load(Battle *battle, GameState *gamestate, FILE *fin);
+void Battle_load(Battle *battle, FILE *fin);
 
 void Battle_save(const Battle *battle, FILE *fout);
 
@@ -33,9 +33,9 @@ void Battle_deallocate(Battle *battle);
 
 void Battle_init(Battle *battle, const EnemyTypeArray *enemyTypes, int enemyTypeId);
 
-void Battle_calcMove(Battle *battle, GameState *gamestate);
+void Battle_calcMove(Battle *battle, Player *player);
 
-void Battle_calcAction(char enemyAction, char playerAction, Battle *battle, GameState *gamestate);
+void Battle_calcAction(char enemyAction, char playerAction, Battle *battle, Player *player);
 
 void Battle_playerInput(Battle *battle);
 
