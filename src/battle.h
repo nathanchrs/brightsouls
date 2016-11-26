@@ -13,6 +13,7 @@ typedef struct {
 	char *battleLog;
 
 	char *enemyName;
+	int enemyTypeId;
 	int enemyHp;
 	int enemyStr;
 	int enemyDef;
@@ -21,11 +22,6 @@ typedef struct {
 	char *enemyMovesShow;
 	char *enemyMovesHide;
 
-	char *playerName;
-	int playerHp;
-	int playerStr;
-	int playerDef;
-	int playerExp;
 	MoveQueue playerMoveQueue;
 } Battle;
 
@@ -37,9 +33,9 @@ void Battle_deallocate(Battle *battle);
 
 void Battle_init(Battle *battle, const EnemyTypeArray *enemyTypes, int enemyTypeId);
 
-void Battle_calcMove(Battle *battle);
+void Battle_calcMove(Battle *battle, Player *player);
 
-void Battle_calcAction(char enemyAction, char playerAction, Battle *battle);
+void Battle_calcAction(char enemyAction, char playerAction, Battle *battle, Player *player);
 
 void Battle_playerInput(Battle *battle);
 
