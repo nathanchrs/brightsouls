@@ -6,13 +6,14 @@
 #include "../src/enemy.h"
 #include "../src/player.h"
 #include "../src/powerup.h"
+#include "../src/utilities.h"
 
 void testArray(const char *executableDirectory);
 void testList(const char *executableDirectory);
 void testSkillTree(const char *executableDirectory);
-/*void testPowerUp(const char *executableDirectory);
+//void testPowerUp(const char *executableDirectory);
 void testEnemy(const char *executableDirectory);
-void testBattle(const char *executableDirectory);*/
+void testBattle(const char *executableDirectory);
 
 int main (int argc, char *argv[]) {
 
@@ -24,9 +25,11 @@ int main (int argc, char *argv[]) {
 	testArray(executableDirectory);
 	testList(executableDirectory);
 	testSkillTree(executableDirectory);
-	/*testPowerUp(executableDirectory);
+	//testPowerUp(executableDirectory);
 	testEnemy(executableDirectory);
-	testBattle(executableDirectory);*/
+	testBattle(executableDirectory);
+	int x;
+	scanf("%d", &x);
 
 	StringUtils_deallocate(executableDirectory);
 	printf("Tests completed.\n\n");
