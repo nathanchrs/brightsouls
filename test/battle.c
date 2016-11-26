@@ -7,66 +7,70 @@ void testBattle(const char *executableDirectory) {
 
 	printf("  Testing Battle...\n");
 
-	EnemyArray enemies;
+	/*EnemyArray enemies;
 
 	FILE *fin = IO_openFile(executableDirectory, "../test/enemy.in"-7);
 	assert(fin != NULL);
 	Enemy_loadArray(&enemies, fin);
 	IO_closeFile(fin);
+	*/
 
 	Battle battle;
 
-	Player player;
-	player.name = "Player 1";
-	player.hp = 50;
-	player.str = 12;
-	player.def = 3;
-	player.exp = 0;
-	
-	
+	FILE *fin = IO_openFile(executableDirectory, "../test/battle.in");
+	assert(fin != NULL);
+	Battle_load(&battle, fin);
+	IO_closeFile(fin);	
 
-	Battle_init(&battle, &(enemies.items[0]), 0, &player);
-	assert(StringUtils_strcmpi(battle.enemy.name, "Enemy 1") == 0);
-	assert(StringUtils_strcmpi(battle.enemy.type, "normal") == 0);
-	assert(battle.enemy.moveCount == 10);
-	assert(battle.enemy.hp == 50);
-	assert(battle.enemy.str == 10);
-	assert(battle.enemy.def == 5);
-	assert(battle.enemy.exp == 25);
-	assert(!IsEmpty(battle.enemy.moveList));
+	//Battle_init(&battle, &(enemies.items[0]), 0, &player);
 
-	assert(StringUtils_strcmpi(battle.player.name, "Player 1") == 0);
-	assert(battle.player.str == 12);
-	assert(battle.player.def == 3);
-	assert(battle.player.exp == 0);
+	assert(battle.round == 1);
+	assert(battle.roundMax == 10);
+	assert(StringUtils_strcmpi(battle.battleLog, "BattleLog") == 0);
+
+	assert(StringUtils_strcmpi(battle.enemyName, "Jenis musuh 1") == 0);
+	assert(battle.enemyHp == 50);
+	assert(battle.enemyStr == 10);
+	assert(battle.enemyDef == 5);
+	assert(battle.enemyExp == 25);
+	assert(!List_isEmpty(&battle.enemyMoves));
+
+	assert(StringUtils_strcmpi(battle.playerName, "Player 1") == 0);
+	assert(battle.playerStr == 12);
+	assert(battle.playerDef == 3);
+	assert(battle.playerExp == 0);
 	printf("Stats :\n");
-	printf(" %s hp : %d\n", battle.enemy.name, battle.enemy.hp);
-	printf(" %s str : %d\n", battle.enemy.name, battle.enemy.str);
-	printf(" %s def : %d\n", battle.enemy.name, battle.enemy.def);
-	printf(" %s hp : %d\n", battle.player.name, battle.player.hp);
-	printf(" %s str : %d\n", battle.player.name, battle.player.str);
-	printf(" %s def : %d\n", battle.player.name, battle.player.def);
-	while ((battle.round <= battle.enemy.moveCount) && (battle.player.hp > 0) && (battle.enemy.hp > 0))
+	printf(" %s hp : %d\n", battle.enemyName, battle.enemyHp);
+	printf(" %s str : %d\n", battle.enemyName, battle.enemyStr);
+	printf(" %s def : %d\n", battle.enemyName, battle.enemyDef);
+	printf(" %s hp : %d\n", battle.playerName, battle.playerHp);
+	printf(" %s str : %d\n", battle.playerName, battle.playerStr);
+	printf(" %s def : %d\n", battle.playerName, battle.playerDef);
+	while ((battle.round <= battle.roundMax) && (battle.playerHp > 0) && (battle.enemyHp > 0))
 	{
-		//Battle_showEnemyMove(Info(First(battle.enemy.moveList)));
+		printf("Enemy moves hide : %s\n", Battle_enemyMovesHide(&battle));
+		printf("Enemy moves show : %s\n", Battle_enemyMovesShow(&battle));
+		battle.battleLog = "";
 
-		Queue_CreateEmpty(&battle.player.actionList);
-		while (Queue_NbElmt(battle.player.actionList) < 4)
+		List_initialize(&battle.playerMoveQueue);
+		int i;
+		for (i=1; i<=4; i++)
 		{
-			printf("Input action #%d: ", Queue_NbElmt(battle.player.actionList)+1);
-			Battle_playerInput(&battle.player);
+			printf("Input action #%d: ", i);
+			Battle_playerInput(&battle);
 		}
-		Battle_calcMove(&(battle.enemy), &battle.player);
+		Battle_calcMove(&battle);
 
-		printf("Round %d :\n", battle.round);
-		printf(" %s hp : %d\n", battle.enemy.name, battle.enemy.hp);
-		printf(" %s hp : %d\n", battle.player.name, battle.player.hp);
+		printf("Round %d/%d :\n", battle.round, battle.roundMax);
+		printf(" %s hp : %d\n", battle.enemyName, battle.enemyHp);
+		printf(" %s hp : %d\n", battle.playerName, battle.playerHp);
+		printf("%s", battle.battleLog);
 		battle.round++;
 	}
-	if (battle.player.hp == 0 && battle.enemy.hp != 0)
-		printf("%s won!\n", battle.enemy.name);
-	else if (battle.enemy.hp == 0 && battle.player.hp != 0)
-		printf("%s won!\n", battle.player.name);
+	if (battle.playerHp == 0 && battle.enemyHp != 0)
+		printf("%s won!\n", battle.enemyName);
+	else if (battle.enemyHp == 0 && battle.playerHp != 0)
+		printf("%s won!\n", battle.playerName);
 	else
 		printf("It's a draw!\n");
 
