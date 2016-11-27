@@ -110,7 +110,7 @@ void BattleRenderer_render(FrameBuffer *fb, const GameState *gameState, const Ga
     // Draw player input box
 
     // Iterate over moveQueue (circular list implementation)
-    it = List_first(&(gameState->player.moveQueue));
+    it = List_first(&(gameState->battle.playerMoveQueue));
     firstNode = it;
     if (it != NULL) {
         do {
@@ -161,7 +161,17 @@ void BattleRenderer_render(FrameBuffer *fb, const GameState *gameState, const Ga
     FrameBuffer_drawRectangle(fb, Point_make(0,34), Point_make(24,84), '*', GRAY, TRANSPARENT, TRANSPARENT); // battleLog box
     FrameBuffer_drawTextBox(fb, Point_make(2, 36), Point_make(22, 82), gameState->battle.battleLog, WHITE, TRANSPARENT);
 
-    FrameBuffer_setInputPrompt(fb, "Enter [a(ttack)/b(lock)/f(lank)], [e(rase)] or [pause] >> ");
+    FrameBuffer_drawTextBox(fb, Point_make(fb->height-1,0), Point_make(fb->height-1, fb->width-1), gameState->message, WHITE, TRANSPARENT);
+
+    if (gameState->battle.currentPhase == BATTLE_PLAYER_WIN) {
+        FrameBuffer_setInputPrompt(fb, "You win! Press any key to continue or [pause] >> ");
+    } else if (gameState->battle.currentPhase == BATTLE_ENEMY_WIN) {
+        FrameBuffer_setInputPrompt(fb, "You are defeated. Press any key to continue or [pause] >> ");
+    } else if (gameState->battle.currentPhase == BATTLE_DRAW) {
+        FrameBuffer_setInputPrompt(fb, "It's a draw... press any key to continue or [pause] >> ");
+    } else { // BATTLE_ONGOING
+        FrameBuffer_setInputPrompt(fb, "Enter [a(ttack)/b(lock)/f(lank)], [e(rase)] or [pause] >> ");
+    }
 
     StringUtils_deallocate(playerMoveStr);
     StringUtils_deallocate(enemyMoveStr);

@@ -4,7 +4,7 @@
 void Battle_load(Battle *battle, FILE *fin) {
 	battle->round = IO_readInteger(fin);
 	battle->battleLog = IO_readString(fin);
-	battle->currentPhase = BATTLE_ONGOING;
+	battle->currentPhase = IO_readInteger(fin);
 
 	battle->enemyName = IO_readString(fin);
 	battle->enemyId = IO_readInteger(fin);
@@ -51,14 +51,23 @@ void Battle_init(Battle *battle, const EnemyArray *enemies, const EnemyTypeArray
 	battle->enemyDef = enemyTypes->items[battle->enemyTypeId].def;
 	battle->enemyMoves = MoveQueueStack_clone(&(enemyTypes->items[battle->enemyTypeId].moves));
 
+	// Randomize order of enemy move sequences
 	MoveQueueStack_permute(&(battle->enemyMoves));
+
+	List_initialize(&(battle->playerMoveQueue));
 }
 
 void Battle_calcMove(Battle *battle, Player *player) {
 	MoveQueue enemyActionlist;
 	List_popFirst(&(battle->enemyMoves), &enemyActionlist);
 
+	char *roundNumber = StringUtils_fromInt(battle->round, "%d");
+	StringUtils_append(&(battle->battleLog), "Round #");
+	StringUtils_append(&(battle->battleLog), roundNumber);
+	StringUtils_append(&(battle->battleLog), ":\n");
+
 	while ((!List_isEmpty(&enemyActionlist)) && (player->hp > 0) && (battle->enemyHp > 0)) {
+		StringUtils_append(&(battle->battleLog), "> ");
 		char enemyAction, playerAction;
 		List_popFirst(&(enemyActionlist), &enemyAction);
 		List_popFirst(&(battle->playerMoveQueue), &playerAction);
@@ -66,6 +75,12 @@ void Battle_calcMove(Battle *battle, Player *player) {
 	}
 	// Round end || player->hp <= 0 ||  battle->enemyHp <= 0(dead)
 	Battle_calcResult(battle, player);
+
+	// Reset player move list
+	List_deallocate(&(battle->playerMoveQueue));
+	List_initialize(&(battle->playerMoveQueue));
+
+	StringUtils_appendChar(&(battle->battleLog), '\n');
 }
 
 void Battle_calcAction(char enemyAction, char playerAction, Battle *battle, Player *player) {
@@ -82,7 +97,7 @@ void Battle_calcAction(char enemyAction, char playerAction, Battle *battle, Play
 		Same action :
 			Attack/Flank :
 			PlayerDmg = EnemyStr - PlayerDef
-			EnemyDmg = PlayerStr - EnemeyDef
+			EnemyDmg = PlayerStr - EnemyDef
 			Block :
 			PlayerDmg = EnemyDmg = 0
 		Win action :
@@ -183,27 +198,29 @@ void Battle_calcAction(char enemyAction, char playerAction, Battle *battle, Play
 		StringUtils_append(&(battle->battleLog), " flanked at the same time!\n");
 	}
 
-	if (playerDmg < 0)
-		playerDmg = 0;
-	if (enemyDmg < 0)
-		enemyDmg = 0;
+	if (playerDmg < 0) playerDmg = 0;
+	if (enemyDmg < 0) enemyDmg = 0;
 
 	// Reduce hp, minimum hp is 0 (Dead)
 	player->hp -= playerDmg;
 	battle->enemyHp -= enemyDmg;
 
-	if ((player->hp) < 0)
-		(player->hp) = 0;
-	if ((battle->enemyHp) < 0)
-		(battle->enemyHp) = 0;
+	if ((player->hp) < 0) (player->hp) = 0;
+	if ((battle->enemyHp) < 0) (battle->enemyHp) = 0;
 }
 
-void Battle_calcResult(Battle *battle, Player *player)
-{
-	if (((player->hp <= 0) && (battle->enemyHp <= 0)) || ((player->hp > 0) && (battle->enemyHp > 0)))
-		battle->currentPhase = BATTLE_DRAW;
-	else if (player->hp > 0 && battle->enemyHp <= 0)
-		battle->currentPhase = BATTLE_PLAYER_WIN;
-	else //(player->hp <= 0 && battle->enemyHp > 0)
-		battle->currentPhase = BATTLE_ENEMY_WIN;
+/* Set battle phase according to player and enemy HP */
+void Battle_calcResult(Battle *battle, Player *player) {
+	if (player->hp <= 0) {
+		battle->currentPhase = BATTLE_ENEMY_WIN; // player dead
+	} else if (battle->enemyHp <= 0) {
+		battle->currentPhase = BATTLE_PLAYER_WIN; // player alive, enemy dead
+		player->exp += battle->enemyExp;
+		Player_normalizeStats(player);
+	} else if (battle->enemyMoves.length <= 0) {
+		battle->currentPhase = BATTLE_DRAW; // both still alive, enemy out of moves
+		player->exp += battle->enemyExp;
+		Player_normalizeStats(player);
+	}
+	// other than that, battle is still ongoing (BATTLE_ONGOING)
 }
