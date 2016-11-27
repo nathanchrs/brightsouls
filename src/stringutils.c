@@ -12,6 +12,17 @@ int toupper(int c) {
 	return c;
 }
 
+char* StringUtils_fromInt(int value, const char* format) {
+	size_t len = snprintf(NULL, 0, format, value);
+	if (len < 24) { // hard limit on int length (including 64-bit), anything above is likely wrong
+		char *str = malloc(sizeof(char) * (len+1)); // allocate according to length
+		snprintf(str, len+1, format, value);
+		return str;
+	} else {
+		return NULL;
+	}
+}
+
 /* Read string from the input file from the current position until the delimiter character(s)
    (each character in the delimiter parameter is treated as a separate delimiter).
    The resulting string is dynamically allocated. Returns null on allocation failure. */

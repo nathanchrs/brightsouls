@@ -14,6 +14,8 @@ int toupper(int c);
    The resulting string is dynamically allocated. Returns null on allocation failure. */
 char* StringUtils_scan(FILE *fin, const char *delim);
 
+char* StringUtils_fromInt(int value, const char *format);
+
 char* StringUtils_scanFromString(const char *strin, const char *delim, int *nextIdx);
 
 /* Returns a pointer to a clone of string str

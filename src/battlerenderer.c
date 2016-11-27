@@ -1,376 +1,159 @@
 #include "battlerenderer.h"
 #include "stringutils.h"
-#include "framebuffer.h"
 #include <stdio.h>
 #include "move.h"
 #include "utilities.h"
 
-#define ENEMY_BOSS "BEELZEBUB"
-#define ENEMY_CREEP1 "CROCS"
+#define BATTLE_IMAGE_HEIGHT 15
+#define BATTLE_IMAGE_WIDTH 25
 
-
-void BattleRenderer_drawPlayer(FrameBuffer *fb, Point topLeft) {
-    char *buffer;
-    int i=0,j;
-    buffer = "            _A";
-    for(j=0; j<StringUtils_strlen(buffer); j++) {
-        FrameBuffer_drawPoint(fb, Point_translate(topLeft, i, j), buffer[j], CYAN, TRANSPARENT);
-    }
-    i++;
-    buffer = "          .'`\"`'.";
-    for(j=0; j<StringUtils_strlen(buffer); j++) {
-        FrameBuffer_drawPoint(fb, Point_translate(topLeft, i, j), buffer[j], CYAN, TRANSPARENT);
-    }
-    i++;
-    buffer = "         /        \\ ";
-    for(j=0; j<StringUtils_strlen(buffer); j++) {
-        FrameBuffer_drawPoint(fb, Point_translate(topLeft, i, j), buffer[j], CYAN, TRANSPARENT);
-    }
-    i++;
-    buffer = "        |         |";
-    for(j=0; j<StringUtils_strlen(buffer); j++) {
-        FrameBuffer_drawPoint(fb, Point_translate(topLeft, i, j), buffer[j], CYAN, TRANSPARENT);
-    }
-    i++;
-    buffer = "        |         |";
-    for(j=0; j<StringUtils_strlen(buffer); j++) {
-        FrameBuffer_drawPoint(fb, Point_translate(topLeft, i, j), buffer[j], CYAN, TRANSPARENT);
-    }
-    i++;
-    buffer = "        /         \\";
-    for(j=0; j<StringUtils_strlen(buffer); j++) {
-        FrameBuffer_drawPoint(fb, Point_translate(topLeft, i, j), buffer[j], CYAN, TRANSPARENT);
-    }
-    i++;
-    buffer = "       (.---._ _.-.)";
-    for(j=0; j<StringUtils_strlen(buffer); j++) {
-        FrameBuffer_drawPoint(fb, Point_translate(topLeft, i, j), buffer[j], CYAN, TRANSPARENT);
-    }
-    i++;
-    buffer = "        |         |";
-    for(j=0; j<StringUtils_strlen(buffer); j++) {
-        FrameBuffer_drawPoint(fb, Point_translate(topLeft, i, j), buffer[j], CYAN, TRANSPARENT);
-    }
-    i++;
-    buffer = "        (         |\\";
-    for(j=0; j<StringUtils_strlen(buffer); j++) {
-        FrameBuffer_drawPoint(fb, Point_translate(topLeft, i, j), buffer[j], CYAN, TRANSPARENT);
-    }
-    i++;
-    buffer = "         \\        ;";
-    for(j=0; j<StringUtils_strlen(buffer); j++) {
-        FrameBuffer_drawPoint(fb, Point_translate(topLeft, i, j), buffer[j], CYAN, TRANSPARENT);
-    }
-    i++;
-    buffer = "         |\\      /";
-    for(j=0; j<StringUtils_strlen(buffer); j++) {
-        FrameBuffer_drawPoint(fb, Point_translate(topLeft, i, j), buffer[j], CYAN, TRANSPARENT);
-    }
-    i++;
-    buffer = "      _.'\\ |_____/ '-.";
-    for(j=0; j<StringUtils_strlen(buffer); j++) {
-        FrameBuffer_drawPoint(fb, Point_translate(topLeft, i, j), buffer[j], CYAN, TRANSPARENT);
-    }
-    i++;
-    buffer = "  _.-'              ` .";
-    for(j=0; j<StringUtils_strlen(buffer); j++) {
-        FrameBuffer_drawPoint(fb, Point_translate(topLeft, i, j), buffer[j], CYAN, TRANSPARENT);
-    }
-    i++;
-    buffer = " /  \\                  \\";
-    for(j=0; j<StringUtils_strlen(buffer); j++) {
-        FrameBuffer_drawPoint(fb, Point_translate(topLeft, i, j), buffer[j], CYAN, TRANSPARENT);
-    }
-    i++;
-    buffer = "|    \\                  |";
-    for(j=0; j<StringUtils_strlen(buffer); j++) {
-        FrameBuffer_drawPoint(fb, Point_translate(topLeft, i, j), buffer[j], CYAN, TRANSPARENT);
-    }
+void BattleRenderer_drawPlayer(FrameBuffer *fb, const GameResources *gameResources, Point topLeft) {
+    Point bottomRight = Point_translate(topLeft, BATTLE_IMAGE_HEIGHT-1, BATTLE_IMAGE_WIDTH-1);
+    FrameBuffer_drawTextBox(fb, topLeft, bottomRight, gameResources->playerImage, CYAN, TRANSPARENT);
 }
 
-void BattleRenderer_drawEnemy(FrameBuffer *fb, Point topLeft, int type) {
-    char *buffer;
-    int i=0,j;
-    if(type < 6) {
-            buffer = "    ____";
-            for(j=0; j<StringUtils_strlen(buffer); j++) {
-                FrameBuffer_drawPoint(fb, Point_translate(topLeft, i, j), buffer[j], CYAN, TRANSPARENT);
-            }
-            i++;
-            buffer = "   /....)";
-            for(j=0; j<StringUtils_strlen(buffer); j++) {
-                FrameBuffer_drawPoint(fb, Point_translate(topLeft, i, j), buffer[j], CYAN, TRANSPARENT);
-            }
-            i++;
-            buffer = "   |^  ^ \\";
-            for(j=0; j<StringUtils_strlen(buffer); j++) {
-                FrameBuffer_drawPoint(fb, Point_translate(topLeft, i, j), buffer[j], CYAN, TRANSPARENT);
-            }
-            i++;
-            buffer = "   <^   ^ >";
-            for(j=0; j<StringUtils_strlen(buffer); j++) {
-                FrameBuffer_drawPoint(fb, Point_translate(topLeft, i, j), buffer[j], CYAN, TRANSPARENT);
-            }
-            i++;
-            buffer = "   |^    ^\\\\_-_";
-            for(j=0; j<StringUtils_strlen(buffer); j++) {
-                FrameBuffer_drawPoint(fb, Point_translate(topLeft, i, j), buffer[j], CYAN, TRANSPARENT);
-            }
-            i++;
-            buffer = "   i^     ^ \\^/\\";
-            for(j=0; j<StringUtils_strlen(buffer); j++) {
-                FrameBuffer_drawPoint(fb, Point_translate(topLeft, i, j), buffer[j], CYAN, TRANSPARENT);
-            }
-            i++;
-            buffer = "   +' (@)  _\\  7";
-            for(j=0; j<StringUtils_strlen(buffer); j++) {
-                FrameBuffer_drawPoint(fb, Point_translate(topLeft, i, j), buffer[j], CYAN, TRANSPARENT);
-            }
-            i++;
-            buffer = "  / ..   _ -'  |";
-            for(j=0; j<StringUtils_strlen(buffer); j++) {
-                FrameBuffer_drawPoint(fb, Point_translate(topLeft, i, j), buffer[j], CYAN, TRANSPARENT);
-            }
-            i++;
-            buffer = " / ..  _~  _'  |";
-            for(j=0; j<StringUtils_strlen(buffer); j++) {
-                FrameBuffer_drawPoint(fb, Point_translate(topLeft, i, j), buffer[j], CYAN, TRANSPARENT);
-            }
-            i++;
-            buffer = "i    _~_.-\\    |";
-            for(j=0; j<StringUtils_strlen(buffer); j++) {
-                FrameBuffer_drawPoint(fb, Point_translate(topLeft, i, j), buffer[j], CYAN, TRANSPARENT);
-            }
-            i++;
-            buffer = "I--~~_~  .|    |";
-            for(j=0; j<StringUtils_strlen(buffer); j++) {
-                FrameBuffer_drawPoint(fb, Point_translate(topLeft, i, j), buffer[j], CYAN, TRANSPARENT);
-            }
-            i++;
-            buffer = " ~~'| ''' |  _ |";
-            for(j=0; j<StringUtils_strlen(buffer); j++) {
-                FrameBuffer_drawPoint(fb, Point_translate(topLeft, i, j), buffer[j], CYAN, TRANSPARENT);
-            }
-            i++;
-            buffer = "   /|-___-| | ||";
-            for(j=0; j<StringUtils_strlen(buffer); j++) {
-                FrameBuffer_drawPoint(fb, Point_translate(topLeft, i, j), buffer[j], CYAN, TRANSPARENT);
-            }
-    } else {
-            buffer = "        /-/--\\";
-            for(j=0; j<StringUtils_strlen(buffer); j++) {
-                FrameBuffer_drawPoint(fb, Point_translate(topLeft, i, j), buffer[j], CYAN, TRANSPARENT);
-            }
-            i++;
-            buffer = "      (@~@)   )/\\";
-            for(j=0; j<StringUtils_strlen(buffer); j++) {
-                FrameBuffer_drawPoint(fb, Point_translate(topLeft, i, j), buffer[j], CYAN, TRANSPARENT);
-            }
-            i++;
-            buffer = "  ___/--      \\  |";
-            for(j=0; j<StringUtils_strlen(buffer); j++) {
-                FrameBuffer_drawPoint(fb, Point_translate(topLeft, i, j), buffer[j], CYAN, TRANSPARENT);
-            }
-            i++;
-            buffer = " (oo)__ _      )_/";
-            for(j=0; j<StringUtils_strlen(buffer); j++) {
-                FrameBuffer_drawPoint(fb, Point_translate(topLeft, i, j), buffer[j], CYAN, TRANSPARENT);
-            }
-            i++;
-            buffer = "  ^^___/       \\   ";
-            for(j=0; j<StringUtils_strlen(buffer); j++) {
-                FrameBuffer_drawPoint(fb, Point_translate(topLeft, i, j), buffer[j], CYAN, TRANSPARENT);
-            }
-            i++;
-            buffer = "        \\       |/-\\   ";
-            for(j=0; j<StringUtils_strlen(buffer); j++) {
-                FrameBuffer_drawPoint(fb, Point_translate(topLeft, i, j), buffer[j], CYAN, TRANSPARENT);
-            }
-            i++;
-            buffer = "         (      )   |";
-            for(j=0; j<StringUtils_strlen(buffer); j++) {
-                FrameBuffer_drawPoint(fb, Point_translate(topLeft, i, j), buffer[j], CYAN, TRANSPARENT);
-            }
-            i++;
-            buffer = "         |       \\_/ ";
-            for(j=0; j<StringUtils_strlen(buffer); j++) {
-                FrameBuffer_drawPoint(fb, Point_translate(topLeft, i, j), buffer[j], CYAN, TRANSPARENT);
-            }
-    }
-
+void BattleRenderer_drawEnemy(FrameBuffer *fb, const GameResources *gameResources, Point topLeft, int typeId) {
+    Point bottomRight = Point_translate(topLeft, BATTLE_IMAGE_HEIGHT-1, BATTLE_IMAGE_WIDTH-1);
+    FrameBuffer_drawTextBox(fb, topLeft, bottomRight, gameResources->enemyTypes.items[typeId].image, MAROON, TRANSPARENT);
 }
 
-void BattleRenderer_drawBoss(FrameBuffer *fb, Point topLeft) {
-    char *buffer;
-    int i=0,j;
-    buffer = "                                                                _";
-    for(j=0; j<StringUtils_strlen(buffer); j++) {
-        FrameBuffer_drawPoint(fb, Point_translate(topLeft, i, j), buffer[j], CYAN, TRANSPARENT);
+/* Draws meter: 111/999 #####............ */
+void BattleRenderer_drawMeter(FrameBuffer *fb, Point topLeft, int width, int value, int maxValue) {
+    if (width < 8) width = 8; // Minimum width is 8 for the digits only
+    char *valueStr = StringUtils_fromInt(value % 1000, "%03d");
+    char *maxValueStr = StringUtils_fromInt(maxValue % 1000, "%03d");
+
+    FrameBuffer_drawTextBox(fb, topLeft, Point_translate(topLeft, 0, 2), valueStr, WHITE, TRANSPARENT);
+    FrameBuffer_drawTextBox(fb, Point_translate(topLeft, 0, 3), Point_translate(topLeft, 0, 3), "/", WHITE, TRANSPARENT);
+    FrameBuffer_drawTextBox(fb, Point_translate(topLeft, 0, 4), Point_translate(topLeft, 0, 6), maxValueStr, WHITE, TRANSPARENT);
+
+    Color barColor;
+    if (value*3 < maxValue) barColor = MAROON;
+    else if (value*2 < maxValue) barColor = BROWN;
+    else if (value > maxValue) barColor = BLUE;
+    else barColor = GREEN;
+
+    if (value < 0) value = 0;
+    if (value > maxValue) value = maxValue;
+    if (maxValue > 0) {
+        int barWidth = (value*(width-8)+(maxValue-1)) / maxValue; // Scale value to width-8, round up
+        int remWidth = (width-8) - barWidth;
+        if (barWidth > 0) FrameBuffer_drawHorizontalLine(fb, Point_translate(topLeft, 0, 8), Point_translate(topLeft, 0, 7+barWidth), '#', barColor, barColor);
+        if (remWidth > 0) FrameBuffer_drawHorizontalLine(fb, Point_translate(topLeft, 0, 8+barWidth), Point_translate(topLeft, 0, 7+barWidth+remWidth), '.', GRAY, GRAY);
     }
-    i++;
-    buffer = "                                                              _( (~\\";
-    for(j=0; j<StringUtils_strlen(buffer); j++) {
-        FrameBuffer_drawPoint(fb, Point_translate(topLeft, i, j), buffer[j], CYAN, TRANSPARENT);
-    }
-    i++;
-    buffer = "       _ _                        /                          ( \\> > \\";
-    for(j=0; j<StringUtils_strlen(buffer); j++) {
-        FrameBuffer_drawPoint(fb, Point_translate(topLeft, i, j), buffer[j], CYAN, TRANSPARENT);
-    }
-    i++;
-    buffer = "   -/~/ / ~\\                     :;                \\       _  > /(~\\/";
-    for(j=0; j<StringUtils_strlen(buffer); j++) {
-        FrameBuffer_drawPoint(fb, Point_translate(topLeft, i, j), buffer[j], CYAN, TRANSPARENT);
-    }
-    i++;
-    buffer = "  || | | /\\ ;\\                   |l      _____     |;     ( \\/    > >";
-    for(j=0; j<StringUtils_strlen(buffer); j++) {
-        FrameBuffer_drawPoint(fb, Point_translate(topLeft, i, j), buffer[j], CYAN, TRANSPARENT);
-    }
-    i++;
-    buffer = "  _\\)\\)\\)/ ;;;                  `8o __-~     ~\\   d|      \\      //";
-    for(j=0; j<StringUtils_strlen(buffer); j++) {
-        FrameBuffer_drawPoint(fb, Point_translate(topLeft, i, j), buffer[j], CYAN, TRANSPARENT);
-    }
-    i++;
-    buffer = " ///(())(__/~;;\\                  \"88p;.  -. _\\_;.oP        (_._/ /";
-    for(j=0; j<StringUtils_strlen(buffer); j++) {
-        FrameBuffer_drawPoint(fb, Point_translate(topLeft, i, j), buffer[j], CYAN, TRANSPARENT);
-    }
-    i++;
-    buffer = "(((__   __ \\   \\                  `>,%% (\\  (\\./)8\"         ;:'  i";
-    for(j=0; j<StringUtils_strlen(buffer); j++) {
-        FrameBuffer_drawPoint(fb, Point_translate(topLeft, i, j), buffer[j], CYAN, TRANSPARENT);
-    }
-    i++;
-    buffer = ")))--`.'-- (( ;,8 \\               ,;%%%%%%:  ./V^^^V'          ;.   ;.";
-    for(j=0; j<StringUtils_strlen(buffer); j++) {
-        FrameBuffer_drawPoint(fb, Point_translate(topLeft, i, j), buffer[j], CYAN, TRANSPARENT);
-    }
-    i++;
-    buffer = "((\\   |   /)) .,88  `: ..,,;;;;,-::::::'_::\\   ||\\         ;[8:   ;";
-    for(j=0; j<StringUtils_strlen(buffer); j++) {
-        FrameBuffer_drawPoint(fb, Point_translate(topLeft, i, j), buffer[j], CYAN, TRANSPARENT);
-    }
-    i++;
-    buffer = " )|  ~-~  |(|(888; ..``'::::8888oooooo.  :\\`^^^/,,~--._    |88::  |";
-    for(j=0; j<StringUtils_strlen(buffer); j++) {
-        FrameBuffer_drawPoint(fb, Point_translate(topLeft, i, j), buffer[j], CYAN, TRANSPARENT);
-    }
-    i++;
-    buffer = " |\\ -===- /|  \\8;; ``:.      oo.8888888888:`((( o.ooo8888Oo;:;:'  |";
-    for(j=0; j<StringUtils_strlen(buffer); j++) {
-        FrameBuffer_drawPoint(fb, Point_translate(topLeft, i, j), buffer[j], CYAN, TRANSPARENT);
-    }
-    i++;
-    buffer = " |_~-___-~_|   `-\\.   `        `o`88888888b` )) 888b88888P\"\"'     ;";
-    for(j=0; j<StringUtils_strlen(buffer); j++) {
-        FrameBuffer_drawPoint(fb, Point_translate(topLeft, i, j), buffer[j], CYAN, TRANSPARENT);
-    }
-    i++;
-    buffer = " ; ~~~~;~~         \"`--_`.       b`888888888;(.,\"888b888\"  ..::;-'";
-    for(j=0; j<StringUtils_strlen(buffer); j++) {
-        FrameBuffer_drawPoint(fb, Point_translate(topLeft, i, j), buffer[j], CYAN, TRANSPARENT);
-    }
+
+    StringUtils_deallocate(valueStr);
+    StringUtils_deallocate(maxValueStr);
 }
 
-void BattleRenderer_render(FrameBuffer *fb, const GameState *gameState, const GameResources *gameResources) {
+void BattleRenderer_render(FrameBuffer *fb, GameState *gameState, const GameResources *gameResources) {
+    int i;
+    char tmp;
 
-    int i, j; // hpbar player
-    char tmp, *cpy, hp[11], maxHp[11], *st = " / ", stats[11], *move;
-    snprintf(hp, 10, "%d", gameState->player.hp);
-    snprintf(maxHp, 10, "%d", gameState->player.maxHp);
+    char *playerMoveStr = StringUtils_clone("");
+    char *enemyMoveStr = StringUtils_clone("");
 
-    cpy = StringUtils_clone("");
-    StringUtils_concat(&cpy, st);
-    StringUtils_concat(&cpy, maxHp);
+    char *playerStrStr = StringUtils_fromInt(gameState->player.str % 1000, "%03d");
+    char *playerDefStr = StringUtils_fromInt(gameState->player.def % 1000, "%03d");
+    char *playerLvlStr = StringUtils_fromInt(gameState->player.level % 1000, "%03d");
 
-    if(gameState->battle.enemyTypeId == 0) {
-        i = gameState->player.hp * 24 / gameState->player.maxHp;
-        if(i>0) {
-            FrameBuffer_drawHorizontalLine(fb, Point_make(23,92), Point_make(23,92+i), ' ', RED, RED); // HP BAR
-        }
-        FrameBuffer_drawRectangle(fb, Point_make(1,0), Point_make(29,118), '*',TRANSPARENT, TRANSPARENT, TRANSPARENT); // box battle
-        FrameBuffer_drawRectangle(fb, Point_make(19,89), Point_make(29,118), '*',TRANSPARENT, TRANSPARENT, TRANSPARENT); // box stats player
-        BattleRenderer_drawBoss(fb,Point_make(2,40)); // drawboss
+    char *enemyStrStr = StringUtils_fromInt(gameResources->enemyTypes.items[gameState->battle.enemyTypeId].str % 1000, "%03d");
+    char *enemyDefStr = StringUtils_fromInt(gameResources->enemyTypes.items[gameState->battle.enemyTypeId].def % 1000, "%03d");
+    char *enemyExpStr = StringUtils_fromInt(gameResources->enemyTypes.items[gameState->battle.enemyTypeId].exp % 1000, "%03d");
 
-        FrameBuffer_drawTextBox(fb,Point_make(20,92), Point_make(20,116), gameState->player.name, TRANSPARENT, TRANSPARENT);
-        FrameBuffer_drawTextBox(fb,Point_make(21,92), Point_make(21,102), "HP       =", TRANSPARENT, TRANSPARENT);
-        FrameBuffer_drawTextBox(fb,Point_make(21,104), Point_make(21,116), cpy, TRANSPARENT, TRANSPARENT);
-        FrameBuffer_drawRectangle(fb, Point_make(22,91), Point_make(24,116), '*',TRANSPARENT, TRANSPARENT, TRANSPARENT); // box hpbar player
-        FrameBuffer_drawTextBox(fb,Point_make(25,92), Point_make(25,102), "Strength = ", TRANSPARENT, TRANSPARENT);
-        snprintf(stats,10, "%d", gameState->player.str);
-        FrameBuffer_drawTextBox(fb,Point_make(25,104), Point_make(25,117), stats, TRANSPARENT, TRANSPARENT);
-        FrameBuffer_drawTextBox(fb,Point_make(26,92), Point_make(26,102), "Defence  = ", TRANSPARENT, TRANSPARENT);
-        snprintf(stats,10, "%d", gameState->player.def);
-        FrameBuffer_drawTextBox(fb,Point_make(26,104), Point_make(26,117), stats, TRANSPARENT, TRANSPARENT);
-        FrameBuffer_drawTextBox(fb,Point_make(27,92), Point_make(27,102), "Exp      = ", TRANSPARENT, TRANSPARENT);
-        snprintf(stats,10, "%d", gameState->player.exp);
-        FrameBuffer_drawTextBox(fb,Point_make(27,104), Point_make(27,117), stats, TRANSPARENT, TRANSPARENT);
-        StringUtils_deallocate(cpy);
-    } else {
-        i = gameState->player.hp * 25 / gameState->player.maxHp;
-        if(i>0) {
-            FrameBuffer_drawHorizontalLine(fb, Point_make(23,42), Point_make(23,42+i), ' ', RED, RED); // HP BAR
-        }
-        FrameBuffer_drawRectangle(fb, Point_make(1,0), Point_make(29,70), '*',TRANSPARENT, TRANSPARENT, TRANSPARENT); //box battle
-        FrameBuffer_drawRectangle(fb, Point_make(19,39), Point_make(29,70), '*',TRANSPARENT, TRANSPARENT, TRANSPARENT); //box stats player
-        BattleRenderer_drawEnemy(fb,Point_make(2,40),  getRandomInt(1,10)); // rand enemy
+    // Draw background
+    FrameBuffer_drawRectangle(fb, Point_make(0, 0), Point_make(fb->height-1, fb->width-1), BLANK, TRANSPARENT, BLACK, BLACK);
 
-        FrameBuffer_drawRectangle(fb, Point_make(22,41), Point_make(24,68), '*',TRANSPARENT, TRANSPARENT, TRANSPARENT); // box hpbar player
+    // Draw player + stats
+    
+    FrameBuffer_drawRectangle(fb, Point_make(0,0), Point_make(27,34), '*', GRAY, TRANSPARENT, TRANSPARENT); // player box
+    BattleRenderer_drawPlayer(fb, gameResources, Point_make(1,4));
 
-        FrameBuffer_drawTextBox(fb,Point_make(21,44), Point_make(21,49), "100", TRANSPARENT, TRANSPARENT);
-        FrameBuffer_drawTextBox(fb,Point_make(25,44), Point_make(25,49), "100", TRANSPARENT, TRANSPARENT);
-        FrameBuffer_drawTextBox(fb,Point_make(26,44), Point_make(26,49), "100", TRANSPARENT, TRANSPARENT);
+    FrameBuffer_drawTextBox(fb, Point_make(18, 3), Point_make(18, 30), gameState->player.name, CYAN, TRANSPARENT);
 
-        FrameBuffer_drawTextBox(fb,Point_make(20,44), Point_make(20,116), gameState->player.name, TRANSPARENT, TRANSPARENT);
-        FrameBuffer_drawTextBox(fb,Point_make(21,44), Point_make(21,54), "HP       =", TRANSPARENT, TRANSPARENT);
-        FrameBuffer_drawTextBox(fb,Point_make(21,56), Point_make(21,116), cpy, TRANSPARENT, TRANSPARENT);
+    FrameBuffer_drawTextBox(fb, Point_make(20, 3), Point_make(20, 5), "HP ", WHITE, TRANSPARENT);
+    BattleRenderer_drawMeter(fb, Point_make(20, 7), 26, gameState->player.hp, gameState->player.maxHp);
 
-        FrameBuffer_drawTextBox(fb,Point_make(25,44), Point_make(25,54), "Strength = ", TRANSPARENT, TRANSPARENT);
-        snprintf(stats,10, "%d", gameState->player.str);
-        FrameBuffer_drawTextBox(fb,Point_make(25,56), Point_make(25,68), stats, TRANSPARENT, TRANSPARENT);
-        FrameBuffer_drawTextBox(fb,Point_make(26,44), Point_make(26,54), "Defence  = ", TRANSPARENT, TRANSPARENT);
-        snprintf(stats,10, "%d", gameState->player.def);
-        FrameBuffer_drawTextBox(fb,Point_make(26,56), Point_make(26,68), stats, TRANSPARENT, TRANSPARENT);
-        FrameBuffer_drawTextBox(fb,Point_make(27,44), Point_make(27,54), "Exp      = ", TRANSPARENT, TRANSPARENT);
-        snprintf(stats,10, "%d", gameState->player.exp);
-        FrameBuffer_drawTextBox(fb,Point_make(27,56), Point_make(27,68), stats, TRANSPARENT, TRANSPARENT);
-        /*
+    FrameBuffer_drawTextBox(fb, Point_make(22, 3), Point_make(22, 5), "EXP", WHITE, TRANSPARENT);
+    BattleRenderer_drawMeter(fb, Point_make(22, 7), 26, gameState->player.exp, gameState->player.maxExp);
 
-        for (j = 0; j < gameState->player.moveQueue.length; j++) {
-            List_popFirst(&(gameState->player.moveQueue), &tmp);
-            move = StringUtils_append(move,tmp);
-            move = StringUtils_append(move, ' ');
-            List_pushLast(&(gameState->player.moveQueue), tmp);
-        }
-        */
-        //FrameBuffer_drawTextBox(fb,Point_make(28,56), Point_make(28,68), move, TRANSPARENT, TRANSPARENT);
-        StringUtils_deallocate(cpy);
-        //StringUtils_deallocate(move);
-    }
-    //i = gameState->battle.enemyHp * 24 / gameResources->enemyTypes.items[gameState->battle.enemyTypeId].hp;
+    FrameBuffer_drawTextBox(fb, Point_make(24, 3), Point_make(24, 5), "STR", CYAN, TRANSPARENT);
+    FrameBuffer_drawTextBox(fb, Point_make(24, 7), Point_make(24, 9), playerStrStr, WHITE, TRANSPARENT);
 
+    FrameBuffer_drawTextBox(fb, Point_make(24, 12), Point_make(24, 14), "DEF", CYAN, TRANSPARENT);
+    FrameBuffer_drawTextBox(fb, Point_make(24, 16), Point_make(24, 18), playerDefStr, WHITE, TRANSPARENT);
 
-    BattleRenderer_drawPlayer(fb, Point_make(13,5));
-    /*enemy box*/
-    FrameBuffer_drawRectangle(fb, Point_make(1,0), Point_make(10,30), '*',TRANSPARENT, TRANSPARENT, TRANSPARENT); // box enemy static
-    /* enemy stats */
-    FrameBuffer_drawRectangle(fb, Point_make(4,2), Point_make(6,28), '*',TRANSPARENT, TRANSPARENT, TRANSPARENT); // box hpbar enemy
-    if(i>0) {
-        FrameBuffer_drawHorizontalLine(fb, Point_make(5,3), Point_make(5,3+i), ' ', RED, RED); // HP BAR
+    FrameBuffer_drawTextBox(fb, Point_make(24, 21), Point_make(24, 23), "LVL", CYAN, TRANSPARENT);
+    FrameBuffer_drawTextBox(fb, Point_make(24, 25), Point_make(24, 27), playerLvlStr, WHITE, TRANSPARENT);
+
+    // Draw enemy + stats
+
+    FrameBuffer_drawRectangle(fb, Point_make(0,84), Point_make(27,119), '*', GRAY, TRANSPARENT, TRANSPARENT); // enemy box
+    BattleRenderer_drawEnemy(fb, gameResources, Point_make(1,89), gameState->battle.enemyTypeId);
+
+    FrameBuffer_drawTextBox(fb, Point_make(18, 87), Point_make(18, 114), gameState->battle.enemyName, RED, TRANSPARENT);
+
+    FrameBuffer_drawTextBox(fb, Point_make(20, 87), Point_make(20, 89), "HP ", WHITE, TRANSPARENT);
+    BattleRenderer_drawMeter(fb, Point_make(20, 91), 26, gameState->battle.enemyHp, gameResources->enemyTypes.items[gameState->battle.enemyTypeId].hp);
+
+    FrameBuffer_drawTextBox(fb, Point_make(22, 87), Point_make(24, 89), "STR", RED, TRANSPARENT);
+    FrameBuffer_drawTextBox(fb, Point_make(22, 91), Point_make(24, 93), enemyStrStr, WHITE, TRANSPARENT);
+
+    FrameBuffer_drawTextBox(fb, Point_make(22, 96), Point_make(24, 98), "DEF", RED, TRANSPARENT);
+    FrameBuffer_drawTextBox(fb, Point_make(22, 100), Point_make(24, 102), enemyDefStr, WHITE, TRANSPARENT);
+
+    FrameBuffer_drawTextBox(fb, Point_make(22, 105), Point_make(25, 107), "EXP", RED, TRANSPARENT);
+    FrameBuffer_drawTextBox(fb, Point_make(22, 109), Point_make(25, 111), enemyExpStr, WHITE, TRANSPARENT);
+    
+    // Draw player input box
+
+    for (i = 0; i < gameState->player.moveQueue.length; i++) {
+        List_popFirst(&(gameState->player.moveQueue), &tmp);
+        StringUtils_appendChar(&playerMoveStr, tmp);
+        StringUtils_appendChar(&playerMoveStr, ' ');
+        List_pushLast(&(gameState->player.moveQueue), tmp);
     }
 
-    FrameBuffer_drawTextBox(fb,Point_make(2,5), Point_make(2,10), gameResources->enemyTypes.items[gameState->battle.enemyTypeId].name, TRANSPARENT, TRANSPARENT);
+    FrameBuffer_drawRectangle(fb, Point_make(24,34), Point_make(27,59), '*', GRAY, TRANSPARENT, TRANSPARENT);
+    FrameBuffer_drawTextBox(fb, Point_make(25, 36), Point_make(25, 57), "Player move:", CYAN, TRANSPARENT);
+    FrameBuffer_drawTextBox(fb, Point_make(26, 50), Point_make(26, 57), playerMoveStr, WHITE, TRANSPARENT);
 
-    FrameBuffer_drawTextBox(fb,Point_make(3,5), Point_make(3,15), "HP       =", TRANSPARENT, TRANSPARENT);
+    // Draw enemy input box
+    
+    // Generate pseudo-random hide id's from round number and player stats
+    // so the hidden index will not change even though the game is restarted
+    int firstHideId = (gameState->battle.round + gameState->battle.enemyId*gameState->player.exp + gameState->player.str) % MOVE_QUEUE_LENGTH;
+    int secondHideId = (firstHideId + (gameState->player.exp + gameState->player.str*gameState->player.def + gameState->battle.enemyId) % (MOVE_QUEUE_LENGTH-1) + 1) % MOVE_QUEUE_LENGTH;
+    
+    MoveQueue *enemyMoveQueuePtr = ListNode_valuePointer(List_first(&(gameState->battle.enemyMoves)));
+    for (i = 0; i < enemyMoveQueuePtr->length; i++) {
+        List_popFirst(enemyMoveQueuePtr, &tmp);
+        if (i == firstHideId || i == secondHideId) {
+            StringUtils_appendChar(&enemyMoveStr, '#');
+        } else {
+            StringUtils_appendChar(&enemyMoveStr, tmp);
+        }
+        StringUtils_appendChar(&enemyMoveStr, ' ');
+        List_pushLast(enemyMoveQueuePtr, tmp);
+    }
+    
+    FrameBuffer_drawRectangle(fb, Point_make(24,59), Point_make(27,84), '*', GRAY, TRANSPARENT, TRANSPARENT);
+    FrameBuffer_drawTextBox(fb, Point_make(25, 61), Point_make(25, 82), "Enemy move:", RED, TRANSPARENT);
+    FrameBuffer_drawTextBox(fb, Point_make(26, 74), Point_make(26, 82), enemyMoveStr, WHITE, TRANSPARENT);
+   
+    // Draw battle log
 
-    FrameBuffer_drawTextBox(fb,Point_make(7,5), Point_make(7,15), "Strength = ", TRANSPARENT, TRANSPARENT);
-    snprintf(stats,10, "%d", gameState->battle.enemyStr);
-    FrameBuffer_drawTextBox(fb,Point_make(7,17), Point_make(7,28), stats, TRANSPARENT, TRANSPARENT);
-    FrameBuffer_drawTextBox(fb,Point_make(8,5), Point_make(8,15), "Defence  = ", TRANSPARENT, TRANSPARENT);
-    snprintf(stats,10, "%d", gameState->battle.enemyDef);
-    FrameBuffer_drawTextBox(fb,Point_make(8,17), Point_make(8,28), stats, TRANSPARENT, TRANSPARENT);
-    /*end of enemy box */
-    FrameBuffer_setInputPrompt(fb, "Command [a,b,f,e] >> ");
+    FrameBuffer_drawRectangle(fb, Point_make(0,34), Point_make(24,84), '*', GRAY, TRANSPARENT, TRANSPARENT); // battleLog box
+    FrameBuffer_drawTextBox(fb, Point_make(2, 36), Point_make(22, 82), gameState->battle.battleLog, WHITE, TRANSPARENT);
+
+    FrameBuffer_setInputPrompt(fb, "Enter [a(ttack)/b(lock)/f(lank)], [e(rase)] or [pause] >> ");
+
+    StringUtils_deallocate(playerMoveStr);
+    StringUtils_deallocate(enemyMoveStr);
+    StringUtils_deallocate(playerStrStr);
+    StringUtils_deallocate(playerDefStr);
+    StringUtils_deallocate(playerLvlStr);
+    StringUtils_deallocate(enemyStrStr);
+    StringUtils_deallocate(enemyDefStr);
+    StringUtils_deallocate(enemyExpStr);
 }
