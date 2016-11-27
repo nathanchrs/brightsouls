@@ -11,14 +11,17 @@ void Core_exploration(GameState *gameState, GameResources *gameResources, const 
 
 	if (StringUtils_strcmpi(input, "u") == 0) {
 		ltemp = Location_moveUp(gameState->player.location, &(gameResources->areas), &(gameState->locationEdges));
-	} else if(StringUtils_strcmpi(input, "d") == 0) {
+	} else if (StringUtils_strcmpi(input, "d") == 0) {
 		ltemp = Location_moveDown(gameState->player.location, &(gameResources->areas), &(gameState->locationEdges));
-	} else if(StringUtils_strcmpi(input, "l") == 0) {
+	} else if (StringUtils_strcmpi(input, "l") == 0) {
 		ltemp = Location_moveLeft(gameState->player.location, &(gameResources->areas), &(gameState->locationEdges));
-	} else if(StringUtils_strcmpi(input, "r") == 0) {
+	} else if (StringUtils_strcmpi(input, "r") == 0) {
 		ltemp = Location_moveRight(gameState->player.location, &(gameResources->areas), &(gameState->locationEdges));
+	} else if (StringUtils_strcmpi(input, "skilltree") == 0) {
+		gameState->currentPhase = SKILLTREE;
+		return;
 	} else {
-		gameState->message = "Invalid command.";
+		gameState->message = StringUtils_clone("Invalid command.");
 		return;
 	}
 
@@ -31,13 +34,13 @@ void Core_exploration(GameState *gameState, GameResources *gameResources, const 
 	}
 
 	if (Location_isEqual(ltemp, gameState->player.location)) {
-		gameState->message = "Can't go that way...";
+		gameState->message = StringUtils_clone("Can't go that way...");
 	} else {
 		int powerUpId = PowerUpArray_searchLocation(&(gameResources->powerUps), ltemp);
 		if (powerUpId >= 0 && !gameState->isPowerUpUsed.items[powerUpId]) {
 			PowerUp_use(&(gameResources->powerUpTypes), &(gameResources->powerUps.items[powerUpId]), &(gameState->player));
 			gameState->isPowerUpUsed.items[powerUpId] = true;
-			gameState->message = "Power up!.";
+			gameState->message = StringUtils_clone("Power up!");
 		}
 
 		gameState->player.location = ltemp;
@@ -46,7 +49,8 @@ void Core_exploration(GameState *gameState, GameResources *gameResources, const 
 
 void Core_process(GameState *gameState, GameResources *gameResources, const char *input) {
 	// Clear message
-	gameState->message = "";
+	StringUtils_deallocate(gameState->message);
+	gameState->message = StringUtils_clone("");
 
 	if (gameState->currentPhase == SKILLTREE) {
 		if (StringUtils_strcmpi(input, "back") == 0) {
@@ -54,12 +58,15 @@ void Core_process(GameState *gameState, GameResources *gameResources, const char
 		} else {
 			bool skillUnlocked = SkillTree_unlockSkill(&(gameResources->skillTree), gameState, input);
 			if (skillUnlocked) {
-				gameState->message = "Skill unlocked!";
+				gameState->message = StringUtils_clone("Skill unlocked!");
 			} else {
-				gameState->message = "Can't unlock the specified skill.";
+				gameState->message = StringUtils_clone("Can't unlock the specified skill.");
 			}
 		}
 	} else if (gameState->currentPhase == EXPLORATION) {
 		Core_exploration(gameState, gameResources, input);
+
+	} else if (gameState->currentPhase == BATTLE) {
+
 	}
 }

@@ -118,7 +118,8 @@ char* StringUtils_clone(const char *str) {
 	return res;
 }
 
-/* Creates a new string containing the concatenation of str1 and str2. Returns null on allocation failure. */
+/* Creates a new string containing the concatenation of str1 and str2. Returns null on allocation failure.
+   WARNING: str1 and str2 is must still be manually deallocated later. */
 char* StringUtils_concat(const char *str1, const char *str2) {
 	size_t slen1 = StringUtils_strlen(str1);
 	size_t slen2 = StringUtils_strlen(str2);
@@ -128,6 +129,28 @@ char* StringUtils_concat(const char *str1, const char *str2) {
 		StringUtils_strcpy(res + slen1, str2);
 	}
 	return res;
+}
+
+/* Appends source to destination, sets destination to null on failure. */
+void StringUtils_append(char **destination, const char *source) {
+	size_t srcLen = StringUtils_strlen(source);
+	size_t dstLen = StringUtils_strlen(*destination);
+	char *res = realloc(*destination, sizeof(char) * (srcLen + dstLen + 1));
+	if (res) {
+		StringUtils_strcpy(res + dstLen, source);
+	}
+	*destination = res;
+}
+
+/* Appends character to destination, sets destination to null on failure. */
+void StringUtils_appendChar(char **destination, char character) {
+	size_t dstLen = StringUtils_strlen(*destination);
+	char *res = realloc(*destination, sizeof(char) * (dstLen + 2));
+	if (res) {
+		res[dstLen] = character;
+		res[dstLen+1] = 0;
+	}
+	*destination = res;
 }
 
 void StringUtils_deallocate(char *str) {

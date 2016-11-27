@@ -48,7 +48,7 @@ void testBattle(const char *executableDirectory) {
 	{
 		printf("Enemy moves hide : %s\n", Battle_enemyMovesHide(&battle));
 		printf("Enemy moves show : %s\n", Battle_enemyMovesShow(&battle));
-		battle.battleLog = "";
+		battle.battleLog = StringUtils_clone("");
 
 		List_initialize(&battle.playerMoveQueue);
 		int i;

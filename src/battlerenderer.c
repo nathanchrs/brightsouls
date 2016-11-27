@@ -277,11 +277,13 @@ void BattleRenderer_drawBoss(FrameBuffer *fb, Point topLeft) {
 void BattleRenderer_render(FrameBuffer *fb, const GameState *gameState, const GameResources *gameResources) {
 
     int i, j; // hpbar player
-    char tmp,*cpy, hp[10], maxHp[10], *st = " / ", stats[10], *move;
-    snprintf(hp,10, "%d", gameState->player.hp);
-    snprintf(maxHp,10, "%d", gameState->player.maxHp);
-    cpy = StringUtils_concat(hp, st);
-    cpy =  StringUtils_concat(cpy, maxHp);
+    char tmp, *cpy, hp[11], maxHp[11], *st = " / ", stats[11], *move;
+    snprintf(hp, 10, "%d", gameState->player.hp);
+    snprintf(maxHp, 10, "%d", gameState->player.maxHp);
+
+    cpy = StringUtils_clone("");
+    StringUtils_concat(&cpy, st);
+    StringUtils_concat(&cpy, maxHp);
 
     if(gameState->battle.enemyTypeId == 0) {
         i = gameState->player.hp * 24 / gameState->player.maxHp;

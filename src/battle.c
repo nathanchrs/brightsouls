@@ -36,7 +36,7 @@ void Battle_init(Battle *battle, const EnemyTypeArray *enemyTypes, int enemyType
 	Battle_deallocate(battle);
 
 	battle->round = 1;
-	battle->battleLog = "";
+	battle->battleLog = StringUtils_clone("");
 	battle->enemyTypeId = enemyTypeId;
 	battle->enemyName = enemyTypes->items[enemyTypeId].name;
 	battle->enemyHp = enemyTypes->items[enemyTypeId].hp;
@@ -48,19 +48,7 @@ void Battle_init(Battle *battle, const EnemyTypeArray *enemyTypes, int enemyType
 	MoveQueueStack_permute(&(battle->enemyMoves));
 }
 
-
-void Battle_playerInput(Battle *battle)
-{
-	char inp, dummy;
-	scanf("%c", &inp);
-	scanf("%c", &dummy);
-	if ((inp == 'E') && (!List_isEmpty(&(battle->playerMoveQueue))))
-		List_popLast(&(battle->playerMoveQueue), &inp);
-	else if ((inp == 'A') || (inp == 'B') || (inp == 'F'))
-		List_pushLast(&(battle->playerMoveQueue), inp);
-}
-
-char *Battle_enemyMovesShow(Battle *battle)
+/*char *Battle_enemyMovesShow(Battle *battle)
 {
 	char s[8];
 
@@ -122,6 +110,7 @@ char *Battle_enemyMovesHide(Battle *battle)
 	char *sr = s;
 	return sr;
 }
+*/
 
 void Battle_calcMove(Battle *battle, Player *player)
 {
@@ -179,82 +168,82 @@ void Battle_calcAction(char enemyAction, char playerAction, Battle *battle, Play
 	{
 		playerDmg = (battle->enemyStr) - (player->def);
 		enemyDmg = (player->str) - (battle->enemyDef);
-		battle->battleLog = StringUtils_concat(battle->battleLog, player->name);
-		battle->battleLog = StringUtils_concat(battle->battleLog, " and ");
-		battle->battleLog = StringUtils_concat(battle->battleLog, battle->enemyName);
-		battle->battleLog = StringUtils_concat(battle->battleLog, " attacked at the same time!\n");
+		StringUtils_append(&(battle->battleLog), player->name);
+		StringUtils_append(&(battle->battleLog), " and ");
+		StringUtils_append(&(battle->battleLog), battle->enemyName);
+		StringUtils_append(&(battle->battleLog), " attacked at the same time!\n");
 	}
 	else if ((playerAction == 'A') && (enemyAction == 'B'))
 	{
 		playerDmg = (battle->enemyDef) - (player->def);
 		enemyDmg = 0;
-		battle->battleLog = StringUtils_concat(battle->battleLog, battle->enemyName);
-		battle->battleLog = StringUtils_concat(battle->battleLog, " blocked ");
-		battle->battleLog = StringUtils_concat(battle->battleLog, player->name);
-		battle->battleLog = StringUtils_concat(battle->battleLog, "'s attack!\n");
+		StringUtils_append(&(battle->battleLog), battle->enemyName);
+		StringUtils_append(&(battle->battleLog), " blocked ");
+		StringUtils_append(&(battle->battleLog), player->name);
+		StringUtils_append(&(battle->battleLog), "'s attack!\n");
 	}
 	else if ((playerAction == 'A') && (enemyAction == 'F'))
 	{
 		playerDmg = 0;
 		enemyDmg = (player->str);
-		battle->battleLog = StringUtils_concat(battle->battleLog, player->name);
-		battle->battleLog = StringUtils_concat(battle->battleLog, " attacked ");
-		battle->battleLog = StringUtils_concat(battle->battleLog, battle->enemyName);
-		battle->battleLog = StringUtils_concat(battle->battleLog, " when flanking!\n");
+		StringUtils_append(&(battle->battleLog), player->name);
+		StringUtils_append(&(battle->battleLog), " attacked ");
+		StringUtils_append(&(battle->battleLog), battle->enemyName);
+		StringUtils_append(&(battle->battleLog), " when flanking!\n");
 	}
 	else if ((playerAction == 'B') && (enemyAction == 'A'))
 	{
 		playerDmg = 0;
 		enemyDmg = (player->def) - (battle->enemyDef);
-		battle->battleLog = StringUtils_concat(battle->battleLog, player->name);
-		battle->battleLog = StringUtils_concat(battle->battleLog, " blocked ");
-		battle->battleLog = StringUtils_concat(battle->battleLog, battle->enemyName);
-		battle->battleLog = StringUtils_concat(battle->battleLog, "'s attack!\n");
+		StringUtils_append(&(battle->battleLog), player->name);
+		StringUtils_append(&(battle->battleLog), " blocked ");
+		StringUtils_append(&(battle->battleLog), battle->enemyName);
+		StringUtils_append(&(battle->battleLog), "'s attack!\n");
 	}
 	else if ((playerAction == 'B') && (enemyAction == 'B'))
 	{
 		playerDmg = 0;
 		enemyDmg = 0;
-		battle->battleLog = StringUtils_concat(battle->battleLog, player->name);
-		battle->battleLog = StringUtils_concat(battle->battleLog, " and ");
-		battle->battleLog = StringUtils_concat(battle->battleLog, battle->enemyName);
-		battle->battleLog = StringUtils_concat(battle->battleLog, " blocked at the same time!\n");
+		StringUtils_append(&(battle->battleLog), player->name);
+		StringUtils_append(&(battle->battleLog), " and ");
+		StringUtils_append(&(battle->battleLog), battle->enemyName);
+		StringUtils_append(&(battle->battleLog), " blocked at the same time!\n");
 	}
 	else if ((playerAction == 'B') && (enemyAction == 'F'))
 	{
 		playerDmg = (battle->enemyStr);
 		enemyDmg = 0;
-		battle->battleLog = StringUtils_concat(battle->battleLog, battle->enemyName);
-		battle->battleLog = StringUtils_concat(battle->battleLog, " flanked ");
-		battle->battleLog = StringUtils_concat(battle->battleLog, player->name);
-		battle->battleLog = StringUtils_concat(battle->battleLog, " when blocking!\n");
+		StringUtils_append(&(battle->battleLog), battle->enemyName);
+		StringUtils_append(&(battle->battleLog), " flanked ");
+		StringUtils_append(&(battle->battleLog), player->name);
+		StringUtils_append(&(battle->battleLog), " when blocking!\n");
 	}
 	else if ((playerAction == 'F') && (enemyAction == 'A'))
 	{
 		playerDmg = (battle->enemyStr);
 		enemyDmg = 0;
-		battle->battleLog = StringUtils_concat(battle->battleLog, battle->enemyName);
-		battle->battleLog = StringUtils_concat(battle->battleLog, " attacked ");
-		battle->battleLog = StringUtils_concat(battle->battleLog, player->name);
-		battle->battleLog = StringUtils_concat(battle->battleLog, " when flanking!\n");
+		StringUtils_append(&(battle->battleLog), battle->enemyName);
+		StringUtils_append(&(battle->battleLog), " attacked ");
+		StringUtils_append(&(battle->battleLog), player->name);
+		StringUtils_append(&(battle->battleLog), " when flanking!\n");
 	}
 	else if ((playerAction == 'F') && (enemyAction == 'B'))
 	{
 		playerDmg = 0;
 		enemyDmg = (player->str);
-		battle->battleLog = StringUtils_concat(battle->battleLog, player->name);
-		battle->battleLog = StringUtils_concat(battle->battleLog, " flanked ");
-		battle->battleLog = StringUtils_concat(battle->battleLog, battle->enemyName);
-		battle->battleLog = StringUtils_concat(battle->battleLog, " when blocking!\n");
+		StringUtils_append(&(battle->battleLog), player->name);
+		StringUtils_append(&(battle->battleLog), " flanked ");
+		StringUtils_append(&(battle->battleLog), battle->enemyName);
+		StringUtils_append(&(battle->battleLog), " when blocking!\n");
 	}
 	else if ((playerAction == 'F') && (enemyAction == 'F'))
 	{
 		playerDmg = (battle->enemyStr) - (player->def);
 		enemyDmg = (player->str) - (battle->enemyDef);
-		battle->battleLog = StringUtils_concat(battle->battleLog, player->name);
-		battle->battleLog = StringUtils_concat(battle->battleLog, " and ");
-		battle->battleLog = StringUtils_concat(battle->battleLog, battle->enemyName);
-		battle->battleLog = StringUtils_concat(battle->battleLog, " flanked at the same time!\n");
+		StringUtils_append(&(battle->battleLog), player->name);
+		StringUtils_append(&(battle->battleLog), " and ");
+		StringUtils_append(&(battle->battleLog), battle->enemyName);
+		StringUtils_append(&(battle->battleLog), " flanked at the same time!\n");
 	}
 
 	if (playerDmg < 0)

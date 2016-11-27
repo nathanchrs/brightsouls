@@ -22,8 +22,15 @@ char* StringUtils_clone(const char *str);
 
 void StringUtils_deallocate(char *str);
 
-/* Creates a new string containing the concatenation of str1 and str2. Returns null on allocation failure. */
+/* Creates a new string containing the concatenation of str1 and str2. Returns null on allocation failure.
+   WARNING: str1 and str2 is must still be manually deallocated later. */
 char* StringUtils_concat(const char *str1, const char *str2);
+
+/* Appends source to destination, sets destination to null on failure. */
+void StringUtils_append(char **destination, const char *source);
+
+/* Appends character to destination, sets destination to null on failure. */
+void StringUtils_appendChar(char **destination, char character);
 
 size_t StringUtils_strlen(const char *str);
 
