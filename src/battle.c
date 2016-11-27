@@ -5,6 +5,8 @@ void Battle_load(Battle *battle, FILE *fin) {
 	battle->round = IO_readInteger(fin);
 	battle->battleLog = IO_readString(fin);
 
+	battle->enemyName = IO_readString(fin);
+	battle->enemyId = IO_readInteger(fin);
 	battle->enemyTypeId = IO_readInteger(fin);
 	battle->enemyHp = IO_readInteger(fin);
 	battle->enemyStr = IO_readInteger(fin);
@@ -15,123 +17,55 @@ void Battle_load(Battle *battle, FILE *fin) {
 }
 
 void Battle_save(const Battle *battle, FILE *fout) {
-	IO_writeInteger(fout, battle->round);
+	/*IO_writeInteger(fout, battle->round);
 	IO_writeString(fout, battle->battleLog);
 
 	IO_writeInteger(fout, battle->enemyTypeId);
 	IO_writeInteger(fout, battle->enemyHp);
 	IO_writeInteger(fout, battle->enemyStr);
 	IO_writeInteger(fout, battle->enemyDef);
-	IO_writeInteger(fout, battle->enemyExp);
+	IO_writeInteger(fout, battle->enemyExp);*/
 	//MoveQueueStack_save(&(battle->enemyMoves), fout);
 }
 
 void Battle_deallocate(Battle *battle) {
+	StringUtils_deallocate(battle->enemyName);
 	StringUtils_deallocate(battle->battleLog);
 	MoveQueueStack_deallocate(&(battle->enemyMoves));
 	MoveQueue_deallocate(&(battle->playerMoveQueue));
 }
 
-void Battle_init(Battle *battle, const EnemyTypeArray *enemyTypes, int enemyTypeId) {
+void Battle_init(Battle *battle, const EnemyArray *enemies, const EnemyTypeArray *enemyTypes, int enemyId) {
 	Battle_deallocate(battle);
 
 	battle->round = 1;
 	battle->battleLog = StringUtils_clone("");
-	battle->enemyTypeId = enemyTypeId;
-	battle->enemyName = enemyTypes->items[enemyTypeId].name;
-	battle->enemyHp = enemyTypes->items[enemyTypeId].hp;
-	battle->enemyExp = enemyTypes->items[enemyTypeId].exp;
-	battle->enemyStr = enemyTypes->items[enemyTypeId].str;
-	battle->enemyDef = enemyTypes->items[enemyTypeId].def;
-	battle->enemyMoves = MoveQueueStack_clone(&(enemyTypes->items[enemyTypeId].moves));
+	battle->enemyId = enemyId;
+	battle->enemyTypeId = enemies->items[enemyId].typeId;
+	battle->enemyName = StringUtils_clone(enemyTypes->items[battle->enemyTypeId].name);
+	battle->enemyHp = enemyTypes->items[battle->enemyTypeId].hp;
+	battle->enemyExp = enemyTypes->items[battle->enemyTypeId].exp;
+	battle->enemyStr = enemyTypes->items[battle->enemyTypeId].str;
+	battle->enemyDef = enemyTypes->items[battle->enemyTypeId].def;
+	battle->enemyMoves = MoveQueueStack_clone(&(enemyTypes->items[battle->enemyTypeId].moves));
 
 	MoveQueueStack_permute(&(battle->enemyMoves));
 }
 
-/*char *Battle_enemyMovesShow(Battle *battle)
-{
-	char s[8];
-
-	char c;
-	MoveQueueStack mqs;
-	List_initialize(&mqs);
-	MoveQueue eAl;
-	List_initialize(&eAl);
-
-	mqs = MoveQueueStack_clone(&(battle->enemyMoves));
-	List_popFirst(&mqs, &eAl);
-
-	int i; i = 0;
-	while (!List_isEmpty(&eAl))
-	{
-		List_popFirst(&eAl, &c);
-		s[i] = c;
-		i++;
-		s[i] = ' ';
-		i++;
-	}
-	char *sr = s;
-	return sr;
-}
-
-char *Battle_enemyMovesHide(Battle *battle)
-{
-	char s[8];
-
-	char c, ct;
-	MoveQueueStack mqs;
-	List_initialize(&mqs);
-	MoveQueue eAl;
-	List_initialize(&eAl);
-
-	mqs = MoveQueueStack_clone(&(battle->enemyMoves));
-	List_popFirst(&mqs, &eAl);
-
-	int i; i = 0;
-	while (!List_isEmpty(&eAl))
-	{
-		List_popFirst(&eAl, &c);
-		ct = (char) tolower((int) c);
-		if (c == ct)
-		{
-			s[i] = '#';
-			i++;
-			s[i] = ' ';
-			i++;
-		}
-		else
-		{
-			s[i] = c;
-			i++;
-			s[i] = ' ';
-			i++;
-		}
-	}
-	char *sr = s;
-	return sr;
-}
-*/
-
-void Battle_calcMove(Battle *battle, Player *player)
-{
+void Battle_calcMove(Battle *battle, Player *player) {
 	MoveQueue enemyActionlist;
-	List_initialize(&enemyActionlist);
 	List_popFirst(&(battle->enemyMoves), &enemyActionlist);
 
-	while ((!List_isEmpty(&enemyActionlist)) && (player->hp > 0) && (battle->enemyHp > 0))
-	{
+	while ((!List_isEmpty(&enemyActionlist)) && (player->hp > 0) && (battle->enemyHp > 0)) {
 		char enemyAction, playerAction;
 		List_popFirst(&(enemyActionlist), &enemyAction);
 		List_popFirst(&(battle->playerMoveQueue), &playerAction);
 		Battle_calcAction(enemyAction, playerAction, battle, player);
 	}
 	// Round end || gamestate->player.hp <= 0 (dead)
-
-	List_initialize(&(battle->playerMoveQueue));
 }
 
-void Battle_calcAction(char enemyAction, char playerAction, Battle *battle, Player *player)
-{
+void Battle_calcAction(char enemyAction, char playerAction, Battle *battle, Player *player) {
 	// Calculate damage
 	/*
 		a = Attack

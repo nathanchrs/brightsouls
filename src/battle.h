@@ -9,10 +9,10 @@
 
 typedef struct {
 	int round;
-	int roundMax;
 	char *battleLog;
 
 	char *enemyName;
+	int enemyId;
 	int enemyTypeId;
 	int enemyHp;
 	int enemyStr;
@@ -29,7 +29,7 @@ void Battle_save(const Battle *battle, FILE *fout);
 
 void Battle_deallocate(Battle *battle);
 
-void Battle_init(Battle *battle, const EnemyTypeArray *enemyTypes, int enemyTypeId);
+void Battle_init(Battle *battle, const EnemyArray *enemies, const EnemyTypeArray *enemyTypes, int enemyId);
 
 void Battle_calcMove(Battle *battle, Player *player);
 

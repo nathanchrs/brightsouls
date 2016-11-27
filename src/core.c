@@ -28,8 +28,8 @@ void Core_exploration(GameState *gameState, GameResources *gameResources, const 
 	int enemyId = EnemyArray_searchLocation(&(gameResources->enemies), ltemp);
 	if (enemyId >= 0 && !gameState->isEnemyDefeated.items[enemyId]) {
 		// Enter battle
-		Battle_init(&(gameState->battle), &(gameResources->enemyTypes), gameResources->enemies.items[enemyId].typeId);
-		// gameState->currentPhase = BATTLE;
+		Battle_init(&(gameState->battle), &(gameResources->enemies), &(gameResources->enemyTypes), enemyId);
+		gameState->currentPhase = BATTLE;
 		return; // Don't move to next location if entering battle
 	}
 
@@ -45,6 +45,18 @@ void Core_exploration(GameState *gameState, GameResources *gameResources, const 
 
 		gameState->player.location = ltemp;
 	}
+}
+
+void Core_battle(GameState *gameState, GameResources *gameResources, const char *input) {
+	/*if (Battle_getState(gameState->battle.round) == BATTLE_PLAYER_WIN) {
+		gameState->isEnemyDefeated.items[enemyId] = true;
+		gameState->currentPhase = EXPLORATION;
+	} else if (Battle_getState(gameState->battle.round) == BATTLE_PLAYER_WIN) {
+		
+		gameState->currentPhase = GAMEOVER;
+	}
+
+	Battle_calcMove(gameState->battle, gameState->player);*/
 }
 
 void Core_process(GameState *gameState, GameResources *gameResources, const char *input) {
