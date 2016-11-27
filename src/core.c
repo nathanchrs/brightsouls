@@ -20,6 +20,48 @@ void Core_exploration(GameState *gameState, GameResources *gameResources, const 
 	} else if (StringUtils_strcmpi(input, "skilltree") == 0) {
 		gameState->currentPhase = SKILLTREE;
 		return;
+	} else if(StringUtils_strcmpi(input, "restoration") == 0) {
+		if(SkillTree_isSkillUnlocked(&(gameResources->skillTree),gameState, "Restoration")) {
+			if(gameState->player.exp-15 < 0) {
+				gameState->message = StringUtils_clone("Not enough exp");
+			} else {
+				gameState->player.hp = gameState->player.maxHp;
+				gameState->player.exp -= 15;
+			}
+		} else {
+			gameState->message = StringUtils_clone("Invalid command.");
+		}
+		return;
+	} else if(StringUtils_strcmpi(input, "purification") == 0) {
+		if(SkillTree_isSkillUnlocked(&(gameResources->skillTree),gameState, "Purification")) {
+			if(gameState->player.exp-5 < 0) {
+				gameState->message = StringUtils_clone("Not enough exp");
+			} else {
+				gameState->player.hp += 30;
+				if(gameState->player.hp > gameState->player.maxHp) {
+					gameState->player.hp = gameState->player.maxHp;
+				}
+				gameState->player.exp -= 5;
+			}
+		} else {
+			gameState->message = StringUtils_clone("Invalid command.");
+		}
+		return;
+	} else if(StringUtils_strcmpi(input, "healward") == 0) {
+		if(SkillTree_isSkillUnlocked(&(gameResources->skillTree),gameState, "Healward")) {
+			if(gameState->player.exp-3 < 0) {
+				gameState->message = StringUtils_clone("Not enough exp");
+			} else {
+				gameState->player.hp += 10;
+				if(gameState->player.hp > gameState->player.maxHp) {
+					gameState->player.hp = gameState->player.maxHp;
+				}
+				gameState->player.exp -= 3;
+			}
+		} else {
+			gameState->message = StringUtils_clone("Invalid command.");
+		}
+		return;
 	} else {
 		gameState->message = StringUtils_clone("Invalid command.");
 		return;
@@ -52,7 +94,7 @@ void Core_battle(GameState *gameState, GameResources *gameResources, const char 
 		gameState->isEnemyDefeated.items[enemyId] = true;
 		gameState->currentPhase = EXPLORATION;
 	} else if (Battle_getState(gameState->battle.round) == BATTLE_PLAYER_WIN) {
-		
+
 		gameState->currentPhase = GAMEOVER;
 	}
 

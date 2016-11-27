@@ -1,0 +1,320 @@
+diff --git a/res/initialsave.txt b/res/initialsave.txt
+index 40ba5e6..01820c6 100644
+--- a/res/initialsave.txt
++++ b/res/initialsave.txt
+@@ -31,7 +31,7 @@
+ 
+ 00
+ 
+-10000
++10000000
+ 
+ 
+ 0
+diff --git a/res/resources.txt b/res/resources.txt
+index 90c6cdc..354a43f 100644
+--- a/res/resources.txt
++++ b/res/resources.txt
+@@ -28,7 +28,7 @@ ttttt
+ 
+ `Jenis musuh 1`
+ 10 9 8 7
+-10 
++10
+ `AAAA` `AAAA` `BBBB` `BBBB` `FFFF` `ABFA` `ABFA` `ABFA` `FBAA` `ABAA`
+ `                                                                               /                       :;                \      |l      _____     |;     '8o __-~     ~\   d|      "88p;.  -. _\_;.oP        '>,% (\  (\./)8"        ,;%%%:  ./V^^^V'     ;,-::::::'_::\   ||\     88oooooo.  :\'^^^/,,~--._o.8888888888:'((( o.ooo88 'o'88888888b' )) 888b888   b'888888888;(.,"888b88`
+ 
+@@ -60,26 +60,38 @@ ttttt
+ 2 2 2 1
+ 
+ 
+-5
++8
+ 
+-`Nama skill 1`
+-`Ini deskripsi skill 1`
++`Pulse`
++`Give you extra 15 hp`
+ 11
+ 
+-`Nama skill 2`
+-`Ini deskripsi skill yang kedua`
+-22 0
++`Healward`
++`Heal 10 hp in battle, but take 3 exp from player`
++17 0
+ 
+-`Nama skill tiga`
+-`Ini deskripsi skill ke-3`
+-33 0
++`Purification`
++`Heal 30 hp in battle, but take 5 exp from player`
++25 1
+ 
+-`Nama skill empat`
+-`Ini deskripsi skill ke 4`
+-44 1
++`Restoration`
++`Fully restore your HP, but take 15 exp from player`
++40 2
+ 
+-`Nama skill 5`
+-`Ini deskripsi skill ke-5`
+-55 1
++`Warpath`
++`Give additional 10 strength`
++17 0
++
++`Enrage`
++`Give additional 20 strength`
++25 4
++
++`Icearmor`
++`Give additional 10 defence`
++17 0
++
++`Untouchable`
++`Give additional 20 defence`
++25 6
+ 
+ `            _A                    .''"''.                 /        \              |         |              |         |              /         \             (.---._ _.-.)             |         |              (  <>  <> |\              \        ;               |\      /             _.'\#|_____/#'-._    _.-'##############' ..\ /..\##################\.|....\##################|`
+diff --git a/src/arearenderer.c b/src/arearenderer.c
+index 6a2c830..501d1a9 100644
+--- a/src/arearenderer.c
++++ b/src/arearenderer.c
+@@ -2,6 +2,7 @@
+ #include "area.h"
+ #include "point.h"
+ #include "location.h"
++#include "stringutils.h"
+ 
+ #define AREA_RENDER_BORDER 2
+ #define AREA_TOP_PADDING 5
+@@ -61,6 +62,31 @@ void AreaRenderer_drawPowerUp(FrameBuffer *fb, Point topLeft) {
+ 	FrameBuffer_drawPoint(fb, Point_translate(topLeft, 1, 2), ']', WHITE, TRANSPARENT);
+ }
+ 
++void AreaRenderer_drawMeter(FrameBuffer *fb, Point topLeft, int width, int value, int maxValue) {
++    if (width < 8) width = 8; // Minimum width is 8 for the digits only
++    char *valueStr = StringUtils_fromInt(value % 1000, "%04d");
++    char *maxValueStr = StringUtils_fromInt(maxValue % 1000, "%04d");
++
++    FrameBuffer_drawTextBox(fb, topLeft, Point_translate(topLeft, 0, 2), valueStr, WHITE, TRANSPARENT);
++    FrameBuffer_drawTextBox(fb, Point_translate(topLeft, 0, 3), Point_translate(topLeft, 0, 3), "/", WHITE, TRANSPARENT);
++    FrameBuffer_drawTextBox(fb, Point_translate(topLeft, 0, 4), Point_translate(topLeft, 0, 6), maxValueStr, WHITE, TRANSPARENT);
++
++    Color barColor;
++    if (value*3 < maxValue) barColor = MAROON;
++    else if (value*2 < maxValue) barColor = BROWN;
++    else barColor = GREEN;
++
++    if (value < 0) value = 0;
++    if (maxValue > 0 && maxValue >= value) {
++        int barWidth = (value*(width-8)+(maxValue-1)) / maxValue; // Scale value to width-8, round up
++        int remWidth = (width-8) - barWidth;
++        if (barWidth > 0) FrameBuffer_drawHorizontalLine(fb, Point_translate(topLeft, 0, 8), Point_translate(topLeft, 0, 7+barWidth), '#', barColor, barColor);
++        if (remWidth > 0) FrameBuffer_drawHorizontalLine(fb, Point_translate(topLeft, 0, 8+barWidth), Point_translate(topLeft, 0, 7+barWidth+remWidth), '.', GRAY, GRAY);
++    }
++
++    StringUtils_deallocate(valueStr);
++    StringUtils_deallocate(maxValueStr);
++}
+ 
+ void AreaRenderer_render(FrameBuffer *fb, const GameState *gameState, const GameResources *gameResources) {
+ 	Area *currentArea = &(gameResources->areas.items[gameState->player.location.areaId]);
+@@ -68,6 +94,31 @@ void AreaRenderer_render(FrameBuffer *fb, const GameState *gameState, const Game
+ 	// Draw background
+ 	FrameBuffer_drawRectangle(fb, Point_make(0, 0), Point_make(fb->height-1, fb->width-1), BLANK, TRANSPARENT, BLACK, BLACK);
+ 
++	FrameBuffer_drawRectangle(fb, Point_make(4, fb->width-80), Point_make(20, fb->width-45), BLANK, TRANSPARENT, BLACK, WHITE);
++
++	FrameBuffer_drawTextBox(fb, Point_make(4, fb->width-68), Point_make(4, fb->width-50), gameState->player.name, BLACK, TRANSPARENT);
++
++	FrameBuffer_drawTextBox(fb, Point_make(6, fb->width-77), Point_make(6, fb->width-50), "HP = ", WHITE, TRANSPARENT);
++
++	AreaRenderer_drawMeter(fb, Point_make(6,fb->width-72), 26, gameState->player.hp, gameState->player.maxHp);
++
++	FrameBuffer_drawTextBox(fb, Point_make(7, fb->width-77), Point_make(7, fb->width-50), StringUtils_concat("Strength     =    ",StringUtils_fromInt(gameState->player.str,"%d")), WHITE, TRANSPARENT);
++
++	FrameBuffer_drawTextBox(fb, Point_make(8, fb->width-77), Point_make(8, fb->width-50), StringUtils_concat("Defence      =    ",StringUtils_fromInt(gameState->player.def,"%d")), WHITE, TRANSPARENT);
++
++	FrameBuffer_drawTextBox(fb, Point_make(9, fb->width-77), Point_make(9, fb->width-50), StringUtils_concat("Exp          =    ",StringUtils_fromInt(gameState->player.exp,"%d")), WHITE, TRANSPARENT);
++
++	FrameBuffer_drawTextBox(fb, Point_make(10, fb->width-77), Point_make(10, fb->width-50), "Skill active =", WHITE, TRANSPARENT);
++
++	int i;
++	for(i=0;i< gameState->isSkillUnlocked.length; i++) {
++		if(gameState->isSkillUnlocked.items[i] == 1) {
++			FrameBuffer_drawTextBox(fb, Point_make(11+i, fb->width-77), Point_make(11+i, fb->width-50), StringUtils_concat("+ ",gameResources->skillTree.items[i].skillName), WHITE, TRANSPARENT);
++		} else {
++			FrameBuffer_drawTextBox(fb, Point_make(11+i, fb->width-77), Point_make(11+i, fb->width-50), StringUtils_concat("- ",gameResources->skillTree.items[i].skillName), GRAY, TRANSPARENT);
++		}
++	}
++
+ 	int r, c;
+ 
+ 	// Draw water cells
+@@ -99,7 +150,7 @@ void AreaRenderer_render(FrameBuffer *fb, const GameState *gameState, const Game
+ 			if (powerUpId >= 0 && !gameState->isPowerUpUsed.items[powerUpId]) {
+ 				AreaRenderer_drawPowerUp(fb, Point_make(r*3 + AREA_RENDER_BORDER + AREA_TOP_PADDING + 1, r*3 + c*5 + AREA_RENDER_BORDER + 2));
+ 				continue;
+-			} 
++			}
+ 
+ 			int enemyId = EnemyArray_searchLocation(&(gameResources->enemies), Location_make(Point_make(r, c), gameState->player.location.areaId));
+ 			if (enemyId >= 0 && !gameState->isEnemyDefeated.items[enemyId]) {
+diff --git a/src/core.c b/src/core.c
+index cdeb6b2..e6c10ca 100644
+--- a/src/core.c
++++ b/src/core.c
+@@ -20,6 +20,48 @@ void Core_exploration(GameState *gameState, GameResources *gameResources, const
+ 	} else if (StringUtils_strcmpi(input, "skilltree") == 0) {
+ 		gameState->currentPhase = SKILLTREE;
+ 		return;
++	} else if(StringUtils_strcmpi(input, "restoration") == 0) {
++		if(SkillTree_isSkillUnlocked(&(gameResources->skillTree),gameState, "Restoration")) {
++			if(gameState->player.exp-15 < 0) {
++				gameState->message = StringUtils_clone("Not enough exp");
++			} else {
++				gameState->player.hp = gameState->player.maxHp;
++				gameState->player.exp -= 15;
++			}
++		} else {
++			gameState->message = StringUtils_clone("Invalid command.");
++		}
++		return;
++	} else if(StringUtils_strcmpi(input, "purification") == 0) {
++		if(SkillTree_isSkillUnlocked(&(gameResources->skillTree),gameState, "Purification")) {
++			if(gameState->player.exp-5 < 0) {
++				gameState->message = StringUtils_clone("Not enough exp");
++			} else {
++				gameState->player.hp += 30;
++				if(gameState->player.hp > gameState->player.maxHp) {
++					gameState->player.hp = gameState->player.maxHp;
++				}
++				gameState->player.exp -= 5;
++			}
++		} else {
++			gameState->message = StringUtils_clone("Invalid command.");
++		}
++		return;
++	} else if(StringUtils_strcmpi(input, "healward") == 0) {
++		if(SkillTree_isSkillUnlocked(&(gameResources->skillTree),gameState, "Healward")) {
++			if(gameState->player.exp-3 < 0) {
++				gameState->message = StringUtils_clone("Not enough exp");
++			} else {
++				gameState->player.hp += 10;
++				if(gameState->player.hp > gameState->player.maxHp) {
++					gameState->player.hp = gameState->player.maxHp;
++				}
++				gameState->player.exp -= 3;
++			}
++		} else {
++			gameState->message = StringUtils_clone("Invalid command.");
++		}
++		return;
+ 	} else {
+ 		gameState->message = StringUtils_clone("Invalid command.");
+ 		return;
+@@ -52,7 +94,7 @@ void Core_battle(GameState *gameState, GameResources *gameResources, const char
+ 		gameState->isEnemyDefeated.items[enemyId] = true;
+ 		gameState->currentPhase = EXPLORATION;
+ 	} else if (Battle_getState(gameState->battle.round) == BATTLE_PLAYER_WIN) {
+-		
++
+ 		gameState->currentPhase = GAMEOVER;
+ 	}
+ 
+diff --git a/src/skilltree.c b/src/skilltree.c
+index cff52c6..981cc18 100644
+--- a/src/skilltree.c
++++ b/src/skilltree.c
+@@ -31,7 +31,7 @@ void SkillTree_load(SkillTree *skillTree, FILE *fin) {
+ 	for (i = 0; i < n; i++) {
+ 		skillTree->items[i].skillName = IO_readString(fin);
+ 		skillTree->items[i].skillDescription = IO_readString(fin);
+-		skillTree->items[i].requiredLevel = IO_readInteger(fin);
++		skillTree->items[i].requiredExp = IO_readInteger(fin);
+ 		Array_allocate(&(skillTree->items[i].children), 2);
+ 		skillTree->items[i].depth = 0;
+ 
+@@ -75,21 +75,47 @@ bool SkillTree_isSkillUnlocked(const SkillTree *skillTree, const GameState *game
+ 	}
+ }
+ 
+-bool SkillTree_unlockSkill(const SkillTree *skillTree, const GameState *gameState, const char *skillName) {
++bool SkillTree_unlockSkill(const SkillTree *skillTree, GameState *gameState, const char *skillName) {
+ 	int idx = SkillTree_getSkillIndex(skillTree, skillName);
+-	if (idx >= 0 && idx < gameState->isSkillUnlocked.length) {
+-		int parent = skillTree->items[idx].parent;
+-		if (parent >= 0 && parent < gameState->isSkillUnlocked.length && gameState->isSkillUnlocked.items[parent]) {
++	if(SkillTree_isSkillUnlocked(skillTree,gameState,skillName)) {
++		gameState->message = StringUtils_clone("You had already unlocked that skill before");
++		return true;
++	} else {
++		if (idx >= 0 && idx < gameState->isSkillUnlocked.length) {
++			int parent = skillTree->items[idx].parent;
++			if (parent >= 0 && parent < gameState->isSkillUnlocked.length && gameState->isSkillUnlocked.items[parent]) {
+ 
+-			// TODO: check and deduct skill points
++				// TODO: check and deduct skill points
++				if(gameState->player.exp >= skillTree->items[idx].requiredExp) {
++					gameState->isSkillUnlocked.items[idx] = true;
++					gameState->player.exp -= skillTree->items[idx].requiredExp;
++					SkillTree_addStats(skillTree,gameState,idx);
++					return true;
++				} else {
++					return false;
++				}
+ 
+-			gameState->isSkillUnlocked.items[idx] = true;
+-			return true;
++			}
+ 		}
++		return false;
+ 	}
+-	return false;
+ }
+ 
++void SkillTree_addStats(const SkillTree *skillTree, GameState *gameState, int idx) {
++	if(idx == 0) {
++		gameState->player.hp += 15;
++	} else if(idx == 4) {
++		gameState->player.str += 10;
++	} else if(idx == 5) {
++		gameState->player.str += 20;
++	} else if(idx == 6) {
++		gameState->player.def += 10;
++	} else if(idx == 7) {
++		gameState->player.def += 20;
++	}
++}
++
++
+ void SkillTree_deallocate(SkillTree *skillTree) {
+ 	int i;
+ 	for (i = 0; i < skillTree->length; i++) {
+diff --git a/src/skilltree.h b/src/skilltree.h
+index d652fa6..2065bd6 100644
+--- a/src/skilltree.h
++++ b/src/skilltree.h
+@@ -11,7 +11,7 @@
+ typedef struct {
+ 	char *skillName;
+ 	char *skillDescription;
+-	int requiredLevel;
++	int requiredExp;
+ 
+ 	int parent;
+ 	ARRAY(int) children;
+@@ -27,7 +27,9 @@ int SkillTree_searchIndex(const SkillTree *skillTree, const char *skillName);
+ 
+ bool SkillTree_isSkillUnlocked(const SkillTree *skillTree, const GameState *gameState, const char *skillName);
+ 
+-bool SkillTree_unlockSkill(const SkillTree *skillTree, const GameState *gameState, const char *skillName);
++bool SkillTree_unlockSkill(const SkillTree *skillTree, GameState *gameState, const char *skillName);
++
++void SkillTree_addStats(const SkillTree *skillTree, GameState *gameState, int idx);
+ 
+ void SkillTree_deallocate(SkillTree *skillTree);
+ 
