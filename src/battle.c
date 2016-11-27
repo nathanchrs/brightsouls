@@ -5,21 +5,20 @@ void Battle_load(Battle *battle, FILE *fin) {
 	battle->round = IO_readInteger(fin);
 	battle->battleLog = IO_readString(fin);
 
-	battle->enemyName = IO_readString(fin);
+	battle->enemyTypeId = IO_readInteger(fin);
 	battle->enemyHp = IO_readInteger(fin);
 	battle->enemyStr = IO_readInteger(fin);
 	battle->enemyDef = IO_readInteger(fin);
 	battle->enemyExp = IO_readInteger(fin);
 	MoveQueueStack_load(&(battle->enemyMoves), fin);
-	battle->enemyMovesShow = Battle_enemyMovesShow(battle);
-	battle->enemyMovesHide = Battle_enemyMovesHide(battle);
+	MoveQueue_load(&(battle->playerMoveQueue), fin);
 }
 
 void Battle_save(const Battle *battle, FILE *fout) {
 	IO_writeInteger(fout, battle->round);
 	IO_writeString(fout, battle->battleLog);
 
-	IO_writeString(fout, battle->enemyName);
+	IO_writeInteger(fout, battle->enemyTypeId);
 	IO_writeInteger(fout, battle->enemyHp);
 	IO_writeInteger(fout, battle->enemyStr);
 	IO_writeInteger(fout, battle->enemyDef);
@@ -38,6 +37,7 @@ void Battle_init(Battle *battle, const EnemyTypeArray *enemyTypes, int enemyType
 
 	battle->round = 1;
 	battle->battleLog = "";
+	battle->enemyTypeId = enemyTypeId;
 	battle->enemyName = enemyTypes->items[enemyTypeId].name;
 	battle->enemyHp = enemyTypes->items[enemyTypeId].hp;
 	battle->enemyExp = enemyTypes->items[enemyTypeId].exp;

@@ -7,14 +7,6 @@ void testBattle(const char *executableDirectory) {
 
 	printf("  Testing Battle...\n");
 
-	/*EnemyArray enemies;
-
-	FILE *fin = IO_openFile(executableDirectory, "../test/enemy.in"-7);
-	assert(fin != NULL);
-	Enemy_loadArray(&enemies, fin);
-	IO_closeFile(fin);
-	*/
-
 	Battle battle;
 
 	FILE *fin = IO_openFile(executableDirectory, "../test/battle.in");

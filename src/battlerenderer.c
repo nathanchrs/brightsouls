@@ -3,15 +3,11 @@
 #include "framebuffer.h"
 #include <stdio.h>
 #include "move.h"
+#include "utilities.h"
 
 #define ENEMY_BOSS "BEELZEBUB"
 #define ENEMY_CREEP1 "CROCS"
 
-int RandRange(int Min, int Max)
-{
-    int diff = Max-Min;
-    return (int) (((double)(diff+1)/RAND_MAX) * rand() + Min);
-}
 
 void BattleRenderer_drawPlayer(FrameBuffer *fb, Point topLeft) {
     char *buffer;
@@ -317,7 +313,7 @@ void BattleRenderer_render(FrameBuffer *fb, const GameState *gameState, const Ga
         }
         FrameBuffer_drawRectangle(fb, Point_make(1,0), Point_make(29,70), '*',TRANSPARENT, TRANSPARENT, TRANSPARENT); //box battle
         FrameBuffer_drawRectangle(fb, Point_make(19,39), Point_make(29,70), '*',TRANSPARENT, TRANSPARENT, TRANSPARENT); //box stats player
-        BattleRenderer_drawEnemy(fb,Point_make(2,40), RandRange(1,10)); // rand enemy
+        BattleRenderer_drawEnemy(fb,Point_make(2,40),  getRandomInt(1,10)); // rand enemy
 
         FrameBuffer_drawRectangle(fb, Point_make(22,41), Point_make(24,68), '*',TRANSPARENT, TRANSPARENT, TRANSPARENT); // box hpbar player
 
