@@ -21,6 +21,8 @@ typedef struct {
 
 	SkillTree skillTree;
 	
+	char *playerImage;
+
 } GameResources;
 
 void GameResources_load(GameResources *gameResources, FILE *fin);

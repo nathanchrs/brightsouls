@@ -7,5 +7,4 @@
 
 void BattleRenderer_render(FrameBuffer *fb, const GameState *gameState, const GameResources *gameResources);
 
-
 #endif

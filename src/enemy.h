@@ -8,6 +8,8 @@
 #include "location.h"
 #include "move.h"
 
+#define ENEMY_BOSS_ID 0
+
 typedef struct {
 	char *name;
 
@@ -17,6 +19,8 @@ typedef struct {
 	int exp;
 
 	MoveQueueStack moves;
+
+	char *image;
 } EnemyType;
 
 typedef struct {

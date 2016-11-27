@@ -1,4 +1,5 @@
 #include "gameresources.h"
+#include "stringutils.h"
 
 void GameResources_load(GameResources *gameResources, FILE *fin) {
 	AreaArray_load(&(gameResources->areas), fin);
@@ -7,6 +8,8 @@ void GameResources_load(GameResources *gameResources, FILE *fin) {
 	PowerUpTypeArray_load(&(gameResources->powerUpTypes), fin);
 	PowerUpArray_load(&(gameResources->powerUps), fin);
 	SkillTree_load(&(gameResources->skillTree), fin);
+
+	gameResources->playerImage = IO_readString(fin);
 }
 
 void GameResources_deallocate(GameResources *gameResources) {
@@ -16,4 +19,6 @@ void GameResources_deallocate(GameResources *gameResources) {
 	PowerUpTypeArray_deallocate(&(gameResources->powerUpTypes));
 	PowerUpArray_deallocate(&(gameResources->powerUps));
 	SkillTree_deallocate(&(gameResources->skillTree));
+
+	StringUtils_deallocate(gameResources->playerImage);
 }

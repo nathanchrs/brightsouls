@@ -16,6 +16,8 @@ void EnemyTypeArray_load(EnemyTypeArray *enemyTypes, FILE *fin) {
 		enemyTypes->items[i].exp = IO_readInteger(fin);
 
 		MoveQueueStack_load(&(enemyTypes->items[i].moves), fin);
+
+		enemyTypes->items[i].image = IO_readString(fin);
 	}
 }
 
@@ -48,6 +50,7 @@ void EnemyTypeArray_deallocate(EnemyTypeArray *enemyTypes) {
 	int i;
 	for (i = 0; i < enemyTypes->length; i++) {
 		MoveQueueStack_deallocate(&(enemyTypes->items[i].moves));
+		StringUtils_deallocate(enemyTypes->items[i].image);
 	}
 	Array_deallocate(enemyTypes);
 }
