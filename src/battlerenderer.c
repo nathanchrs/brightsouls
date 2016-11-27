@@ -17,9 +17,11 @@ void BattleRenderer_drawEnemy(FrameBuffer *fb, const GameResources *gameResource
     FrameBuffer_drawTextBox(fb, topLeft, bottomRight, gameResources->enemyTypes.items[typeId].image, MAROON, TRANSPARENT);
 }
 
-void BattleRenderer_render(FrameBuffer *fb, GameState *gameState, const GameResources *gameResources) {
-    int i;
+void BattleRenderer_render(FrameBuffer *fb, const GameState *gameState, const GameResources *gameResources) {
+    ListNode *it;
+    ListNode *firstNode;
     char tmp;
+    int i;
 
     char *playerMoveStr = StringUtils_clone("");
      char *enemyMoveStr = StringUtils_clone("");
@@ -78,11 +80,16 @@ void BattleRenderer_render(FrameBuffer *fb, GameState *gameState, const GameReso
 
     // Draw player input box
 
-    for (i = 0; i < gameState->player.moveQueue.length; i++) {
-        List_popFirst(&(gameState->player.moveQueue), &tmp);
-        StringUtils_appendChar(&playerMoveStr, tmp);
-        StringUtils_appendChar(&playerMoveStr, ' ');
-        List_pushLast(&(gameState->player.moveQueue), tmp);
+    // Iterate over moveQueue (circular list implementation)
+    it = List_first(&(gameState->battle.playerMoveQueue));
+    firstNode = it;
+    if (it != NULL) {
+        do {
+            tmp = ListNode_value(it, char);
+            StringUtils_appendChar(&playerMoveStr, tmp);
+            StringUtils_appendChar(&playerMoveStr, ' ');
+            it = ListNode_next(it);
+        } while (it != firstNode);
     }
 
     FrameBuffer_drawRectangle(fb, Point_make(24,34), Point_make(27,59), '*', GRAY, TRANSPARENT, TRANSPARENT);
@@ -97,15 +104,23 @@ void BattleRenderer_render(FrameBuffer *fb, GameState *gameState, const GameReso
     int secondHideId = (firstHideId + (gameState->player.exp + gameState->player.str*gameState->player.def + gameState->battle.enemyId) % (MOVE_QUEUE_LENGTH-1) + 1) % MOVE_QUEUE_LENGTH;
 
     MoveQueue *enemyMoveQueuePtr = ListNode_valuePointer(List_first(&(gameState->battle.enemyMoves)));
-    for (i = 0; i < enemyMoveQueuePtr->length; i++) {
-        List_popFirst(enemyMoveQueuePtr, &tmp);
-        if (i == firstHideId || i == secondHideId) {
-            StringUtils_appendChar(&enemyMoveStr, '#');
-        } else {
-            StringUtils_appendChar(&enemyMoveStr, tmp);
-        }
-        StringUtils_appendChar(&enemyMoveStr, ' ');
-        List_pushLast(enemyMoveQueuePtr, tmp);
+
+    // Iterate over the first enemyMoveQueue
+    it = List_first(enemyMoveQueuePtr);
+    firstNode = it;
+    i = 0;
+    if (it != NULL) {
+        do {
+            tmp = ListNode_value(it, char);
+            if (i == firstHideId || i == secondHideId) {
+                StringUtils_appendChar(&enemyMoveStr, '#');
+            } else {
+                StringUtils_appendChar(&enemyMoveStr, tmp);
+            }
+            StringUtils_appendChar(&enemyMoveStr, ' ');
+            it = ListNode_next(it);
+            i++;
+        } while (it != firstNode);
     }
 
     FrameBuffer_drawRectangle(fb, Point_make(24,59), Point_make(27,84), '*', GRAY, TRANSPARENT, TRANSPARENT);
@@ -117,7 +132,17 @@ void BattleRenderer_render(FrameBuffer *fb, GameState *gameState, const GameReso
     FrameBuffer_drawRectangle(fb, Point_make(0,34), Point_make(24,84), '*', GRAY, TRANSPARENT, TRANSPARENT); // battleLog box
     FrameBuffer_drawTextBox(fb, Point_make(2, 36), Point_make(22, 82), gameState->battle.battleLog, WHITE, TRANSPARENT);
 
-    FrameBuffer_setInputPrompt(fb, "Enter [a(ttack)/b(lock)/f(lank)], [e(rase)] or [pause] >> ");
+    FrameBuffer_drawTextBox(fb, Point_make(fb->height-1,0), Point_make(fb->height-1, fb->width-1), gameState->message, WHITE, TRANSPARENT);
+
+    if (gameState->battle.currentPhase == BATTLE_PLAYER_WIN) {
+        FrameBuffer_setInputPrompt(fb, "You win! Press any key to continue or [pause] >> ");
+    } else if (gameState->battle.currentPhase == BATTLE_ENEMY_WIN) {
+        FrameBuffer_setInputPrompt(fb, "You are defeated. Press any key to continue or [pause] >> ");
+    } else if (gameState->battle.currentPhase == BATTLE_DRAW) {
+        FrameBuffer_setInputPrompt(fb, "It's a draw... press any key to continue or [pause] >> ");
+    } else { // BATTLE_ONGOING
+        FrameBuffer_setInputPrompt(fb, "Enter [a(ttack)/b(lock)/f(lank)], [e(rase)] or [pause] >> ");
+    }
 
     StringUtils_deallocate(playerMoveStr);
     StringUtils_deallocate(enemyMoveStr);

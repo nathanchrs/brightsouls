@@ -90,6 +90,11 @@ void FrameBuffer_drawTextBox(FrameBuffer *fb, const Point topLeft, const Point b
 			bool done = false;
 			for (r = topLeft.r; r <= bottomRight.r && !done; r++) {
 				for (c = topLeft.c; c <= bottomRight.c && !done; c++) {
+					if (str[it] == '\n') {
+						it++;
+						if (it >= slen) done = true;
+						break;
+					}
 					if (r >= 0 && c >= 0 && r < fb->height && c < fb->width) {
 						fb->contents[r*fb->width + c] = str[it];
 						if (fgColor != TRANSPARENT) fb->fgColors[r*fb->width + c] = fgColor;
@@ -97,7 +102,6 @@ void FrameBuffer_drawTextBox(FrameBuffer *fb, const Point topLeft, const Point b
 					}
 					it++;
 					if (it >= slen) done = true;
-					if (str[it] == '\n') break;
 				}
 			}
 		}

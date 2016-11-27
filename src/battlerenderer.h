@@ -5,6 +5,6 @@
 #include "gameresources.h"
 #include "framebuffer.h"
 
-void BattleRenderer_render(FrameBuffer *fb, GameState *gameState, const GameResources *gameResources);
+void BattleRenderer_render(FrameBuffer *fb, const GameState *gameState, const GameResources *gameResources);
 
 #endif
