@@ -18,15 +18,31 @@ void Battle_load(Battle *battle, FILE *fin) {
 }
 
 void Battle_save(const Battle *battle, FILE *fout) {
-	/*IO_writeInteger(fout, battle->round);
-	IO_writeString(fout, battle->battleLog);
+	IO_writeInteger(fout, battle->round);
+	IO_writeNewline(fout);
 
+	IO_writeString(fout, battle->battleLog);
+	IO_writeNewline(fout);
+
+	IO_writeInteger(fout, battle->currentPhase);
+	IO_writeNewline(fout);
+
+	IO_writeString(fout, battle->enemyName);
+	IO_writeInteger(fout, battle->enemyId);
 	IO_writeInteger(fout, battle->enemyTypeId);
+	IO_writeNewline(fout);
+
 	IO_writeInteger(fout, battle->enemyHp);
 	IO_writeInteger(fout, battle->enemyStr);
 	IO_writeInteger(fout, battle->enemyDef);
-	IO_writeInteger(fout, battle->enemyExp);*/
-	//MoveQueueStack_save(&(battle->enemyMoves), fout);
+	IO_writeInteger(fout, battle->enemyExp);
+	IO_writeNewline(fout);
+
+	MoveQueueStack_save(&(battle->enemyMoves), fout);
+	IO_writeNewline(fout);
+
+	MoveQueue_save(&(battle->playerMoveQueue), fout);
+	IO_writeNewline(fout);
 }
 
 void Battle_deallocate(Battle *battle) {

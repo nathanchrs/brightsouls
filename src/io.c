@@ -8,6 +8,13 @@ FILE* IO_openFile(const char *directory, const char *fileName) {
 	return fin;
 }
 
+FILE* IO_openFileForWrite(const char *directory, const char *fileName) {
+	char *filePath = StringUtils_concat(directory, fileName);
+	FILE *fout = fopen(filePath, "w");
+	StringUtils_deallocate(filePath);
+	return fout;
+}
+
 void IO_closeFile(FILE *file) {
 	fclose(file);
 }
@@ -38,7 +45,7 @@ void IO_discardCharacters(FILE *fin, const char *discard) {
 	}
 }
 
-void IO_writeNewLine(FILE *fout) {
+void IO_writeNewline(FILE *fout) {
 	fprintf(fout, "\n");
 }
 

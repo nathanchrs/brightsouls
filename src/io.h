@@ -11,11 +11,13 @@
 
 FILE* IO_openFile(const char *directory, const char *fileName);
 
+FILE* IO_openFileForWrite(const char *directory, const char *fileName);
+
 void IO_closeFile(FILE *file);
 
 void IO_discardCharacters(FILE *fin, const char *discard);
 
-void IO_writeNewLine(FILE *fout);
+void IO_writeNewline(FILE *fout);
 
 /* Read/write quoted string from file */
 char* IO_readString(FILE *fin);

@@ -23,8 +23,41 @@ void MoveQueueStack_load(MoveQueueStack *moves, FILE *fin) {
 	}
 }
 
+void MoveQueue_save(const MoveQueue *moveQueue, FILE *fout) {
+    // Iterate over queue (circular doubly-linked list implementation)
+	ListNode *it = List_first(moveQueue);
+    ListNode *firstNode = it;
+    if (it != NULL) {
+    	char tmp;
+    	char *str = StringUtils_clone("");
+
+        do {
+            tmp = ListNode_value(it, char);
+            StringUtils_appendChar(&str, tmp);
+            it = ListNode_next(it);
+        } while (it != firstNode);
+
+        IO_writeString(fout, str);
+        IO_writeNewline(fout);
+        StringUtils_deallocate(str);
+    }
+}
+
 void MoveQueueStack_save(const MoveQueueStack *moves, FILE *fout) {
-	IO_writeString(fout, "Test");
+	IO_writeInteger(fout, moves->length);
+    IO_writeNewline(fout);
+
+    // Iterate over queue (circular doubly-linked list implementation)
+	ListNode *it = List_first(moves);
+    ListNode *firstNode = it;
+    if (it != NULL) {
+    	MoveQueue tmp;
+        do {
+            tmp = ListNode_value(it, MoveQueue);
+            MoveQueue_save(&tmp, fout);
+            it = ListNode_next(it);
+        } while (it != firstNode);
+    }
 }
 
 MoveQueue MoveQueue_clone(MoveQueue *moveQueue) {

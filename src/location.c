@@ -110,6 +110,21 @@ void LocationEdgeArray_load(LocationEdgeArray *locs, FILE *fin) {
 	}
 }
 
+void LocationEdgeArray_save(const LocationEdgeArray *locs, FILE *fout) {
+	IO_writeInteger(fout, locs->length);
+	IO_writeNewline(fout);
+	int i;
+	for (i = 0; i < locs->length; i++) {
+		IO_writeInteger(fout, locs->items[i].from.point.r);
+		IO_writeInteger(fout, locs->items[i].from.point.c);
+		IO_writeInteger(fout, locs->items[i].from.areaId);
+		IO_writeInteger(fout, locs->items[i].to.point.r);
+		IO_writeInteger(fout, locs->items[i].to.point.c);
+		IO_writeInteger(fout, locs->items[i].to.areaId);
+		IO_writeNewline(fout);
+	}
+}
+
 void LocationEdgeArray_deallocate(LocationEdgeArray *locs) {
 	Array_deallocate(locs);
 }

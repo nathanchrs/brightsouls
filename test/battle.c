@@ -49,17 +49,15 @@ void testBattle(const char *executableDirectory) {
 
 	while ((!List_isEmpty(&battle.enemyMoves)) && (player.hp > 0) && (battle.enemyHp > 0))
 	{
-		battle.battleLog = StringUtils_clone("");
-
 		Battle_calcMove(&battle, &player);
-
-		/*printf("Saving battle..\n");
-		FILE *fout = IO_openFile(executableDirectory, "../test/battlesave.in");
-		assert(fout != NULL);
-		Battle_save(&battle, fout);
-		IO_closeFile(fout);*/
 		battle.round++;
 	}
+
+	printf("    Saving battle test save file in test/battlesave.out...\n");
+	FILE *fout = IO_openFileForWrite(executableDirectory, "../test/battlesave.out");
+	assert(fout != NULL);
+	Battle_save(&battle, fout);
+	IO_closeFile(fout);
 
 	Battle_deallocate(&battle);
 
