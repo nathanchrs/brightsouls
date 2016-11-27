@@ -16,7 +16,7 @@ char* StringUtils_fromInt(int value, const char* format) {
 	size_t len = snprintf(NULL, 0, format, value);
 	if (len < 24) { // hard limit on int length (including 64-bit), anything above is likely wrong
 		char *str = malloc(sizeof(char) * (len+1)); // allocate according to length
-		snprintf(str, len, format, value);
+		snprintf(str, len+1, format, value);
 		return str;
 	} else {
 		return NULL;
