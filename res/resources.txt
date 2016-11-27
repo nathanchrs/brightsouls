@@ -60,7 +60,7 @@ ttttt
 2 2 2 1
 
 
-8
+10
 
 `Pulse`
 `Give you extra 15 hp`
@@ -71,11 +71,11 @@ ttttt
 17 0
 
 `Purification`
-`Heal 30 hp in battle, but take 5 exp from player`
+`Heal 30 hp in battle, but take 10 exp from player`
 25 1
 
 `Restoration`
-`Fully restore your HP, but take 15 exp from player`
+`Fully restore your HP, but take 20 exp from player`
 40 2
 
 `Warpath`
@@ -86,12 +86,20 @@ ttttt
 `Give additional 20 strength`
 25 4
 
+`Godstrength`
+`Give additional 50 strength`
+40 5
+
 `Icearmor`
 `Give additional 10 defence`
 17 0
 
 `Untouchable`
 `Give additional 20 defence`
-25 6
+25 7
+
+`Bodyofsteel`
+`Give additional 50 defence`
+40 8
 
 `            _A                    .''"''.                 /        \              |         |              |         |              /         \             (.---._ _.-.)             |         |              (  <>  <> |\              \        ;               |\      /             _.'\#|_____/#'-._    _.-'##############' ..\ /..\##################\.|....\##################|`

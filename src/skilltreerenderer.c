@@ -2,6 +2,7 @@
 #include "array.h"
 #include "point.h"
 #include "boolean.h"
+#include "stringutils.h"
 
 #define SKILLTREE_RENDER_BORDER 2
 #define SKILL_HORIZONTAL_PADDING 5
@@ -93,6 +94,15 @@ void SkillTreeRenderer_render(FrameBuffer *fb, const GameState *gameState, const
 	// draw title
 	FrameBuffer_drawRectangle(fb, Point_make(2,2), Point_make(4,15), '=', TEAL, BLACK, BLACK);
 	FrameBuffer_drawTextBox(fb, Point_make(3,4), Point_make(3, 13), "SKILL TREE", WHITE, TRANSPARENT);
+
+	FrameBuffer_drawRectangle(fb, Point_make(2,fb->width-15), Point_make(4,fb->width-1), '=', RED, BLACK, BLACK);
+	char *stats = StringUtils_clone("EXP   =  ");
+	char *statsnum = StringUtils_fromInt(gameState->player.exp, "%d");
+	char *exp = StringUtils_concat(stats,statsnum);
+	FrameBuffer_drawTextBox(fb, Point_make(3,fb->width-13), Point_make(3, fb->width-2), exp, WHITE, TRANSPARENT);
+	StringUtils_deallocate(stats);
+	StringUtils_deallocate(statsnum);
+	StringUtils_deallocate(exp);
 
 	FrameBuffer_drawTextBox(fb, Point_make(fb->height-1,0), Point_make(fb->height-1, fb->width-1), gameState->message, WHITE, TRANSPARENT);
 	FrameBuffer_setInputPrompt(fb, "Select skill to unlock [<skill name>/back/pause] >> ");

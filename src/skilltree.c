@@ -75,11 +75,10 @@ bool SkillTree_isSkillUnlocked(const SkillTree *skillTree, const GameState *game
 	}
 }
 
-bool SkillTree_unlockSkill(const SkillTree *skillTree, GameState *gameState, const char *skillName) {
+int SkillTree_unlockSkill(const SkillTree *skillTree, GameState *gameState, const char *skillName) {
 	int idx = SkillTree_getSkillIndex(skillTree, skillName);
 	if(SkillTree_isSkillUnlocked(skillTree,gameState,skillName)) {
-		gameState->message = StringUtils_clone("You had already unlocked that skill before");
-		return true;
+		return SKILL_UNLOCKED;
 	} else {
 		if (idx >= 0 && idx < gameState->isSkillUnlocked.length) {
 			int parent = skillTree->items[idx].parent;
@@ -90,14 +89,14 @@ bool SkillTree_unlockSkill(const SkillTree *skillTree, GameState *gameState, con
 					gameState->isSkillUnlocked.items[idx] = true;
 					gameState->player.exp -= skillTree->items[idx].requiredExp;
 					SkillTree_addStats(skillTree,gameState,idx);
-					return true;
+					return SKILL_UNLOCKED;
 				} else {
-					return false;
+					return SKILL_NOT_UNLOCKED;
 				}
 
 			}
 		}
-		return false;
+		return SKILL_NOT_UNLOCKED;
 	}
 }
 
@@ -109,9 +108,13 @@ void SkillTree_addStats(const SkillTree *skillTree, GameState *gameState, int id
 	} else if(idx == 5) {
 		gameState->player.str += 20;
 	} else if(idx == 6) {
-		gameState->player.def += 10;
+		gameState->player.str += 50;
 	} else if(idx == 7) {
+		gameState->player.def += 10;
+	} else if(idx == 8) {
 		gameState->player.def += 20;
+	} else if(idx == 9) {
+		gameState->player.def += 50;
 	}
 }
 
