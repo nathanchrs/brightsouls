@@ -4,6 +4,7 @@
 void Battle_load(Battle *battle, FILE *fin) {
 	battle->round = IO_readInteger(fin);
 	battle->battleLog = IO_readString(fin);
+	battle->currentPhase = BATTLE_ONGOING;
 
 	battle->enemyName = IO_readString(fin);
 	battle->enemyHp = IO_readInteger(fin);
@@ -38,6 +39,7 @@ void Battle_init(Battle *battle, const EnemyTypeArray *enemyTypes, int enemyType
 
 	battle->round = 1;
 	battle->battleLog = "";
+	battle->currentPhase = BATTLE_ONGOING;
 	battle->enemyName = enemyTypes->items[enemyTypeId].name;
 	battle->enemyHp = enemyTypes->items[enemyTypeId].hp;
 	battle->enemyExp = enemyTypes->items[enemyTypeId].exp;
@@ -136,7 +138,8 @@ void Battle_calcMove(Battle *battle, Player *player)
 		List_popFirst(&(battle->playerMoveQueue), &playerAction);
 		Battle_calcAction(enemyAction, playerAction, battle, player);
 	}
-	// Round end || gamestate->player.hp <= 0 (dead)
+	// Round end || player->hp <= 0 ||  battle->enemyHp <= 0(dead)
+	Battle_calcResult(battle, player);
 
 	List_initialize(&(battle->playerMoveQueue));
 }
@@ -270,4 +273,14 @@ void Battle_calcAction(char enemyAction, char playerAction, Battle *battle, Play
 		(player->hp) = 0;
 	if ((battle->enemyHp) < 0)
 		(battle->enemyHp) = 0;
+}
+
+void Battle_calcResult(Battle *battle, Player *player)
+{
+	if (((player->hp <= 0) && (battle->enemyHp <= 0)) || ((player->hp > 0) && (battle->enemyHp > 0)))
+		battle->currentPhase = BATTLE_DRAW;
+	else if (player->hp > 0 && battle->enemyHp <= 0)
+		battle->currentPhase = BATTLE_PLAYER_WIN;
+	else //(player->hp <= 0 && battle->enemyHp > 0)
+		battle->currentPhase = BATTLE_ENEMY_WIN;
 }

@@ -33,6 +33,7 @@ void testBattle(const char *executableDirectory) {
 
 	assert(battle.round == 1);
 	assert(StringUtils_strcmpi(battle.battleLog, "BattleLog") == 0);
+	assert(battle.currentPhase == BATTLE_ONGOING);
 
 	assert(StringUtils_strcmpi(battle.enemyName, "Jenis musuh 1") == 0);
 	assert(battle.enemyHp == 50);
@@ -79,12 +80,7 @@ void testBattle(const char *executableDirectory) {
 		IO_closeFile(fout);*/
 		battle.round++;
 	}
-	if (player.hp == 0 && battle.enemyHp != 0)
-		printf("%s won!\n", battle.enemyName);
-	else if (battle.enemyHp == 0 && player.hp != 0)
-		printf("%s won!\n", player.name);
-	else
-		printf("It's a draw!\n");
+	printf("Result : %d\n", battle.currentPhase);
 
 	printf("  Battle tested.\n");
 }
