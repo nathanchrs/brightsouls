@@ -13,7 +13,8 @@
 GameState gameState;
 GameResources gameResources;
 bool isGameRunning, exitGame;
-bool fileRead;
+bool isGameStateLoaded;
+char *playerName;
 
 int main (int argc, char *argv[]) {
 	char *executableDirectory = getExecutableDirectory(argv[0]);
@@ -27,34 +28,100 @@ int main (int argc, char *argv[]) {
 	FILE *resourceFile = IO_openFile(executableDirectory, "../res/resources.txt");
 	if (!resourceFile) {
 		fprintf(stderr, "Failed to load resource file from %s../res/resources.txt.", executableDirectory);
-		IO_closeFile(resourceFile);
+		if (resourceFile) IO_closeFile(resourceFile);
 		return 1;
 	}
 	GameResources_load(&gameResources, resourceFile);
 	IO_closeFile(resourceFile);
 
-	// DEBUG: Load initial save file to memory
-	FILE *saveFile = IO_openFile(executableDirectory, "../res/initialsave.txt");
-	if (!saveFile) {
-		fprintf(stderr, "Failed to load save file from %s../res/initialsave.txt.", executableDirectory);
-		IO_closeFile(saveFile);
-		return 1;
-	}
-	GameState_load(&gameState, saveFile);
-	IO_closeFile(saveFile);
-
 	// Show splash screen
 	MainMenu_showSplashScreen(&config);
 
-	char *input;
+	char *input = NULL;
 	isGameRunning = false;
 	exitGame = false;
+	playerName = NULL;
+	isGameStateLoaded = false;
 	do {
 
 		// Show main menu
-		MainMenu_show(isGameRunning, &config);
+		MainMenu_show(isGameStateLoaded, &config);
 		input = StringUtils_scan(stdin, "\n");
-		MainMenu_processInput(&gameState, &isGameRunning, &exitGame, input);
+
+		// Process main menu input
+		
+		if (StringUtils_strcmpi(input, "exit") == 0 || StringUtils_strcmpi(input, "quit") == 0) {
+			isGameRunning = false;
+			exitGame = true;
+		} else if (isGameStateLoaded && (StringUtils_strcmpi(input, "start") == 0 || StringUtils_strcmpi(input, "resume") == 0)) {
+			isGameRunning = true;
+			exitGame = false;
+		} else if (StringUtils_strcmpi(input, "new") == 0) {
+			
+			printf("Input player name (must be alphanumeric, no whitespace): ");
+			playerName = StringUtils_scan(stdin, IO_WHITESPACE);
+
+			if (StringUtils_check(playerName, StringUtils_isAlphanumeric)) {
+			
+				// Load initial save file (new game) to memory
+				FILE *saveFile = IO_openFile(executableDirectory, "../res/initialsave.txt");
+				if (!saveFile) {
+					fprintf(stderr, "Failed to load save file from %s../res/initialsave.txt.\n", executableDirectory);
+					if (saveFile) IO_closeFile(saveFile);
+					delay(2.0);
+				} else {
+					GameState_load(&gameState, saveFile);
+					IO_closeFile(saveFile);
+					
+					gameState.player.name = StringUtils_clone(playerName);
+					isGameRunning = true;
+					isGameStateLoaded = true;
+				}
+
+			} else {
+				printf("Invalid player name.\n");
+				delay(2.0);
+			}
+			
+		} else if (isGameStateLoaded && StringUtils_strcmpi(input, "save") == 0) {
+
+			FILE *saveFile = IO_openFileForWrite(executableDirectory, gameState.player.name);
+			if (!saveFile) {
+				fprintf(stderr, "Failed to save to file %s.", gameState.player.name);
+				if (saveFile) IO_closeFile(saveFile);
+				delay(2.0);
+			} else {
+				GameState_save(&gameState, saveFile);
+				IO_closeFile(saveFile);
+
+				printf("Game saved.\n");
+				delay(2.0);
+			}
+
+		} else if (StringUtils_strcmpi(input, "load") == 0) {
+
+			printf("Input player name (must be valid filename, no whitespace): ");
+			playerName = StringUtils_scan(stdin, IO_WHITESPACE);
+
+			// Load player save file to memory
+			FILE *saveFile = IO_openFile(executableDirectory, playerName);
+			if (!saveFile) {
+				fprintf(stderr, "Failed to load save file from %s.\n", playerName);
+				if (saveFile) IO_closeFile(saveFile);
+				delay(2.0);
+			} else {
+				GameState_load(&gameState, saveFile);
+				IO_closeFile(saveFile);
+
+				isGameStateLoaded = true;
+				isGameRunning = true;
+				exitGame = false;
+			}
+
+		} else {
+			printf("Invalid command.\n");
+			delay(1.0);
+		}
 		
 		// Game loop
 		FrameBuffer frameBuffer = FrameBuffer_allocate(config.frameBufferHeight, config.frameBufferWidth, config.useColor);
@@ -84,6 +151,7 @@ int main (int argc, char *argv[]) {
 	StringUtils_deallocate(input);
 
 	StringUtils_deallocate(executableDirectory);
+	StringUtils_deallocate(playerName);
 
 	return 0;
 }

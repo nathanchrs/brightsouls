@@ -12,6 +12,10 @@ int toupper(int c) {
 	return c;
 }
 
+int StringUtils_isAlphanumeric(int c) {
+	return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9');
+}
+
 char* StringUtils_fromInt(int value, const char* format) {
 	size_t len = snprintf(NULL, 0, format, value);
 	if (len < 24) { // hard limit on int length (including 64-bit), anything above is likely wrong
@@ -220,8 +224,8 @@ int StringUtils_strcmpi(const char *str1, const char *str2) {
 unsigned char StringUtils_check(const char *str, int (*checker)(int)) {
 	const char *p = str;
 	while ((*p) != 0) {
-		if (!(*checker)((int) *p)) return 1;
+		if (!(*checker)((int) *p)) return 0;
 		p++;
 	}
-	return 0;
+	return 1;
 }

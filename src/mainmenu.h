@@ -7,8 +7,6 @@
 
 void MainMenu_showSplashScreen(const Config *config);
 
-void MainMenu_show(const bool isGameRunning, const Config *config);
-
-void MainMenu_processInput(GameState *gameState, bool *isGameRunning, bool *exitGame, const char *input);
+void MainMenu_show(bool isGameRunning, const Config *config);
 
 #endif

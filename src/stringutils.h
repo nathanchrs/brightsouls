@@ -10,6 +10,8 @@ int tolower(int c);
 
 int toupper(int c);
 
+int StringUtils_isAlphanumeric(int c);
+
 /* Read string from the input file from the current position until the delimiter character.
    The resulting string is dynamically allocated. Returns null on allocation failure. */
 char* StringUtils_scan(FILE *fin, const char *delim);

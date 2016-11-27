@@ -37,7 +37,7 @@ void GameState_save(const GameState *gameState, FILE *fout) {
 	LocationEdgeArray_save(&(gameState->locationEdges), fout);
 	IO_writeNewline(fout);
 
-	Player_load(&(gameState->player), fout);
+	Player_save(&(gameState->player), fout);
 	IO_writeNewline(fout);
 
 	IO_writeBoolArray(fout, gameState->isEnemyDefeated);
