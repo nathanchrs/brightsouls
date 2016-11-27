@@ -62,32 +62,6 @@ void AreaRenderer_drawPowerUp(FrameBuffer *fb, Point topLeft) {
 	FrameBuffer_drawPoint(fb, Point_translate(topLeft, 1, 2), ']', WHITE, TRANSPARENT);
 }
 
-void AreaRenderer_drawMeter(FrameBuffer *fb, Point topLeft, int width, int value, int maxValue) {
-    if (width < 8) width = 8; // Minimum width is 8 for the digits only
-    char *valueStr = StringUtils_fromInt(value % 1000, "%04d");
-    char *maxValueStr = StringUtils_fromInt(maxValue % 1000, "%04d");
-
-    FrameBuffer_drawTextBox(fb, topLeft, Point_translate(topLeft, 0, 2), valueStr, WHITE, TRANSPARENT);
-    FrameBuffer_drawTextBox(fb, Point_translate(topLeft, 0, 3), Point_translate(topLeft, 0, 3), "/", WHITE, TRANSPARENT);
-    FrameBuffer_drawTextBox(fb, Point_translate(topLeft, 0, 4), Point_translate(topLeft, 0, 6), maxValueStr, WHITE, TRANSPARENT);
-
-    Color barColor;
-    if (value*3 < maxValue) barColor = MAROON;
-    else if (value*2 < maxValue) barColor = BROWN;
-    else barColor = GREEN;
-
-    if (value < 0) value = 0;
-    if (maxValue > 0 && maxValue >= value) {
-        int barWidth = (value*(width-8)+(maxValue-1)) / maxValue; // Scale value to width-8, round up
-        int remWidth = (width-8) - barWidth;
-        if (barWidth > 0) FrameBuffer_drawHorizontalLine(fb, Point_translate(topLeft, 0, 8), Point_translate(topLeft, 0, 7+barWidth), '#', barColor, barColor);
-        if (remWidth > 0) FrameBuffer_drawHorizontalLine(fb, Point_translate(topLeft, 0, 8+barWidth), Point_translate(topLeft, 0, 7+barWidth+remWidth), '.', GRAY, GRAY);
-    }
-
-    StringUtils_deallocate(valueStr);
-    StringUtils_deallocate(maxValueStr);
-}
-
 void AreaRenderer_render(FrameBuffer *fb, const GameState *gameState, const GameResources *gameResources) {
 	Area *currentArea = &(gameResources->areas.items[gameState->player.location.areaId]);
 
@@ -96,11 +70,11 @@ void AreaRenderer_render(FrameBuffer *fb, const GameState *gameState, const Game
 
 	FrameBuffer_drawRectangle(fb, Point_make(4, fb->width-80), Point_make(20, fb->width-45), BLANK, TRANSPARENT, BLACK, WHITE);
 
-	FrameBuffer_drawTextBox(fb, Point_make(4, fb->width-68), Point_make(4, fb->width-50), gameState->player.name, BLACK, TRANSPARENT);
+	FrameBuffer_drawTextBox(fb, Point_make(4, fb->width-78), Point_make(4, fb->width-50), gameState->player.name, BLACK, TRANSPARENT);
 
 	FrameBuffer_drawTextBox(fb, Point_make(6, fb->width-77), Point_make(6, fb->width-50), "HP = ", WHITE, TRANSPARENT);
 
-	AreaRenderer_drawMeter(fb, Point_make(6,fb->width-72), 26, gameState->player.hp, gameState->player.maxHp);
+	FrameBuffer_drawMeter(fb, Point_make(6,fb->width-72), 26, gameState->player.hp, gameState->player.maxHp);
 
 	char *stats = StringUtils_clone("Strength     =    ");
 	char *statnum = StringUtils_fromInt(gameState->player.str,"%d");

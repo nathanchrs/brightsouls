@@ -2,13 +2,14 @@
 #include "array.h"
 #include "point.h"
 #include "boolean.h"
+#include "stringutils.h"
 
 #define SKILLTREE_RENDER_BORDER 2
 #define SKILL_HORIZONTAL_PADDING 5
 
 void SkillTreeRenderer_render(FrameBuffer *fb, const GameState *gameState, const SkillTree *st) {
 	int i;
-
+	char *reqExp;
 	// calculate maxDepth
 	int maxDepth = -1;
 	for (i = 0; i<st->length; i++) {
@@ -61,13 +62,21 @@ void SkillTreeRenderer_render(FrameBuffer *fb, const GameState *gameState, const
 			FrameBuffer_drawTextBox(fb, Point_make(skillR, skillC1), Point_make(skillR, skillC2), "[U]", WHITE, GREEN);
 			FrameBuffer_drawTextBox(fb, Point_make(skillR, skillC1+4), Point_make(skillR, skillC2), st->items[i].skillName, BLACK, TRANSPARENT);
 		} else if (st->items[i].parent < gameState->isSkillUnlocked.length && gameState->isSkillUnlocked.items[st->items[i].parent]) {
+			reqExp = StringUtils_fromInt(st->items[i].requiredExp, "%02d");
 			FrameBuffer_drawRectangle(fb, Point_make(skillR, skillC1), Point_make(skillR, skillC2), BLANK, TRANSPARENT, WHITE, WHITE);
 			FrameBuffer_drawTextBox(fb, Point_make(skillR, skillC1), Point_make(skillR, skillC2), "[L]", WHITE, BROWN);
 			FrameBuffer_drawTextBox(fb, Point_make(skillR, skillC1+4), Point_make(skillR, skillC2), st->items[i].skillName, BLACK, TRANSPARENT);
+			FrameBuffer_drawTextBox(fb, Point_make(skillR, skillC2-6), Point_make(skillR, skillC2-4), reqExp, BLACK, TRANSPARENT);
+			StringUtils_deallocate(reqExp);
+			FrameBuffer_drawTextBox(fb, Point_make(skillR, skillC2-3), Point_make(skillR, skillC2), "EXP", BLACK, TRANSPARENT);
 		} else {
+			reqExp = StringUtils_fromInt(st->items[i].requiredExp, "%02d");
 			FrameBuffer_drawRectangle(fb, Point_make(skillR, skillC1), Point_make(skillR, skillC2), BLANK, TRANSPARENT, BLACK, BLACK);
 			FrameBuffer_drawTextBox(fb, Point_make(skillR, skillC1), Point_make(skillR, skillC2), "N/A", MAROON, TRANSPARENT);
 			FrameBuffer_drawTextBox(fb, Point_make(skillR, skillC1+4), Point_make(skillR, skillC2), st->items[i].skillName, GRAY, TRANSPARENT);
+			FrameBuffer_drawTextBox(fb, Point_make(skillR, skillC2-6), Point_make(skillR, skillC2-4), reqExp, GRAY, TRANSPARENT);
+			StringUtils_deallocate(reqExp);
+			FrameBuffer_drawTextBox(fb, Point_make(skillR, skillC2-3), Point_make(skillR, skillC2), "EXP", GRAY, TRANSPARENT);
 		}
 	}
 
@@ -93,6 +102,12 @@ void SkillTreeRenderer_render(FrameBuffer *fb, const GameState *gameState, const
 	// draw title
 	FrameBuffer_drawRectangle(fb, Point_make(2,2), Point_make(4,15), '=', TEAL, BLACK, BLACK);
 	FrameBuffer_drawTextBox(fb, Point_make(3,4), Point_make(3, 13), "SKILL TREE", WHITE, TRANSPARENT);
+
+	FrameBuffer_drawRectangle(fb, Point_make(2,fb->width-15), Point_make(4,fb->width-1), '=', RED, BLACK, BLACK);
+	char *statsnum = StringUtils_fromInt(gameState->player.exp, "%02d");
+	FrameBuffer_drawTextBox(fb, Point_make(3,fb->width-13), Point_make(3, fb->width-5), "EXP   = ", WHITE, TRANSPARENT);
+	FrameBuffer_drawTextBox(fb, Point_make(3,fb->width-4), Point_make(3, fb->width-1), statsnum, WHITE, TRANSPARENT);
+	StringUtils_deallocate(statsnum);
 
 	FrameBuffer_drawTextBox(fb, Point_make(fb->height-1,0), Point_make(fb->height-1, fb->width-1), gameState->message, WHITE, TRANSPARENT);
 	FrameBuffer_setInputPrompt(fb, "Select skill to unlock [<skill name>/back/pause] >> ");

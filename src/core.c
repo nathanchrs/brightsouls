@@ -8,7 +8,6 @@
 
 void Core_exploration(GameState *gameState, GameResources *gameResources, const char *input) {
 	Location ltemp;
-
 	if (StringUtils_strcmpi(input, "u") == 0) {
 		ltemp = Location_moveUp(gameState->player.location, &(gameResources->areas), &(gameState->locationEdges));
 	} else if (StringUtils_strcmpi(input, "d") == 0) {
@@ -22,11 +21,11 @@ void Core_exploration(GameState *gameState, GameResources *gameResources, const 
 		return;
 	} else if(StringUtils_strcmpi(input, "restoration") == 0) {
 		if(SkillTree_isSkillUnlocked(&(gameResources->skillTree),gameState, "Restoration")) {
-			if(gameState->player.exp-15 < 0) {
+			if(gameState->player.exp-20 < 0) {
 				gameState->message = StringUtils_clone("Not enough exp");
 			} else {
 				gameState->player.hp = gameState->player.maxHp;
-				gameState->player.exp -= 15;
+				gameState->player.exp -= 20;
 			}
 		} else {
 			gameState->message = StringUtils_clone("Invalid command.");
@@ -34,14 +33,14 @@ void Core_exploration(GameState *gameState, GameResources *gameResources, const 
 		return;
 	} else if(StringUtils_strcmpi(input, "purification") == 0) {
 		if(SkillTree_isSkillUnlocked(&(gameResources->skillTree),gameState, "Purification")) {
-			if(gameState->player.exp-5 < 0) {
+			if(gameState->player.exp-10 < 0) {
 				gameState->message = StringUtils_clone("Not enough exp");
 			} else {
 				gameState->player.hp += 30;
 				if(gameState->player.hp > gameState->player.maxHp) {
 					gameState->player.hp = gameState->player.maxHp;
 				}
-				gameState->player.exp -= 5;
+				gameState->player.exp -= 10;
 			}
 		} else {
 			gameState->message = StringUtils_clone("Invalid command.");
@@ -110,11 +109,16 @@ void Core_process(GameState *gameState, GameResources *gameResources, const char
 		if (StringUtils_strcmpi(input, "back") == 0) {
 			gameState->currentPhase = EXPLORATION;
 		} else {
-			bool skillUnlocked = SkillTree_unlockSkill(&(gameResources->skillTree), gameState, input);
-			if (skillUnlocked) {
-				gameState->message = StringUtils_clone("Skill unlocked!");
+			int skillUnlocked = SkillTree_unlockSkill(&(gameResources->skillTree), gameState, input);
+			bool skillAlreadyUnlocked = SkillTree_isSkillUnlocked(&(gameResources->skillTree), gameState, input);
+			if(!skillAlreadyUnlocked) {
+				if (skillUnlocked == SKILL_UNLOCKED) {
+					gameState->message = StringUtils_clone("Skill unlocked!");
+				} else {
+					gameState->message = StringUtils_clone("Can't unlock the specified skill.");
+				}
 			} else {
-				gameState->message = StringUtils_clone("Can't unlock the specified skill.");
+					gameState->message = StringUtils_clone("You had already unlocked that skill before!");
 			}
 		}
 	} else if (gameState->currentPhase == EXPLORATION) {

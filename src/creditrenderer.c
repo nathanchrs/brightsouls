@@ -48,10 +48,10 @@ void CreditRenderer_render(FrameBuffer *fb, const GameState *gameState) {
     }
 
     FrameBuffer_drawTextBox(fb, Point_make(17,35), Point_make(17,88), "  Jonathan Christopher               13515001", BLACK, TRANSPARENT);
-    FrameBuffer_drawTextBox(fb, Point_make(18,35), Point_make(18,88), "  Nicholas Thie                      13515000", BLACK, TRANSPARENT);
-    FrameBuffer_drawTextBox(fb, Point_make(19,35), Point_make(19,88), "  Ray Andrew                         13515073", BLACK, TRANSPARENT);
-    FrameBuffer_drawTextBox(fb, Point_make(20,35), Point_make(20,88), "  Adnan Radja Maulana                13515000", BLACK, TRANSPARENT);
-    FrameBuffer_drawTextBox(fb, Point_make(21,35), Point_make(21,88), "  Ahmad Belva                        13515000", BLACK, TRANSPARENT);
+    FrameBuffer_drawTextBox(fb, Point_make(19,35), Point_make(19,88), "  Nicholas Thie                      13515079", BLACK, TRANSPARENT);
+    FrameBuffer_drawTextBox(fb, Point_make(18,35), Point_make(18,88), "  Ray Andrew                         13515073", BLACK, TRANSPARENT);
+    FrameBuffer_drawTextBox(fb, Point_make(20,35), Point_make(20,88), "  Adnan Radja Maulana                10115110", BLACK, TRANSPARENT);
+    FrameBuffer_drawTextBox(fb, Point_make(21,35), Point_make(21,88), "  Ahmad Belva                        10115089", BLACK, TRANSPARENT);
 
     FrameBuffer_drawTextBox(fb, Point_make(25,35), Point_make(25,88), "          Thank you for playing our game !     ", BLACK, TRANSPARENT);
     FrameBuffer_drawTextBox(fb, Point_make(26,34), Point_make(26,88), "   We welcome any criticism to improve our game !", BLACK, TRANSPARENT);

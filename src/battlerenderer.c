@@ -17,41 +17,12 @@ void BattleRenderer_drawEnemy(FrameBuffer *fb, const GameResources *gameResource
     FrameBuffer_drawTextBox(fb, topLeft, bottomRight, gameResources->enemyTypes.items[typeId].image, MAROON, TRANSPARENT);
 }
 
-/* Draws meter: 111/999 #####............ */
-void BattleRenderer_drawMeter(FrameBuffer *fb, Point topLeft, int width, int value, int maxValue) {
-    if (width < 8) width = 8; // Minimum width is 8 for the digits only
-    char *valueStr = StringUtils_fromInt(value % 1000, "%03d");
-    char *maxValueStr = StringUtils_fromInt(maxValue % 1000, "%03d");
-
-    FrameBuffer_drawTextBox(fb, topLeft, Point_translate(topLeft, 0, 2), valueStr, WHITE, TRANSPARENT);
-    FrameBuffer_drawTextBox(fb, Point_translate(topLeft, 0, 3), Point_translate(topLeft, 0, 3), "/", WHITE, TRANSPARENT);
-    FrameBuffer_drawTextBox(fb, Point_translate(topLeft, 0, 4), Point_translate(topLeft, 0, 6), maxValueStr, WHITE, TRANSPARENT);
-
-    Color barColor;
-    if (value*3 < maxValue) barColor = MAROON;
-    else if (value*2 < maxValue) barColor = BROWN;
-    else if (value > maxValue) barColor = BLUE;
-    else barColor = GREEN;
-
-    if (value < 0) value = 0;
-    if (value > maxValue) value = maxValue;
-    if (maxValue > 0) {
-        int barWidth = (value*(width-8)+(maxValue-1)) / maxValue; // Scale value to width-8, round up
-        int remWidth = (width-8) - barWidth;
-        if (barWidth > 0) FrameBuffer_drawHorizontalLine(fb, Point_translate(topLeft, 0, 8), Point_translate(topLeft, 0, 7+barWidth), '#', barColor, barColor);
-        if (remWidth > 0) FrameBuffer_drawHorizontalLine(fb, Point_translate(topLeft, 0, 8+barWidth), Point_translate(topLeft, 0, 7+barWidth+remWidth), '.', GRAY, GRAY);
-    }
-
-    StringUtils_deallocate(valueStr);
-    StringUtils_deallocate(maxValueStr);
-}
-
 void BattleRenderer_render(FrameBuffer *fb, GameState *gameState, const GameResources *gameResources) {
     int i;
     char tmp;
 
     char *playerMoveStr = StringUtils_clone("");
-    char *enemyMoveStr = StringUtils_clone("");
+     char *enemyMoveStr = StringUtils_clone("");
 
     char *playerStrStr = StringUtils_fromInt(gameState->player.str % 1000, "%03d");
     char *playerDefStr = StringUtils_fromInt(gameState->player.def % 1000, "%03d");
@@ -65,17 +36,17 @@ void BattleRenderer_render(FrameBuffer *fb, GameState *gameState, const GameReso
     FrameBuffer_drawRectangle(fb, Point_make(0, 0), Point_make(fb->height-1, fb->width-1), BLANK, TRANSPARENT, BLACK, BLACK);
 
     // Draw player + stats
-    
+
     FrameBuffer_drawRectangle(fb, Point_make(0,0), Point_make(27,34), '*', GRAY, TRANSPARENT, TRANSPARENT); // player box
     BattleRenderer_drawPlayer(fb, gameResources, Point_make(1,4));
 
     FrameBuffer_drawTextBox(fb, Point_make(18, 3), Point_make(18, 30), gameState->player.name, CYAN, TRANSPARENT);
 
     FrameBuffer_drawTextBox(fb, Point_make(20, 3), Point_make(20, 5), "HP ", WHITE, TRANSPARENT);
-    BattleRenderer_drawMeter(fb, Point_make(20, 7), 26, gameState->player.hp, gameState->player.maxHp);
+    FrameBuffer_drawMeter(fb, Point_make(20, 7), 26, gameState->player.hp, gameState->player.maxHp);
 
     FrameBuffer_drawTextBox(fb, Point_make(22, 3), Point_make(22, 5), "EXP", WHITE, TRANSPARENT);
-    BattleRenderer_drawMeter(fb, Point_make(22, 7), 26, gameState->player.exp, gameState->player.maxExp);
+    FrameBuffer_drawMeter(fb, Point_make(22, 7), 26, gameState->player.exp, gameState->player.maxExp);
 
     FrameBuffer_drawTextBox(fb, Point_make(24, 3), Point_make(24, 5), "STR", CYAN, TRANSPARENT);
     FrameBuffer_drawTextBox(fb, Point_make(24, 7), Point_make(24, 9), playerStrStr, WHITE, TRANSPARENT);
@@ -94,7 +65,7 @@ void BattleRenderer_render(FrameBuffer *fb, GameState *gameState, const GameReso
     FrameBuffer_drawTextBox(fb, Point_make(18, 87), Point_make(18, 114), gameState->battle.enemyName, RED, TRANSPARENT);
 
     FrameBuffer_drawTextBox(fb, Point_make(20, 87), Point_make(20, 89), "HP ", WHITE, TRANSPARENT);
-    BattleRenderer_drawMeter(fb, Point_make(20, 91), 26, gameState->battle.enemyHp, gameResources->enemyTypes.items[gameState->battle.enemyTypeId].hp);
+    FrameBuffer_drawMeter(fb, Point_make(20, 91), 26, gameState->battle.enemyHp, gameResources->enemyTypes.items[gameState->battle.enemyTypeId].hp);
 
     FrameBuffer_drawTextBox(fb, Point_make(22, 87), Point_make(24, 89), "STR", RED, TRANSPARENT);
     FrameBuffer_drawTextBox(fb, Point_make(22, 91), Point_make(24, 93), enemyStrStr, WHITE, TRANSPARENT);
@@ -104,7 +75,7 @@ void BattleRenderer_render(FrameBuffer *fb, GameState *gameState, const GameReso
 
     FrameBuffer_drawTextBox(fb, Point_make(22, 105), Point_make(25, 107), "EXP", RED, TRANSPARENT);
     FrameBuffer_drawTextBox(fb, Point_make(22, 109), Point_make(25, 111), enemyExpStr, WHITE, TRANSPARENT);
-    
+
     // Draw player input box
 
     for (i = 0; i < gameState->player.moveQueue.length; i++) {
@@ -119,12 +90,12 @@ void BattleRenderer_render(FrameBuffer *fb, GameState *gameState, const GameReso
     FrameBuffer_drawTextBox(fb, Point_make(26, 50), Point_make(26, 57), playerMoveStr, WHITE, TRANSPARENT);
 
     // Draw enemy input box
-    
+
     // Generate pseudo-random hide id's from round number and player stats
     // so the hidden index will not change even though the game is restarted
     int firstHideId = (gameState->battle.round + gameState->battle.enemyId*gameState->player.exp + gameState->player.str) % MOVE_QUEUE_LENGTH;
     int secondHideId = (firstHideId + (gameState->player.exp + gameState->player.str*gameState->player.def + gameState->battle.enemyId) % (MOVE_QUEUE_LENGTH-1) + 1) % MOVE_QUEUE_LENGTH;
-    
+
     MoveQueue *enemyMoveQueuePtr = ListNode_valuePointer(List_first(&(gameState->battle.enemyMoves)));
     for (i = 0; i < enemyMoveQueuePtr->length; i++) {
         List_popFirst(enemyMoveQueuePtr, &tmp);
@@ -136,11 +107,11 @@ void BattleRenderer_render(FrameBuffer *fb, GameState *gameState, const GameReso
         StringUtils_appendChar(&enemyMoveStr, ' ');
         List_pushLast(enemyMoveQueuePtr, tmp);
     }
-    
+
     FrameBuffer_drawRectangle(fb, Point_make(24,59), Point_make(27,84), '*', GRAY, TRANSPARENT, TRANSPARENT);
     FrameBuffer_drawTextBox(fb, Point_make(25, 61), Point_make(25, 82), "Enemy move:", RED, TRANSPARENT);
     FrameBuffer_drawTextBox(fb, Point_make(26, 74), Point_make(26, 82), enemyMoveStr, WHITE, TRANSPARENT);
-   
+
     // Draw battle log
 
     FrameBuffer_drawRectangle(fb, Point_make(0,34), Point_make(24,84), '*', GRAY, TRANSPARENT, TRANSPARENT); // battleLog box

@@ -5,7 +5,7 @@
 #include "creditrenderer.h"
 #include "gameoverrenderer.h"
 
-void Renderer_render(FrameBuffer *fb, const GameState *gameState, const GameResources *gameResources) {
+void Renderer_render(FrameBuffer *fb, GameState *gameState, const GameResources *gameResources) {
 	FrameBuffer_clear(fb);
 
 	if (gameState->currentPhase == EXPLORATION) {
