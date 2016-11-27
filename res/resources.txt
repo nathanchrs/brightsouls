@@ -28,7 +28,7 @@ ttttt
 
 `Jenis musuh 1`
 10 9 8 7
-10 
+10
 `AAAA` `AAAA` `BBBB` `BBBB` `FFFF` `ABFA` `ABFA` `ABFA` `FBAA` `ABAA`
 `                                                                               /                       :;                \      |l      _____     |;     '8o __-~     ~\   d|      "88p;.  -. _\_;.oP        '>,% (\  (\./)8"        ,;%%%:  ./V^^^V'     ;,-::::::'_::\   ||\     88oooooo.  :\'^^^/,,~--._o.8888888888:'((( o.ooo88 'o'88888888b' )) 888b888   b'888888888;(.,"888b88`
 
@@ -60,26 +60,46 @@ ttttt
 2 2 2 1
 
 
-5
+10
 
-`Nama skill 1`
-`Ini deskripsi skill 1`
+`Pulse`
+`Give you extra 15 hp`
 11
 
-`Nama skill 2`
-`Ini deskripsi skill yang kedua`
-22 0
+`Healward`
+`Heal 10 hp in battle, but take 3 exp from player`
+17 0
 
-`Nama skill tiga`
-`Ini deskripsi skill ke-3`
-33 0
+`Purification`
+`Heal 30 hp in battle, but take 10 exp from player`
+25 1
 
-`Nama skill empat`
-`Ini deskripsi skill ke 4`
-44 1
+`Restoration`
+`Fully restore your HP, but take 20 exp from player`
+40 2
 
-`Nama skill 5`
-`Ini deskripsi skill ke-5`
-55 1
+`Warpath`
+`Give additional 10 strength`
+17 0
+
+`Enrage`
+`Give additional 20 strength`
+25 4
+
+`Godstrength`
+`Give additional 50 strength`
+40 5
+
+`Icearmor`
+`Give additional 10 defence`
+17 4
+
+`Untouchable`
+`Give additional 20 defence`
+25 7
+
+`Bodyofsteel`
+`Give additional 50 defence`
+40 7
 
 `            _A                    .''"''.                 /        \              |         |              |         |              /         \             (.---._ _.-.)             |         |              (  <>  <> |\              \        ;               |\      /             _.'\#|_____/#'-._    _.-'##############' ..\ /..\##################\.|....\##################|`

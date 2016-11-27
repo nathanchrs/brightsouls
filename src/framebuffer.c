@@ -186,3 +186,32 @@ void FrameBuffer_output(FrameBuffer *fb, bool useColor) {
 	fb->outputBuffer[it] = 0; // Add trailing null byte to output buffer
 	printf("%s%s", fb->outputBuffer, fb->inputPrompt); // Actually print the output buffer's contents and input prompt
 }
+
+/* Draws meter: 111/999 #####............ */
+void FrameBuffer_drawMeter(FrameBuffer *fb, Point topLeft, int width, int value, int maxValue) {
+    if (width < 8) width = 8; // Minimum width is 8 for the digits only
+    char *valueStr = StringUtils_fromInt(value % 1000, "%03d");
+    char *maxValueStr = StringUtils_fromInt(maxValue % 1000, "%03d");
+
+    FrameBuffer_drawTextBox(fb, topLeft, Point_translate(topLeft, 0, 2), valueStr, WHITE, TRANSPARENT);
+    FrameBuffer_drawTextBox(fb, Point_translate(topLeft, 0, 3), Point_translate(topLeft, 0, 3), "/", WHITE, TRANSPARENT);
+    FrameBuffer_drawTextBox(fb, Point_translate(topLeft, 0, 4), Point_translate(topLeft, 0, 6), maxValueStr, WHITE, TRANSPARENT);
+
+    Color barColor;
+    if (value*3 < maxValue) barColor = MAROON;
+    else if (value*2 < maxValue) barColor = BROWN;
+    else if (value > maxValue) barColor = BLUE;
+    else barColor = GREEN;
+
+    if (value < 0) value = 0;
+    if (value > maxValue) value = maxValue;
+    if (maxValue > 0) {
+        int barWidth = (value*(width-8)+(maxValue-1)) / maxValue; // Scale value to width-8, round up
+        int remWidth = (width-8) - barWidth;
+        if (barWidth > 0) FrameBuffer_drawHorizontalLine(fb, Point_translate(topLeft, 0, 8), Point_translate(topLeft, 0, 7+barWidth), '#', barColor, barColor);
+        if (remWidth > 0) FrameBuffer_drawHorizontalLine(fb, Point_translate(topLeft, 0, 8+barWidth), Point_translate(topLeft, 0, 7+barWidth+remWidth), '.', GRAY, GRAY);
+    }
+
+    StringUtils_deallocate(valueStr);
+    StringUtils_deallocate(maxValueStr);
+}

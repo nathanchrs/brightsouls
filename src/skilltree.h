@@ -7,11 +7,13 @@
 #include "io.h"
 
 #define SKILLTREE_NO_PARENT -1
+#define SKILL_UNLOCKED 1
+#define SKILL_NOT_UNLOCKED 0
 
 typedef struct {
 	char *skillName;
 	char *skillDescription;
-	int requiredLevel;
+	int requiredExp;
 
 	int parent;
 	ARRAY(int) children;
@@ -27,7 +29,9 @@ int SkillTree_searchIndex(const SkillTree *skillTree, const char *skillName);
 
 bool SkillTree_isSkillUnlocked(const SkillTree *skillTree, const GameState *gameState, const char *skillName);
 
-bool SkillTree_unlockSkill(const SkillTree *skillTree, const GameState *gameState, const char *skillName);
+int SkillTree_unlockSkill(const SkillTree *skillTree, GameState *gameState, const char *skillName);
+
+void SkillTree_addStats(const SkillTree *skillTree, GameState *gameState, int idx);
 
 void SkillTree_deallocate(SkillTree *skillTree);
 

@@ -41,4 +41,6 @@ void FrameBuffer_setInputPrompt(FrameBuffer *fb, const char *str);
 
 void FrameBuffer_output(FrameBuffer *fb, bool useColor);
 
+void FrameBuffer_drawMeter(FrameBuffer *fb, Point topLeft, int width, int value, int maxValue);
+
 #endif

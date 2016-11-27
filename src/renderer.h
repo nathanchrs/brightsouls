@@ -6,6 +6,6 @@
 #include "boolean.h"
 #include "framebuffer.h"
 
-void Renderer_render(FrameBuffer *fb, const GameState *gameState, const GameResources *gameResources);
+void Renderer_render(FrameBuffer *fb, GameState *gameState, const GameResources *gameResources);
 
 #endif
