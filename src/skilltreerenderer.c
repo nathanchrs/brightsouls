@@ -103,11 +103,10 @@ void SkillTreeRenderer_render(FrameBuffer *fb, const GameState *gameState, const
 	FrameBuffer_drawRectangle(fb, Point_make(2,2), Point_make(4,15), '=', TEAL, BLACK, BLACK);
 	FrameBuffer_drawTextBox(fb, Point_make(3,4), Point_make(3, 13), "SKILL TREE", WHITE, TRANSPARENT);
 
-	FrameBuffer_drawRectangle(fb, Point_make(2,fb->width-15), Point_make(4,fb->width-1), '=', RED, BLACK, BLACK);
-	char *statsnum = StringUtils_fromInt(gameState->player.exp, "%02d");
-	FrameBuffer_drawTextBox(fb, Point_make(3,fb->width-13), Point_make(3, fb->width-5), "EXP   = ", WHITE, TRANSPARENT);
-	FrameBuffer_drawTextBox(fb, Point_make(3,fb->width-4), Point_make(3, fb->width-1), statsnum, WHITE, TRANSPARENT);
-	StringUtils_deallocate(statsnum);
+	// draw EXP counter
+	FrameBuffer_drawTextBox(fb, Point_make(27, 1), Point_make(27, 5), "[ EXP", YELLOW, TRANSPARENT);
+    FrameBuffer_drawMeter(fb, Point_make(27, 7), 26, gameState->player.exp, gameState->player.maxExp);
+    FrameBuffer_drawTextBox(fb, Point_make(27, 34), Point_make(27, 34), "]", YELLOW, TRANSPARENT);
 
 	FrameBuffer_drawTextBox(fb, Point_make(fb->height-1,0), Point_make(fb->height-1, fb->width-1), gameState->message, WHITE, TRANSPARENT);
 	FrameBuffer_setInputPrompt(fb, "Select skill to unlock [<skill name>/back/pause] >> ");

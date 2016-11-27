@@ -22,7 +22,7 @@ void Core_exploration(GameState *gameState, GameResources *gameResources, const 
 	} else if(StringUtils_strcmpi(input, "restoration") == 0) {
 		if(SkillTree_isSkillUnlocked(&(gameResources->skillTree),gameState, "Restoration")) {
 			if(gameState->player.exp-20 < 0) {
-				gameState->message = StringUtils_clone("Not enough exp");
+				gameState->message = StringUtils_clone("Not enough EXP.");
 			} else {
 				gameState->player.hp = gameState->player.maxHp;
 				gameState->player.exp -= 20;
@@ -34,7 +34,7 @@ void Core_exploration(GameState *gameState, GameResources *gameResources, const 
 	} else if(StringUtils_strcmpi(input, "purification") == 0) {
 		if(SkillTree_isSkillUnlocked(&(gameResources->skillTree),gameState, "Purification")) {
 			if(gameState->player.exp-10 < 0) {
-				gameState->message = StringUtils_clone("Not enough exp");
+				gameState->message = StringUtils_clone("Not enough EXP.");
 			} else {
 				gameState->player.hp += 30;
 				if(gameState->player.hp > gameState->player.maxHp) {
@@ -49,7 +49,7 @@ void Core_exploration(GameState *gameState, GameResources *gameResources, const 
 	} else if(StringUtils_strcmpi(input, "healward") == 0) {
 		if(SkillTree_isSkillUnlocked(&(gameResources->skillTree),gameState, "Healward")) {
 			if(gameState->player.exp-3 < 0) {
-				gameState->message = StringUtils_clone("Not enough exp");
+				gameState->message = StringUtils_clone("Not enough EXP.");
 			} else {
 				gameState->player.hp += 10;
 				if(gameState->player.hp > gameState->player.maxHp) {

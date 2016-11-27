@@ -92,7 +92,7 @@ ttttt
 
 `Icearmor`
 `Give additional 10 defence`
-17 0
+17 4
 
 `Untouchable`
 `Give additional 20 defence`
@@ -100,6 +100,6 @@ ttttt
 
 `Bodyofsteel`
 `Give additional 50 defence`
-40 8
+40 7
 
 `            _A                    .''"''.                 /        \              |         |              |         |              /         \             (.---._ _.-.)             |         |              (  <>  <> |\              \        ;               |\      /             _.'\#|_____/#'-._    _.-'##############' ..\ /..\##################\.|....\##################|`
