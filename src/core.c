@@ -48,15 +48,39 @@ void Core_exploration(GameState *gameState, GameResources *gameResources, const 
 }
 
 void Core_battle(GameState *gameState, GameResources *gameResources, const char *input) {
-	/*if (Battle_getState(gameState->battle.round) == BATTLE_PLAYER_WIN) {
-		gameState->isEnemyDefeated.items[enemyId] = true;
+	if (gameState->battle.currentPhase == BATTLE_PLAYER_WIN) {
+		gameState->isEnemyDefeated.items[gameState->battle.enemyId] = true;
 		gameState->currentPhase = EXPLORATION;
-	} else if (Battle_getState(gameState->battle.round) == BATTLE_PLAYER_WIN) {
-		
-		gameState->currentPhase = GAMEOVER;
-	}
+		gameState->message = StringUtils_clone("You won the battle!");
 
-	Battle_calcMove(gameState->battle, gameState->player);*/
+	} else if (gameState->battle.currentPhase == BATTLE_ENEMY_WIN) {
+		gameState->currentPhase = GAMEOVER;
+		gameState->message = StringUtils_clone("You died.");
+
+	} else if (gameState->battle.currentPhase == BATTLE_DRAW) {
+		gameState->currentPhase = EXPLORATION;
+		gameState->message = StringUtils_clone("You failed to defeat the enemy; the enemy has recovered!");
+
+	} else { // BATTLE_ONGOING
+
+		if (StringUtils_strcmpi(input, "a") == 0) {
+			List_pushLast(&(gameState->battle.playerMoveQueue), 'A');
+		} else if (StringUtils_strcmpi(input, "b") == 0) {
+			List_pushLast(&(gameState->battle.playerMoveQueue), 'B');
+		} else if (StringUtils_strcmpi(input, "f") == 0) {
+			List_pushLast(&(gameState->battle.playerMoveQueue), 'F');
+		} else if (gameState->battle.playerMoveQueue.length > 0 && (StringUtils_strcmpi(input, "e") == 0 || StringUtils_strcmpi(input, "erase") == 0)) {
+			char ign;
+			List_popLast(&(gameState->battle.playerMoveQueue), &ign);
+			gameState->message = StringUtils_clone("Erased last move.");
+		} else {
+			gameState->message = StringUtils_clone("Invalid input.");
+		}
+
+		if (gameState->battle.playerMoveQueue.length >= MOVE_QUEUE_LENGTH) {
+			Battle_calcMove(&(gameState->battle), &(gameState->player));
+		}
+	}
 }
 
 void Core_process(GameState *gameState, GameResources *gameResources, const char *input) {
@@ -79,6 +103,6 @@ void Core_process(GameState *gameState, GameResources *gameResources, const char
 		Core_exploration(gameState, gameResources, input);
 
 	} else if (gameState->currentPhase == BATTLE) {
-
+		Core_battle(gameState, gameResources, input);
 	}
 }

@@ -41,8 +41,10 @@ void Battle_init(Battle *battle, const EnemyArray *enemies, const EnemyTypeArray
 
 void Battle_calcMove(Battle *battle, Player *player);
 
+/* Calculate enemy/player HP changes according to actions */
 void Battle_calcAction(char enemyAction, char playerAction, Battle *battle, Player *player);
 
+/* Set battle phase according to player and enemy HP */
 void Battle_calcResult(Battle *battle, Player *player);
 
 #endif
