@@ -7,9 +7,17 @@
 #include "player.h"
 #include "move.h"
 
+typedef enum {
+	BATTLE_ONGOING,
+	BATTLE_PLAYER_WIN,
+	BATTLE_ENEMY_WIN,
+	BATTLE_DRAW
+} BattlePhase;
+
 typedef struct {
 	int round;
 	char *battleLog;
+	BattlePhase currentPhase;
 
 	char *enemyName;
 	int enemyId;
@@ -34,5 +42,7 @@ void Battle_init(Battle *battle, const EnemyArray *enemies, const EnemyTypeArray
 void Battle_calcMove(Battle *battle, Player *player);
 
 void Battle_calcAction(char enemyAction, char playerAction, Battle *battle, Player *player);
+
+void Battle_calcResult(Battle *battle, Player *player);
 
 #endif
