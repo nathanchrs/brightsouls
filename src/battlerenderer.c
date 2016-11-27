@@ -46,9 +46,11 @@ void BattleRenderer_drawMeter(FrameBuffer *fb, Point topLeft, int width, int val
     StringUtils_deallocate(maxValueStr);
 }
 
-void BattleRenderer_render(FrameBuffer *fb, GameState *gameState, const GameResources *gameResources) {
-    int i;
+void BattleRenderer_render(FrameBuffer *fb, const GameState *gameState, const GameResources *gameResources) {
+    ListNode *it;
+    ListNode *firstNode;
     char tmp;
+    int i;
 
     char *playerMoveStr = StringUtils_clone("");
     char *enemyMoveStr = StringUtils_clone("");
@@ -107,11 +109,16 @@ void BattleRenderer_render(FrameBuffer *fb, GameState *gameState, const GameReso
     
     // Draw player input box
 
-    for (i = 0; i < gameState->player.moveQueue.length; i++) {
-        List_popFirst(&(gameState->player.moveQueue), &tmp);
-        StringUtils_appendChar(&playerMoveStr, tmp);
-        StringUtils_appendChar(&playerMoveStr, ' ');
-        List_pushLast(&(gameState->player.moveQueue), tmp);
+    // Iterate over moveQueue (circular list implementation)
+    it = List_first(&(gameState->player.moveQueue));
+    firstNode = it;
+    if (it != NULL) {
+        do {
+            tmp = ListNode_value(it, char);
+            StringUtils_appendChar(&playerMoveStr, tmp);
+            StringUtils_appendChar(&playerMoveStr, ' ');
+            it = ListNode_next(it);
+        } while (it != firstNode);
     }
 
     FrameBuffer_drawRectangle(fb, Point_make(24,34), Point_make(27,59), '*', GRAY, TRANSPARENT, TRANSPARENT);
@@ -126,15 +133,23 @@ void BattleRenderer_render(FrameBuffer *fb, GameState *gameState, const GameReso
     int secondHideId = (firstHideId + (gameState->player.exp + gameState->player.str*gameState->player.def + gameState->battle.enemyId) % (MOVE_QUEUE_LENGTH-1) + 1) % MOVE_QUEUE_LENGTH;
     
     MoveQueue *enemyMoveQueuePtr = ListNode_valuePointer(List_first(&(gameState->battle.enemyMoves)));
-    for (i = 0; i < enemyMoveQueuePtr->length; i++) {
-        List_popFirst(enemyMoveQueuePtr, &tmp);
-        if (i == firstHideId || i == secondHideId) {
-            StringUtils_appendChar(&enemyMoveStr, '#');
-        } else {
-            StringUtils_appendChar(&enemyMoveStr, tmp);
-        }
-        StringUtils_appendChar(&enemyMoveStr, ' ');
-        List_pushLast(enemyMoveQueuePtr, tmp);
+
+    // Iterate over the first enemyMoveQueue
+    it = List_first(enemyMoveQueuePtr);
+    firstNode = it;
+    i = 0;
+    if (it != NULL) {
+        do {
+            tmp = ListNode_value(it, char);
+            if (i == firstHideId || i == secondHideId) {
+                StringUtils_appendChar(&enemyMoveStr, '#');
+            } else {
+                StringUtils_appendChar(&enemyMoveStr, tmp);
+            }
+            StringUtils_appendChar(&enemyMoveStr, ' ');
+            it = ListNode_next(it);
+            i++;
+        } while (it != firstNode);
     }
     
     FrameBuffer_drawRectangle(fb, Point_make(24,59), Point_make(27,84), '*', GRAY, TRANSPARENT, TRANSPARENT);
