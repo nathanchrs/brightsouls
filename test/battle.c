@@ -28,6 +28,8 @@ void testBattle(const char *executableDirectory) {
 	assert(battle.currentPhase == BATTLE_ONGOING);
 
 	assert(StringUtils_strcmpi(battle.enemyName, "Jenis musuh 1") == 0);
+	assert(battle.enemyId == 0);
+	assert(battle.enemyTypeId == 0);
 	assert(battle.enemyHp == 50);
 	assert(battle.enemyStr == 10);
 	assert(battle.enemyDef == 5);
@@ -38,32 +40,18 @@ void testBattle(const char *executableDirectory) {
 	assert(player.str == 12);
 	assert(player.def == 3);
 	assert(player.exp == 0);
-	printf("Stats :\n");
-	printf(" %s hp : %d\n", battle.enemyName, battle.enemyHp);
-	printf(" %s str : %d\n", battle.enemyName, battle.enemyStr);
-	printf(" %s def : %d\n", battle.enemyName, battle.enemyDef);
-	printf(" %s hp : %d\n", player.name, player.hp);
-	printf(" %s str : %d\n", player.name, player.str);
-	printf(" %s def : %d\n", player.name, player.def);
+
+	MoveQueueStack mqs;
+	List_initialize(&mqs);
+	mqs = MoveQueueStack_clone(&battle.enemyMoves);
+	List_initialize(&battle.playerMoveQueue);
+	List_popFirst(&mqs, &battle.playerMoveQueue);
+
 	while ((!List_isEmpty(&battle.enemyMoves)) && (player.hp > 0) && (battle.enemyHp > 0))
 	{
-		printf("Enemy moves hide : %s\n", Battle_enemyMovesHide(&battle));
-		printf("Enemy moves show : %s\n", Battle_enemyMovesShow(&battle));
 		battle.battleLog = StringUtils_clone("");
 
-		List_initialize(&battle.playerMoveQueue);
-		int i;
-		for (i=1; i<=4; i++)
-		{
-			printf("Input action #%d: ", i);
-			Battle_playerInput(&battle);
-		}
 		Battle_calcMove(&battle, &player);
-
-		printf("Round %d :\n", battle.round);
-		printf(" %s hp : %d\n", battle.enemyName, battle.enemyHp);
-		printf(" %s hp : %d\n", player.name, player.hp);
-		printf("%s", battle.battleLog);
 
 		/*printf("Saving battle..\n");
 		FILE *fout = IO_openFile(executableDirectory, "../test/battlesave.in");
@@ -72,7 +60,6 @@ void testBattle(const char *executableDirectory) {
 		IO_closeFile(fout);*/
 		battle.round++;
 	}
-	printf("Result : %d\n", battle.currentPhase);
 
 	printf("  Battle tested.\n");
 }
