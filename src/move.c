@@ -23,6 +23,10 @@ void MoveQueueStack_load(MoveQueueStack *moves, FILE *fin) {
 	}
 }
 
+void MoveQueueStack_save(const MoveQueueStack *moves, FILE *fout) {
+	IO_writeString(fout, "Test");
+}
+
 MoveQueue MoveQueue_clone(MoveQueue *moveQueue) {
 	MoveQueue newMoveQueue;
 	List_initialize(&newMoveQueue);
