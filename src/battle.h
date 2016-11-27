@@ -7,17 +7,10 @@
 #include "player.h"
 #include "move.h"
 
-typedef enum {
-	BATTLE_ONGOING,
-	BATTLE_PLAYER_WIN,
-	BATTLE_ENEMY_WIN,
-	BATTLE_DRAW
-} BattlePhase;
-
 typedef struct {
 	int round;
+	int roundMax;
 	char *battleLog;
-	BattlePhase currentPhase;
 
 	char *enemyName;
 	int enemyTypeId;
@@ -49,7 +42,5 @@ void Battle_playerInput(Battle *battle);
 char *Battle_enemyMovesShow(Battle *battle);
 
 char *Battle_enemyMovesHide(Battle *battle);
-
-void Battle_calcResult(Battle *battle, Player *player);
 
 #endif
