@@ -61,5 +61,7 @@ void testBattle(const char *executableDirectory) {
 		battle.round++;
 	}
 
+	Battle_deallocate(&battle);
+
 	printf("  Battle tested.\n");
 }

@@ -15,7 +15,7 @@ void testSkillTree(const char *executableDirectory) {
 	assert(skillTree.length == 5);
 	int i;
 	for (i = 0; i < skillTree.length; i++) {
-		assert(skillTree.items[i].requiredLevel == (i+1)*11);
+		assert(skillTree.items[i].requiredExp == (i+1)*11);
 	}
 	assert(skillTree.items[0].children.length == 2);
 	assert(skillTree.items[0].depth == 0);

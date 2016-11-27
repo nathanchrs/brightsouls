@@ -99,5 +99,7 @@ void testList(const char *executableDirectory) {
 	assert(intList.length == 0);
 	assert(elmt == 3);
 
+	List_deallocate(&intList);
+
 	printf("  List tested.\n");
 }

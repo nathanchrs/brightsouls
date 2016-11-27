@@ -17,7 +17,7 @@ void testBattle(const char *executableDirectory);
 
 int main (int argc, char *argv[]) {
 
-	printf("\nBRIGHTSOULS - UNIT TESTS\n===========\n");
+	printf("\nBRIGHTSOULS - UNIT TESTS\n========================\n");
 	printf("Starting tests...\n");
 
 	char *executableDirectory = getExecutableDirectory(argv[0]);

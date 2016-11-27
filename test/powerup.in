@@ -1,19 +1,10 @@
+4
+`Powerup 1` 1 2 3 4
+`Second powerup` 5 6 7 8
+`Powerup ke-3` 0 0 0 10
+`Last` 100 90 80 70
+
 3
-
-HP_Up
-1 1 1
-hp
-100
-1
-
-EXP_Up
-5 10 2
-exp
-100
-1
-
-STR_Up
-10 10 3
-str
-100
-1
+0 1 2 3
+3 2 1 0
+2 2 3 0
