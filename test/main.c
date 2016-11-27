@@ -28,9 +28,7 @@ int main (int argc, char *argv[]) {
 	//testPowerUp(executableDirectory);
 	testEnemy(executableDirectory);
 	testBattle(executableDirectory);
-	int x;
-	scanf("%d", &x);
-
+	
 	StringUtils_deallocate(executableDirectory);
 	printf("Tests completed.\n\n");
 	return 0;

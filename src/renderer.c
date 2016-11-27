@@ -13,12 +13,12 @@ void Renderer_render(FrameBuffer *fb, const GameState *gameState, const GameReso
 	} else if (gameState->currentPhase == SKILLTREE) {
 		SkillTreeRenderer_render(fb, gameState, &(gameResources->skillTree));
 	} else if (gameState->currentPhase == BATTLE) {
-        BattleRenderer_render(fb, gameState, gameResources);
-    } else if (gameState->currentPhase == CREDITS) {
-        CreditRenderer_render(fb, gameState);
-    } else if (gameState->currentPhase == GAMEOVER) {
-        GameoverRenderer_render(fb,gameState);
-    }
+		BattleRenderer_render(fb, gameState, gameResources);
+	} else if (gameState->currentPhase == CREDITS) {
+		CreditRenderer_render(fb, gameState);
+	} else if (gameState->currentPhase == GAMEOVER) {
+		GameoverRenderer_render(fb, gameState);
+	}
 
 	FrameBuffer_output(fb, true);
 }

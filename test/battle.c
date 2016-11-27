@@ -7,14 +7,6 @@ void testBattle(const char *executableDirectory) {
 
 	printf("  Testing Battle...\n");
 
-	/*EnemyArray enemies;
-
-	FILE *fin = IO_openFile(executableDirectory, "../test/enemy.in"-7);
-	assert(fin != NULL);
-	Enemy_loadArray(&enemies, fin);
-	IO_closeFile(fin);
-	*/
-
 	Battle battle;
 
 	FILE *fin = IO_openFile(executableDirectory, "../test/battle.in");
@@ -33,6 +25,7 @@ void testBattle(const char *executableDirectory) {
 
 	assert(battle.round == 1);
 	assert(StringUtils_strcmpi(battle.battleLog, "BattleLog") == 0);
+	assert(battle.currentPhase == BATTLE_ONGOING);
 
 	assert(StringUtils_strcmpi(battle.enemyName, "Jenis musuh 1") == 0);
 	assert(battle.enemyHp == 50);
@@ -56,7 +49,7 @@ void testBattle(const char *executableDirectory) {
 	{
 		printf("Enemy moves hide : %s\n", Battle_enemyMovesHide(&battle));
 		printf("Enemy moves show : %s\n", Battle_enemyMovesShow(&battle));
-		battle.battleLog = "";
+		battle.battleLog = StringUtils_clone("");
 
 		List_initialize(&battle.playerMoveQueue);
 		int i;
@@ -79,12 +72,7 @@ void testBattle(const char *executableDirectory) {
 		IO_closeFile(fout);*/
 		battle.round++;
 	}
-	if (player.hp == 0 && battle.enemyHp != 0)
-		printf("%s won!\n", battle.enemyName);
-	else if (battle.enemyHp == 0 && player.hp != 0)
-		printf("%s won!\n", player.name);
-	else
-		printf("It's a draw!\n");
+	printf("Result : %d\n", battle.currentPhase);
 
 	printf("  Battle tested.\n");
 }

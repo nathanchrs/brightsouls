@@ -55,7 +55,7 @@ int main (int argc, char *argv[]) {
 		MainMenu_show(isGameRunning, &config);
 		input = StringUtils_scan(stdin, "\n");
 		MainMenu_processInput(&gameState, &isGameRunning, &exitGame, input);
-		//gameState.currentPhase = CREDITS; //to override currentPhase for testing purpose only
+		
 		// Game loop
 		FrameBuffer frameBuffer = FrameBuffer_allocate(config.frameBufferHeight, config.frameBufferWidth, config.useColor);
 		while (isGameRunning) {
