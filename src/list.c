@@ -83,12 +83,15 @@ void List_rotate_impl(ListNode **head, int rotations) {
 }
 
 void List_deallocate_impl(ListNode **head) {
-	ListNode *it = *head;
-	ListNode *oldIt;
-	while (it != NULL) {
-		oldIt = it;
-		it = ListNode_next(it);
-		free(oldIt);
+	while (*head != NULL) {
+		ListNode *poppedNode = *head;
+		if (ListNode_next(*head) != *head) { // list has more than one element
+			ListNode_next(ListNode_prev(*head)) = ListNode_next(*head);
+			ListNode_prev(ListNode_next(*head)) = ListNode_prev(*head);
+			*head = ListNode_next(*head);
+		} else {
+			*head = NULL;
+		}
+		List_deallocateNode(poppedNode);
 	}
-	*head = NULL;
 }

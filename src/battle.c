@@ -3,7 +3,6 @@
 
 void Battle_load(Battle *battle, FILE *fin) {
 	battle->round = IO_readInteger(fin);
-	battle->roundMax = IO_readInteger(fin);
 	battle->battleLog = IO_readString(fin);
 
 	battle->enemyName = IO_readString(fin);
@@ -12,17 +11,20 @@ void Battle_load(Battle *battle, FILE *fin) {
 	battle->enemyDef = IO_readInteger(fin);
 	battle->enemyExp = IO_readInteger(fin);
 	MoveQueueStack_load(&(battle->enemyMoves), fin);
-	MoveQueue mq;
-	List_initialize(&mq);
-	int i;
-	for (i=1; i<battle->round; i++)
-		List_popFirst(&(battle->enemyMoves), &mq);
 	battle->enemyMovesShow = Battle_enemyMovesShow(battle);
 	battle->enemyMovesHide = Battle_enemyMovesHide(battle);
 }
 
 void Battle_save(const Battle *battle, FILE *fout) {
+	IO_writeInteger(fout, battle->round);
+	IO_writeString(fout, battle->battleLog);
 
+	IO_writeString(fout, battle->enemyName);
+	IO_writeInteger(fout, battle->enemyHp);
+	IO_writeInteger(fout, battle->enemyStr);
+	IO_writeInteger(fout, battle->enemyDef);
+	IO_writeInteger(fout, battle->enemyExp);
+	//MoveQueueStack_save(&(battle->enemyMoves), fout);
 }
 
 void Battle_deallocate(Battle *battle) {
@@ -35,7 +37,6 @@ void Battle_init(Battle *battle, const EnemyTypeArray *enemyTypes, int enemyType
 	Battle_deallocate(battle);
 
 	battle->round = 1;
-	//battle->roundMax = 10;
 	battle->battleLog = "";
 	battle->enemyName = enemyTypes->items[enemyTypeId].name;
 	battle->enemyHp = enemyTypes->items[enemyTypeId].hp;
