@@ -3,7 +3,7 @@
 
 void GameState_load(GameState *gameState, FILE *fin) {
 	
-	// DateTime_load(&(gameState->lastSaveTime), fin);
+	DateTime_load(&(gameState->lastSaveTime), fin);
 	
 	gameState->requestInput = IO_readInteger(fin);
 	gameState->currentPhase = IO_readInteger(fin);
@@ -23,9 +23,10 @@ void GameState_load(GameState *gameState, FILE *fin) {
 
 void GameState_save(const GameState *gameState, FILE *fout) {
 
-	// DateTime now = DateTime_now();
-	// DateTime_save(&now, fout);
-	// IO_writeNewline(fout);
+	DateTime now;
+	DateTime_now(&now);
+	DateTime_save(&now, fout);
+	IO_writeNewline(fout);
 	
 	IO_writeInteger(fout, gameState->requestInput);
 	IO_writeInteger(fout, gameState->currentPhase);

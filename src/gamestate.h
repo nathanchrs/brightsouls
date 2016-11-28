@@ -8,13 +8,14 @@
 #include "powerup.h"
 #include "io.h"
 #include "battle.h"
+#include "datetime.h"
 
 typedef enum {
 	EXPLORATION, BATTLE, CUTSCENE, SKILLTREE, GAMEOVER, CREDITS
 } GamePhase;
 
 typedef struct {
-	// DateTime lastSaveTime;
+	DateTime lastSaveTime;
 
 	bool requestInput;
 	GamePhase currentPhase;

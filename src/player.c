@@ -35,7 +35,6 @@ void Player_save(const Player *player, FILE *fout) {
 	IO_writeNewline(fout);
 
 	IO_writeInteger(fout, player->def);
-	IO_writeInteger(fout, player->maxHp);
 	IO_writeNewline(fout);
 
 	IO_writeInteger(fout, player->exp);
