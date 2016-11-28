@@ -9,6 +9,7 @@
 #include "utilities.h"
 #include "core.h"
 #include "io.h"
+#include "location.h"
 
 GameState gameState;
 GameResources gameResources;
@@ -73,6 +74,7 @@ int main (int argc, char *argv[]) {
 					GameState_load(&gameState, saveFile);
 					IO_closeFile(saveFile);
 					
+					LocationEdgeArray_permute(&(gameState.locationEdges));
 					gameState.player.name = StringUtils_clone(playerName);
 					isGameRunning = true;
 					isGameStateLoaded = true;

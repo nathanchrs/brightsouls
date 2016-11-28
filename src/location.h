@@ -35,6 +35,8 @@ Location Location_moveRight(Location currentLocation, const AreaArray *areas, co
 
 void LocationEdgeArray_load(LocationEdgeArray *locs, FILE *fin);
 
+void LocationEdgeArray_permute(LocationEdgeArray *locs);
+
 void LocationEdgeArray_save(const LocationEdgeArray *locs, FILE *fout);
 
 void LocationEdgeArray_deallocate(LocationEdgeArray *locs);

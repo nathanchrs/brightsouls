@@ -6,6 +6,8 @@
 #include "player.h"
 #include "battle.h"
 
+#define ENEMY_BOSS_TYPE_ID 0
+
 void Core_exploration(GameState *gameState, GameResources *gameResources, const char *input) {
 	Location ltemp;
 	if (StringUtils_strcmpi(input, "u") == 0) {
@@ -91,8 +93,14 @@ void Core_exploration(GameState *gameState, GameResources *gameResources, const 
 void Core_battle(GameState *gameState, GameResources *gameResources, const char *input) {
 	if (gameState->battle.currentPhase == BATTLE_PLAYER_WIN) {
 		gameState->isEnemyDefeated.items[gameState->battle.enemyId] = true;
-		gameState->currentPhase = EXPLORATION;
-		gameState->message = StringUtils_clone("You won the battle!");
+
+		if (gameState->battle.enemyTypeId == ENEMY_BOSS_TYPE_ID) {
+			gameState->currentPhase = CREDITS;
+			gameState->message = StringUtils_clone("You defeated the boss!"); // win
+		} else {
+			gameState->currentPhase = EXPLORATION;
+			gameState->message = StringUtils_clone("You won the battle!");
+		}
 
 	} else if (gameState->battle.currentPhase == BATTLE_ENEMY_WIN) {
 		gameState->currentPhase = GAMEOVER;

@@ -1,5 +1,4 @@
 #include "location.h"
-
 #include "utilities.h"
 
 Location Location_make(Point point, int areaId) {
@@ -107,6 +106,20 @@ void LocationEdgeArray_load(LocationEdgeArray *locs, FILE *fin) {
 		locs->items[i].to.point.r = IO_readInteger(fin);
 		locs->items[i].to.point.c = IO_readInteger(fin);
 		locs->items[i].to.areaId = IO_readInteger(fin);
+	}
+}
+
+void LocationEdgeArray_permute(LocationEdgeArray *locs) {
+	Location swap;
+	int i;
+	int swapi;
+	for (i = 0; i < locs->length; i++) {
+		swapi = getRandomInt(0, locs->length - 1);
+		if (locs->items[i].to.areaId != locs->items[swapi].to.areaId) {
+			swap = locs->items[swapi].to;
+			locs->items[swapi].to = locs->items[i].to;
+			locs->items[i].to = swap;
+		}
 	}
 }
 
